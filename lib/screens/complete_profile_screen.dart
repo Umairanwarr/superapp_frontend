@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'permissions_flow_screen.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
@@ -160,7 +163,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => const PermissionsFlowScreen());
+                  },
                   child: const Text('Continue'),
                 ),
               ),

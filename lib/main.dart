@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'screens/complete_profile_screen.dart';
+import 'utils/size_config.dart';
 
 const Color kPrimaryColor = Color(0xFF2FC1BE);
 const Color kBackgroundColor = Color(0xFFF4F8F8);
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
       fontFamilyFallback: ['Noto Sans'],
     );
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -79,6 +81,10 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        SizeConfig.init(context);
+        return child ?? const SizedBox.shrink();
+      },
       home: const CompleteProfileScreen(),
     );
   }
