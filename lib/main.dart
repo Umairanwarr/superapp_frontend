@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'screens/complete_profile_screen.dart';
-import 'utils/size_config.dart';
+import 'package:superapp/screens/splash_screen.dart';
 
 const Color kPrimaryColor = Color(0xFF2FC1BE);
 const Color kBackgroundColor = Color(0xFFF4F8F8);
@@ -20,9 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseTextTheme = GoogleFonts.outfitTextTheme(
       Theme.of(context).textTheme,
-    ).apply(
-      fontFamilyFallback: ['Noto Sans'],
-    );
+    ).apply(fontFamilyFallback: ['Noto Sans']);
 
     return GetMaterialApp(
       title: 'Flutter Demo',
@@ -30,10 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: kPrimaryColor,
           brightness: Brightness.light,
-        ).copyWith(
-          primary: kPrimaryColor,
-          background: kBackgroundColor,
-        ),
+        ).copyWith(primary: kPrimaryColor, surface: kBackgroundColor),
         scaffoldBackgroundColor: kBackgroundColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: kBackgroundColor,
@@ -54,17 +47,11 @@ class MyApp extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color(0xFFD6DAE3),
-              width: 1,
-            ),
+            borderSide: const BorderSide(color: Color(0xFFD6DAE3), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: kPrimaryColor,
-              width: 1.5,
-            ),
+            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -81,11 +68,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      builder: (context, child) {
-        SizeConfig.init(context);
-        return child ?? const SizedBox.shrink();
-      },
-      home: const CompleteProfileScreen(),
+      home: const SplashScreen(),
     );
   }
 }

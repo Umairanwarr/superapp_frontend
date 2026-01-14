@@ -91,30 +91,28 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               TextFormField(
                 controller: _fullNameController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  hintText: 'Full Name',
-                ),
+                decoration: const InputDecoration(hintText: 'Full Name'),
               ),
               const SizedBox(height: 14),
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                ),
+                decoration: const InputDecoration(hintText: 'Email'),
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
-                value: _gender,
+                initialValue: _gender,
                 decoration: const InputDecoration(),
                 hint: Text(
                   'Gender',
                   style: theme.inputDecorationTheme.hintStyle,
                 ),
                 style: theme.textTheme.bodyLarge,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFB6BAC5)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFB6BAC5),
+                ),
                 items: const [
                   DropdownMenuItem(value: 'Male', child: Text('Male')),
                   DropdownMenuItem(value: 'Female', child: Text('Female')),
@@ -124,15 +122,17 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
-                value: _currency,
+                initialValue: _currency,
                 decoration: const InputDecoration(),
                 hint: Text(
                   'Currency',
                   style: theme.inputDecorationTheme.hintStyle,
                 ),
                 style: theme.textTheme.bodyLarge,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFB6BAC5)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFB6BAC5),
+                ),
                 items: const [
                   DropdownMenuItem(value: 'USD', child: Text('USD')),
                   DropdownMenuItem(value: 'EUR', child: Text('EUR')),
@@ -142,15 +142,17 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
-                value: _language,
+                initialValue: _language,
                 decoration: const InputDecoration(),
                 hint: Text(
                   'Language',
                   style: theme.inputDecorationTheme.hintStyle,
                 ),
                 style: theme.textTheme.bodyLarge,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFB6BAC5)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFB6BAC5),
+                ),
                 items: const [
                   DropdownMenuItem(value: 'English', child: Text('English')),
                   DropdownMenuItem(value: 'Urdu', child: Text('Urdu')),
