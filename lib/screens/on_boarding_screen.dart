@@ -20,11 +20,12 @@ class OnboardingScreen extends StatelessWidget {
               child: Row(
                 children: [
                   const Spacer(),
+
                   TextButton(
                     onPressed: controller.skip,
                     child: Text(
                       'Skip',
-                      style: theme.textTheme.titleMedium?.copyWith(
+                      style: theme.textTheme.titleSmall?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -33,6 +34,7 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 5),
 
             Expanded(
               child: PageView.builder(
@@ -47,7 +49,7 @@ class OnboardingScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Spacer(flex: 5),
+                        SizedBox(height: 6),
                         SizedBox(
                           height: 240,
                           child: Center(
@@ -60,13 +62,12 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
 
-                        //  const SizedBox(height: 18),
                         Text(
                           item.title,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.titleLarge?.copyWith(
                             color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
 
@@ -85,7 +86,7 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
 
-                        const Spacer(flex: 8),
+                        SizedBox(height: 6),
                       ],
                     ),
                   );
@@ -137,7 +138,7 @@ class OnboardingScreen extends StatelessWidget {
                     return Text(
                       isLast ? 'Get Started' : 'Next',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFFB6BAC5),
+                        color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     );

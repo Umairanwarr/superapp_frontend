@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:superapp/modal/on_boarding_modal.dart';
-import 'package:superapp/screens/auth/login_screen.dart';
+import 'package:superapp/screens/auth/signin_screen.dart';
 
 class OnBoardingController extends GetxController {
   final PageController pageController = PageController();
@@ -43,7 +43,7 @@ class OnBoardingController extends GetxController {
   void skip() => finish();
 
   void finish() {
-    Get.offAll(() => LoginScreen());
+    Get.offAll(() => SignInScreen());
   }
 
   @override

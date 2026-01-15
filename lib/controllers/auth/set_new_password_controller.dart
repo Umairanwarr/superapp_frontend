@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:superapp/screens/auth/new_password_success_screen.dart';
+
+class SetNewPasswordController extends GetxController {
+  final newPass = TextEditingController();
+  final confirmPass = TextEditingController();
+
+  final obscureNew = true.obs;
+  final obscureConfirm = true.obs;
+
+  void back() => Get.back();
+
+  void showNewPassword() => obscureNew.value = !obscureNew.value;
+  void showConfirmPassword() => obscureConfirm.value = !obscureConfirm.value;
+
+  void updatePassword() {
+    Get.to(() => NewPasswordSuccessScreen());
+  }
+
+  @override
+  void onClose() {
+    newPass.dispose();
+    confirmPass.dispose();
+    super.onClose();
+  }
+}
