@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../controllers/main_screen_controller.dart';
 
@@ -87,10 +89,13 @@ class _MainHeader extends StatelessWidget {
                   border: Border.all(color: const Color(0xFFF2B705), width: 2),
                 ),
                 alignment: Alignment.center,
-                child: const Icon(
-                  Icons.person,
-                  color: Color(0xFF2FC1BE),
-                  size: 30,
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/avatar.png',
+                    width: 52,
+                    height: 52,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -249,7 +254,7 @@ class _CategoryToggle extends StatelessWidget {
           Expanded(
             child: _CategoryChip(
               selected: selectedIndex == 0,
-              icon: Icons.apartment_rounded,
+              iconAssetPath: 'assets/hotel-header.png',
               label: 'Hotels',
               onTap: () => onChanged(0),
             ),
@@ -258,7 +263,7 @@ class _CategoryToggle extends StatelessWidget {
           Expanded(
             child: _CategoryChip(
               selected: selectedIndex == 1,
-              icon: Icons.home_outlined,
+              iconAssetPath: 'assets/property-header.png',
               label: 'Properties',
               onTap: () => onChanged(1),
             ),
@@ -271,13 +276,13 @@ class _CategoryToggle extends StatelessWidget {
 
 class _CategoryChip extends StatelessWidget {
   final bool selected;
-  final IconData icon;
+  final String iconAssetPath;
   final String label;
   final VoidCallback onTap;
 
   const _CategoryChip({
     required this.selected,
-    required this.icon,
+    required this.iconAssetPath,
     required this.label,
     required this.onTap,
   });
@@ -299,9 +304,10 @@ class _CategoryChip extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 22,
+            Image.asset(
+              iconAssetPath,
+              width: 22,
+              height: 22,
               color: selected
                   ? theme.colorScheme.primary
                   : Colors.white.withOpacity(0.9),
@@ -340,7 +346,7 @@ class _SearchBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.search_rounded, color: Color(0xFFB6BAC5), size: 24),
+          const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -359,10 +365,13 @@ class _SearchBar extends StatelessWidget {
               color: theme.colorScheme.primary,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.my_location_rounded,
-              color: Colors.white,
-              size: 18,
+            child: Center(
+              child: Image.asset(
+                'assets/search-location.png',
+                width: 18,
+                height: 18,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -399,10 +408,13 @@ class _RecommendationCard extends StatelessWidget {
               color: theme.colorScheme.primary,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.auto_awesome_rounded,
-              color: Colors.white,
-              size: 16,
+            child: Center(
+              child: Image.asset(
+                'assets/ai.png',
+                width: 16,
+                height: 16,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 10),
@@ -413,8 +425,8 @@ class _RecommendationCard extends StatelessWidget {
                 Text(
                   'AI Recommendations Ready',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFF353B4A),
-                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF747477),
+                    fontWeight: FontWeight.w500,
                     fontSize: 18,
                   ),
                 ),
@@ -422,7 +434,7 @@ class _RecommendationCard extends StatelessWidget {
                 Text(
                   'We found 12 perfect matches based\non your preferences',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF7E8798),
+                    color: const Color(0xFF747477),
                     height: 1.25,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -489,7 +501,8 @@ class _SectionHeader extends StatelessWidget {
             actionText,
             style: theme.textTheme.titleSmall?.copyWith(
               color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
             ),
           ),
         ),
@@ -506,7 +519,7 @@ class _FeaturedHotelsList extends StatelessWidget {
     final controller = Get.find<MainScreenController>();
 
     return SizedBox(
-      height: 250,
+      height: 270,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: controller.featuredHotels.length,
@@ -517,6 +530,8 @@ class _FeaturedHotelsList extends StatelessWidget {
             title: hotel.name,
             location: hotel.location,
             rating: hotel.rating,
+            imageAssetPath:
+                index == 0 ? 'assets/hotel1.png' : 'assets/hotel2.png',
             onTap: () {},
           );
         },
@@ -529,12 +544,14 @@ class _FeaturedHotelCard extends StatelessWidget {
   final String title;
   final String location;
   final double rating;
+  final String imageAssetPath;
   final VoidCallback onTap;
 
   const _FeaturedHotelCard({
     required this.title,
     required this.location,
     required this.rating,
+    required this.imageAssetPath,
     required this.onTap,
   });
 
@@ -570,50 +587,33 @@ class _FeaturedHotelCard extends StatelessWidget {
                     Container(
                       color: const Color(0xFF0F6CCF),
                       alignment: Alignment.center,
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                      child: Image.asset(
+                        imageAssetPath,
                         fit: BoxFit.cover,
                         height: double.infinity,
                         width: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.image_outlined,
-                            size: 64,
-                            color: Colors.white54,
-                          );
-                        },
                       ),
                     ),
                     Positioned(
                       left: 14,
                       top: 14,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              size: 16,
-                              color: Color(0xFFFFC107),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: Color(0xFFFFC107),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              rating.toStringAsFixed(1),
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -623,86 +623,91 @@ class _FeaturedHotelCard extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(24),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0xFF3B8886).withOpacity(0.85),
-                      const Color(0xFFBDE7E5).withOpacity(0.95),
-                    ],
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
+              bottom: 16,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      color: const Color(0xFF2FC1BE).withOpacity(0.30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(
-                                Icons.location_on_rounded,
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  location,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: Colors.white.withOpacity(0.95),
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                              Text(
+                                title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
                                 ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/search-location.png',
+                                    width: 18,
+                                    height: 18,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      location,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.titleMedium?.copyWith(
+                                        color: Colors.white.withOpacity(0.95),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2FB7B2),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.18),
-                            blurRadius: 14,
-                            offset: const Offset(0, 8),
+                        ),
+                        const SizedBox(width: 16),
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2FC1BE).withOpacity(0.78),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.18),
+                                blurRadius: 14,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.arrow_outward_rounded,
-                        color: Colors.white,
-                        size: 28,
-                      ),
+                          child: const Icon(
+                            Icons.arrow_outward_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -790,48 +795,110 @@ class _MainBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    const inactiveColor = Color(0xFFCFD6DC);
+
+    const items = <({String label, String assetPath})>[
+      (label: 'Home', assetPath: 'assets/bottombar1.svg'),
+      (label: 'Explore', assetPath: 'assets/bottombar2.svg'),
+      (label: 'Bookings', assetPath: 'assets/bottombar3.svg'),
+      (label: 'AI', assetPath: 'assets/bottombar4.svg'),
+      (label: 'Profile', assetPath: 'assets/bottombar5.svg'),
+    ];
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 18,
-            offset: Offset(0, -8),
+            color: Color(0x0F000000),
+            blurRadius: 20,
+            offset: Offset(0, -4),
           ),
         ],
       ),
-      child: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: onTap,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: theme.colorScheme.primary,
-        unselectedItemColor: const Color(0xFFB6BAC5),
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: 'Home',
+      child: SafeArea(
+        child: SizedBox(
+          height: 80,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (index) {
+              final item = items[index];
+              final selected = index == currentIndex;
+              final iconColor = selected ? Colors.white : inactiveColor;
+
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => onTap(index),
+                  behavior: HitTestBehavior.opaque,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOutBack,
+                        bottom: selected ? 40 : 20,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedScale(
+                              duration: const Duration(milliseconds: 300),
+                              scale: selected ? 1.1 : 1.0,
+                              child: Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: selected
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  shape: BoxShape.circle,
+                                  boxShadow: selected ? [
+                                    BoxShadow(
+                                      color: theme.colorScheme.primary.withOpacity(0.3),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    )
+                                  ] : null,
+                                ),
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                  item.assetPath,
+                                  width: 24,
+                                  height: 24,
+                                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 12,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 200),
+                          opacity: selected ? 1.0 : 0.0,
+                          child: Text(
+                            item.label,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border_rounded),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_rounded),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            label: '',
-          ),
-        ],
+        ),
       ),
     );
   }
