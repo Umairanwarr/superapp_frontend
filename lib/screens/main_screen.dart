@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../controllers/main_screen_controller.dart';
+import '../widgets/main_bottom_bar.dart';
+import 'hotel_search_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -349,28 +350,42 @@ class _SearchBar extends StatelessWidget {
           const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              'Search hotels...',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: const Color(0xFF9AA0AF),
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
+            child: TextField(
+              onSubmitted: (value) => Get.to(() => const HotelSearchScreen()),
+              cursorColor: theme.colorScheme.primary,
+              selectionControls: materialTextSelectionControls,
+              decoration: InputDecoration(
+                hintText: 'Search hotels...',
+                hintStyle: theme.textTheme.titleMedium?.copyWith(
+                  color: const Color(0xFF9AA0AF),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
               ),
             ),
           ),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/search-location.png',
-                width: 18,
-                height: 18,
-                color: Colors.white,
+          GestureDetector(
+            onTap: () => Get.to(() => const HotelSearchScreen()),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/search-location.png',
+                  width: 18,
+                  height: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -793,113 +808,9 @@ class _MainBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    const inactiveColor = Color(0xFFCFD6DC);
-
-    const items = <({String label, String assetPath})>[
-      (label: 'Home', assetPath: 'assets/bottombar1.svg'),
-      (label: 'Explore', assetPath: 'assets/bottombar2.svg'),
-      (label: 'Bookings', assetPath: 'assets/bottombar3.svg'),
-      (label: 'AI', assetPath: 'assets/bottombar4.svg'),
-      (label: 'Profile', assetPath: 'assets/bottombar5.svg'),
-    ];
-
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x0F000000),
-            blurRadius: 20,
-            offset: Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: SizedBox(
-          height: 80,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (index) {
-              final item = items[index];
-              final selected = index == currentIndex;
-              final iconColor = selected ? Colors.white : inactiveColor;
-
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  behavior: HitTestBehavior.opaque,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    clipBehavior: Clip.none,
-                    children: [
-                      AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOutBack,
-                        bottom: selected ? 40 : 20,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AnimatedScale(
-                              duration: const Duration(milliseconds: 300),
-                              scale: selected ? 1.1 : 1.0,
-                              child: Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: selected
-                                      ? theme.colorScheme.primary
-                                      : Colors.transparent,
-                                  shape: BoxShape.circle,
-                                  boxShadow: selected ? [
-                                    BoxShadow(
-                                      color: theme.colorScheme.primary.withOpacity(0.3),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 4),
-                                    )
-                                  ] : null,
-                                ),
-                                alignment: Alignment.center,
-                                child: SvgPicture.asset(
-                                  item.assetPath,
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 12,
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 200),
-                          opacity: selected ? 1.0 : 0.0,
-                          child: Text(
-                            item.label,
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-      ),
+    return MainBottomBar(
+      currentIndex: currentIndex,
+      onTap: onTap,
     );
   }
 }
