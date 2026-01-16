@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:superapp/modal/on_boarding_modal.dart';
-import 'package:superapp/screens/auth/signin_screen.dart';
+import 'package:superapp/screens/auth/wellcome_screen.dart';
 
 class OnBoardingController extends GetxController {
   final PageController pageController = PageController();
@@ -42,8 +43,10 @@ class OnBoardingController extends GetxController {
 
   void skip() => finish();
 
-  void finish() {
-    Get.offAll(() => SignInScreen());
+  void finish() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("onboarding_done", true);
+    Get.offAll(() => WellcomeScreen());
   }
 
   @override

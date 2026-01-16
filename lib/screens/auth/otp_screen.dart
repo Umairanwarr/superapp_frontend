@@ -15,17 +15,17 @@ class OtpScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 30, vertical: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: controller.back,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: TextButton(
+                  onPressed: () => controller.back(),
                   child: Text(
                     'Back',
-                    style: theme.textTheme.bodySmall?.copyWith(
+                    style: theme.textTheme.titleSmall?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -37,9 +37,9 @@ class OtpScreen extends StatelessWidget {
 
               Text(
                 'Enter OTP',
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.titleLarge?.copyWith(
                   color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
 
@@ -47,26 +47,32 @@ class OtpScreen extends StatelessWidget {
 
               Text(
                 'Please enter OTP sent to your registered email',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF6B7280),
                   fontWeight: FontWeight.w400,
                 ),
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
 
-              Pinput(
-                length: 6,
-                keyboardType: TextInputType.number,
-                onChanged: controller.setOtp,
-                onCompleted: controller.setOtp,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: SizedBox(
+                  height: 45,
+                  child: Pinput(
+                    length: 6,
+                    keyboardType: TextInputType.number,
+                    onChanged: controller.setOtp,
+                    onCompleted: controller.setOtp,
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
               SizedBox(
                 width: double.infinity,
-                height: 46,
+                height: 45,
                 child: ElevatedButton(
                   onPressed: controller.verify,
                   style: ElevatedButton.styleFrom(

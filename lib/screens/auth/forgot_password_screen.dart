@@ -3,8 +3,21 @@ import 'package:get/get.dart';
 import 'package:superapp/controllers/auth/forgot_password_controller.dart';
 import 'package:superapp/widgets/auth_text_form_field.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final _emailController = TextEditingController();
+  @override
+  void dispose() {
+    _emailController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +28,17 @@ class ForgotPasswordScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 30, vertical: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: 2),
                 child: TextButton(
                   onPressed: () => controller.back(),
                   child: Text(
                     'Back',
-                    style: theme.textTheme.bodySmall?.copyWith(
+                    style: theme.textTheme.titleSmall?.copyWith(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -37,7 +50,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
               Text(
                 'Forgot Password',
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.titleLarge?.copyWith(
                   color: theme.colorScheme.primary,
                   fontWeight: FontWeight.w700,
                 ),
@@ -47,27 +60,27 @@ class ForgotPasswordScreen extends StatelessWidget {
 
               Text(
                 'Please enter your email to reset password',
-                style: theme.textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF6B7280),
                   fontWeight: FontWeight.w400,
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
               AuthTextFormField(
-                controller: controller.email,
+                controller: _emailController,
                 hint: 'Enter your email',
                 prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.done,
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 20),
 
               SizedBox(
                 width: double.infinity,
-                height: 46,
+                height: 45,
                 child: ElevatedButton(
                   onPressed: controller.resetPassword,
                   style: ElevatedButton.styleFrom(

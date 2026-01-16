@@ -15,7 +15,7 @@ class NewPasswordSuccessScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -29,29 +29,29 @@ class NewPasswordSuccessScreen extends StatelessWidget {
 
                 Text(
                   'Successful',
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF111827),
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
 
                 Text(
-                  'Congratulations! Your password has been successfully\nupdated. Click Continue to login',
+                  'Congratulations! Your password has been successfully updated. Click Continue to login',
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: const Color(0xFF6B7280),
                     height: 1.35,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
 
                 SizedBox(
                   width: double.infinity,
-                  height: 46,
+                  height: 45,
                   child: ElevatedButton(
                     onPressed: controller.continueToLogin,
                     style: ElevatedButton.styleFrom(
@@ -65,7 +65,7 @@ class NewPasswordSuccessScreen extends StatelessWidget {
                       'Continue',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ),

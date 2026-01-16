@@ -15,26 +15,22 @@ class OnboardingScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  const Spacer(),
-
-                  TextButton(
-                    onPressed: controller.skip,
-                    child: Text(
-                      'Skip',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
+            Row(
+              children: [
+                const Spacer(),
+                TextButton(
+                  onPressed: controller.skip,
+                  child: Text(
+                    'Skip',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 100),
 
             Expanded(
               child: PageView.builder(
@@ -44,51 +40,41 @@ class OnboardingScreen extends StatelessWidget {
                 itemBuilder: (_, i) {
                   final item = controller.item[i];
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 6),
-                        SizedBox(
-                          height: 240,
-                          child: Center(
-                            child: Image.asset(
-                              item.image,
-                              fit: BoxFit.contain,
-                              height: 230,
-                              width: 230,
-                            ),
-                          ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Image.asset(item.image, height: 250),
                         ),
+                      ),
 
-                        Text(
-                          item.title,
+                      Text(
+                        item.title,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 25,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      SizedBox(
+                        width: 270,
+                        child: Text(
+                          item.subtitle,
                           textAlign: TextAlign.center,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w900,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: const Color(0xFF353B4A),
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
                           ),
                         ),
-
-                        const SizedBox(height: 6),
-
-                        SizedBox(
-                          width: 260,
-                          child: Text(
-                            item.subtitle,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF353B4A),
-                              fontWeight: FontWeight.w300,
-                              height: 1.3,
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 6),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 },
               ),
@@ -115,13 +101,12 @@ class OnboardingScreen extends StatelessWidget {
               );
             }),
 
-            const SizedBox(height: 70),
+            const SizedBox(height: 10),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+              padding: const EdgeInsets.all(40),
               child: SizedBox(
                 width: double.infinity,
-                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.next,
                   style: ElevatedButton.styleFrom(
@@ -139,7 +124,7 @@ class OnboardingScreen extends StatelessWidget {
                       isLast ? 'Get Started' : 'Next',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w900,
                       ),
                     );
                   }),

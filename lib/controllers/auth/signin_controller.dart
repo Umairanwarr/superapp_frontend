@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/screens/auth/forgot_password_screen.dart';
 import 'package:superapp/screens/auth/signup_screen.dart';
 import 'package:superapp/screens/main_screen.dart';
 
 class SignInController extends GetxController {
-  final email = TextEditingController();
-  final password = TextEditingController();
-
   final obscurePassword = true.obs;
 
   void showPassword() => obscurePassword.value = !obscurePassword.value;
@@ -26,12 +22,5 @@ class SignInController extends GetxController {
 
   void goToSignup() {
     Get.to(() => SignupScreen());
-  }
-
-  @override
-  void onClose() {
-    email.dispose();
-    password.dispose();
-    super.onClose();
   }
 }

@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/screens/auth/otp_screen.dart';
 
 class ForgotPasswordController extends GetxController {
-  final email = TextEditingController();
-
   void back() => Get.back();
 
   void resetPassword() {
@@ -14,11 +11,5 @@ class ForgotPasswordController extends GetxController {
     //   return;
     // }
     Get.to(() => OtpScreen());
-  }
-
-  @override
-  void onClose() {
-    email.dispose();
-    super.onClose();
   }
 }
