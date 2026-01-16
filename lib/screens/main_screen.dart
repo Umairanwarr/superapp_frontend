@@ -142,7 +142,7 @@ class _MainHeader extends StatelessWidget {
                     children: [
                       _HeaderImageIconButton(
                         imagePath: 'assets/bell.png',
-                        onTap: () {},
+                        onTap: controller.goToNotifiction,
                       ),
                       Positioned(
                         right: 4,
@@ -545,8 +545,9 @@ class _FeaturedHotelsList extends StatelessWidget {
             title: hotel.name,
             location: hotel.location,
             rating: hotel.rating,
-            imageAssetPath:
-                index == 0 ? 'assets/hotel1.png' : 'assets/hotel2.png',
+            imageAssetPath: index == 0
+                ? 'assets/hotel1.png'
+                : 'assets/hotel2.png',
             onTap: () {},
           );
         },
@@ -687,11 +688,14 @@ class _FeaturedHotelCard extends StatelessWidget {
                                       location,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.titleMedium?.copyWith(
-                                        color: Colors.white.withOpacity(0.95),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            color: Colors.white.withOpacity(
+                                              0.95,
+                                            ),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -808,9 +812,6 @@ class _MainBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainBottomBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-    );
+    return MainBottomBar(currentIndex: currentIndex, onTap: onTap);
   }
 }

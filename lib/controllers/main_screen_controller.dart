@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:superapp/screens/notification_screen.dart';
 
 import '../modal/announcement_modal.dart';
 import '../modal/hotel_modal.dart';
@@ -13,11 +14,7 @@ class MainScreenController extends GetxController {
       location: 'Paris, France',
       rating: 4.8,
     ),
-    HotelModal(
-      name: 'Ocean View Resort',
-      location: 'Maldives',
-      rating: 4.9,
-    ),
+    HotelModal(name: 'Ocean View Resort', location: 'Maldives', rating: 4.9),
   ];
 
   final AnnouncementModal announcement = const AnnouncementModal(
@@ -32,5 +29,9 @@ class MainScreenController extends GetxController {
 
   void onCategoryTap(int index) {
     categoryIndex.value = index;
+  }
+
+  void goToNotifiction() {
+    Get.to(() => NotificationScreen());
   }
 }

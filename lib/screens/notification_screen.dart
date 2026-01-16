@@ -33,7 +33,7 @@ class NotificationScreen extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     'Notification',
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF111827),
                     ),
@@ -51,7 +51,7 @@ class NotificationScreen extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/notification_empty.png',
-                        height: 190,
+                        height: 220,
                         fit: BoxFit.contain,
                       ),
 
@@ -59,8 +59,8 @@ class NotificationScreen extends StatelessWidget {
 
                       Text(
                         'Empty',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w900,
                           color: const Color(0xFF111827),
                         ),
                       ),
@@ -70,9 +70,9 @@ class NotificationScreen extends StatelessWidget {
                       Text(
                         "You don't have any notifications at this time",
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                           height: 1.3,
                         ),
                       ),
