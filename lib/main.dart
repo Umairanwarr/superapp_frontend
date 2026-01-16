@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'screens/complete_profile_screen.dart';
+import 'screens/splash_screen.dart';
 import 'utils/size_config.dart';
 
 const Color kPrimaryColor = Color(0xFF2FC1BE);
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
         SizeConfig.init(context);
         return child ?? const SizedBox.shrink();
       },
-      home: const CompleteProfileScreen(),
+      home: const SplashScreen(),
     );
   }
 }
