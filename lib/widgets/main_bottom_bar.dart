@@ -79,10 +79,11 @@ class MainBottomBar extends StatelessWidget {
                                   boxShadow: selected
                                       ? [
                                           BoxShadow(
-                                            color: theme.colorScheme.primary.withOpacity(0.3),
+                                            color: theme.colorScheme.primary
+                                                .withOpacity(0.3),
                                             blurRadius: 12,
                                             offset: const Offset(0, 4),
-                                          )
+                                          ),
                                         ]
                                       : null,
                                 ),
@@ -91,7 +92,10 @@ class MainBottomBar extends StatelessWidget {
                                   item.assetPath,
                                   width: 24,
                                   height: 24,
-                                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                                  colorFilter: ColorFilter.mode(
+                                    iconColor,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                             ),
