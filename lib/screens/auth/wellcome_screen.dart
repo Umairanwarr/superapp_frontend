@@ -64,7 +64,7 @@ class WellcomeScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      height: 45,
+                      height: 48,
                       child: ElevatedButton(
                         onPressed: () {
                           controller.goToSignup();
@@ -80,7 +80,7 @@ class WellcomeScreen extends StatelessWidget {
                           'Create an account',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -88,7 +88,7 @@ class WellcomeScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      height: 45,
+                      height: 48,
                       child: OutlinedButton(
                         onPressed: () {
                           controller.goToLogin();
@@ -106,7 +106,7 @@ class WellcomeScreen extends StatelessWidget {
                           'Log In',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),

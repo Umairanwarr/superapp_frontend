@@ -19,7 +19,6 @@ class _SignInScreenState extends State<SignInScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
     super.dispose();
   }
 
@@ -32,161 +31,158 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [
-                const SizedBox(height: 100),
-                SizedBox(
-                  height: 140,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/signin_logo.png',
-                      fit: BoxFit.contain,
-                    ),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Column(
+            children: [
+              const SizedBox(height: 110),
+
+              SizedBox(
+                height: 150,
+                child: Center(
+                  child: Image.asset(
+                    'assets/signin_logo.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 20),
+              const SizedBox(height: 12),
 
-                Text(
-                  'Sign in with your email',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w900,
-                  ),
+              Text(
+                'Sign in with your email',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
                 ),
+              ),
 
-                const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-                AuthTextFormField(
-                  controller: _emailController,
-                  hint: 'Enter your email',
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                ),
+              AuthTextFormField(
+                controller: _emailController,
+                hint: 'Enter your email',
+                prefixIcon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+              ),
 
-                const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-                Obx(() {
-                  return AuthTextFormField(
-                    controller: _passwordController,
-                    hint: 'Enter your password',
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: controller.obscurePassword.value,
-                    suffixIcon: controller.obscurePassword.value
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    onSuffixTap: controller.showPassword,
-                    textInputAction: TextInputAction.done,
-                  );
-                }),
+              Obx(() {
+                return AuthTextFormField(
+                  controller: _passwordController,
+                  hint: 'Enter your password',
+                  prefixIcon: Icons.lock_outline,
+                  obscureText: controller.obscurePassword.value,
+                  suffixIcon: controller.obscurePassword.value
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  onSuffixTap: controller.showPassword,
+                  textInputAction: TextInputAction.done,
+                );
+              }),
 
-                const SizedBox(height: 8),
+              const SizedBox(height: 10),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    onTap: controller.forgotPassword,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Text(
-                        'Forgot password?',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
-                    onPressed: controller.signIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  onTap: controller.forgotPassword,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Text(
-                      'Sign In',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
+                      'Forgot password?',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-                Row(
-                  children: [
-                    const Expanded(child: Divider(color: Color(0xFF6B7280))),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'or',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: controller.signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    const Expanded(child: Divider(color: Color(0xFF6B7280))),
-                  ],
+                  ),
+                  child: Text(
+                    'Sign In',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-                SocialButton(
-                  text: 'Sign in with Google',
-                  icon: 'assets/google.png',
-                  onTap: controller.signInWithGoogle,
-                ),
-                const SizedBox(height: 10),
-
-                SocialButton(
-                  text: 'Sign in with Apple',
-                  icon: 'assets/apple.png',
-                  onTap: controller.signInWithApple,
-                ),
-
-                const SizedBox(height: 14),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF6B7280),
+              Row(
+                children: const [
+                  Expanded(child: Divider(color: Color(0xFF6B7280))),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'or',
+                      style: TextStyle(
+                        color: Color(0xFF6B7280),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () => controller.goToSignup(),
-                      child: Text(
-                        'Sign Up',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w900,
-                        ),
+                  ),
+                  Expanded(child: Divider(color: Color(0xFF6B7280))),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              SocialButton(
+                text: 'Sign in with Google',
+                icon: 'assets/google.png',
+                onTap: controller.signInWithGoogle,
+              ),
+              const SizedBox(height: 10),
+              SocialButton(
+                text: 'Sign in with Apple',
+                icon: 'assets/apple.png',
+                onTap: controller.signInWithApple,
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account? ",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF6B7280),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: controller.goToSignup,
+                    child: Text(
+                      'Sign Up',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

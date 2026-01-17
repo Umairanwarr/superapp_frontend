@@ -35,222 +35,219 @@ class _SignupScreenState extends State<SignupScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [
-                const SizedBox(height: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Column(
+            children: [
+              const SizedBox(height: 80),
 
-                SizedBox(
-                  height: 140,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/signup_logo.png',
-                      fit: BoxFit.contain,
-                    ),
+              SizedBox(
+                height: 150,
+                child: Center(
+                  child: Image.asset(
+                    'assets/signup_logo.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 15),
+              const SizedBox(height: 10),
 
-                Text(
-                  'Create Your Account',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w700,
+              Text(
+                'Create Your Account',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: AuthTextFormField(
+                      controller: _firstNameController,
+                      hint: 'First Name',
+                      prefixIcon: Icons.person_outline,
+                      textInputAction: TextInputAction.next,
+                    ),
                   ),
-                ),
-
-                const SizedBox(height: 15),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: AuthTextFormField(
-                        controller: _firstNameController,
-                        hint: 'First Name',
-                        prefixIcon: Icons.person_outline,
-                        textInputAction: TextInputAction.next,
-                      ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: AuthTextFormField(
+                      controller: _lastNameController,
+                      hint: 'Last Name',
+                      prefixIcon: Icons.person_outline,
+                      textInputAction: TextInputAction.next,
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: AuthTextFormField(
-                        controller: _lastNameController,
-                        hint: 'Last Name',
-                        prefixIcon: Icons.person_outline,
-                        textInputAction: TextInputAction.next,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              AuthTextFormField(
+                controller: _emailController,
+                hint: 'Enter your email',
+                prefixIcon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+              ),
+
+              const SizedBox(height: 10),
+
+              Obx(() {
+                return AuthTextFormField(
+                  controller: _passwordController,
+                  hint: 'Enter your password',
+                  prefixIcon: Icons.lock_outline,
+                  obscureText: controller.obscurePassword.value,
+                  suffixIcon: controller.obscurePassword.value
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  onSuffixTap: controller.showPassword,
+                  textInputAction: TextInputAction.done,
+                );
+              }),
+
+              const SizedBox(height: 6),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Obx(() {
+                    return Checkbox(
+                      //  alignment: Alignment.topLeft,
+                      value: controller.agreeTerms.value,
+                      onChanged: controller.termsEvent,
+                      activeColor: theme.colorScheme.primary,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: const VisualDensity(
+                        horizontal: -3,
+                        vertical: -3,
                       ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                AuthTextFormField(
-                  controller: _emailController,
-                  hint: 'Enter your email',
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                ),
-
-                const SizedBox(height: 10),
-
-                Obx(() {
-                  return AuthTextFormField(
-                    controller: _passwordController,
-                    hint: 'Enter your password',
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: controller.obscurePassword.value,
-                    suffixIcon: controller.obscurePassword.value
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    onSuffixTap: controller.showPassword,
-                    textInputAction: TextInputAction.done,
-                  );
-                }),
-
-                const SizedBox(height: 8),
-
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() {
-                      return Checkbox(
-                        value: controller.agreeTerms.value,
-                        onChanged: controller.termsEvent,
-                        activeColor: theme.colorScheme.primary,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: const VisualDensity(
-                          horizontal: -3,
-                          vertical: -3,
-                        ),
-                      );
-                    }),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: RichText(
-                          text: TextSpan(
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: const Color(0xFF6B7280),
-                              height: 1.3,
-                              fontSize: 11.5,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text: 'By signing up, you agree to the ',
-                              ),
-                              TextSpan(
-                                text: 'Terms of service',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Privacy policy',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                    );
+                  }),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: RichText(
+                        text: TextSpan(
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: const Color(0xFF6B7280),
+                            height: 1.3,
+                            fontSize: 11.5,
                           ),
+                          children: [
+                            const TextSpan(
+                              text: 'By signing up, you agree to the ',
+                            ),
+                            TextSpan(
+                              text: 'Terms of service',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const TextSpan(text: ' and '),
+                            TextSpan(
+                              text: 'Privacy policy',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
-                    onPressed: controller.signUp,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      'Sign Up',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                ),
+                ],
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-                Row(
-                  children: [
-                    const Expanded(child: Divider(color: Color(0xFF6B7280))),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'or',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: controller.signUp,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    const Expanded(child: Divider(color: Color(0xFF6B7280))),
-                  ],
+                  ),
+                  child: Text(
+                    'Sign Up',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
+              ),
 
-                const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-                SocialButton(
-                  text: 'Sign up with Google',
-                  icon: 'assets/google.png',
-                  onTap: controller.signUpWithGoogle,
-                ),
-                const SizedBox(height: 10),
-
-                SocialButton(
-                  text: 'Sign up with Apple',
-                  icon: 'assets/apple.png',
-                  onTap: controller.signUpWithApple,
-                ),
-
-                const SizedBox(height: 2),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account? ',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF6B7280),
+              Row(
+                children: const [
+                  Expanded(child: Divider(color: Color(0xFF6B7280))),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'or',
+                      style: TextStyle(
+                        color: Color(0xFF6B7280),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () => controller.goTosignIn(),
-                      child: Text(
-                        'Sign in',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w900,
-                        ),
+                  ),
+                  Expanded(child: Divider(color: Color(0xFF6B7280))),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              SocialButton(
+                text: 'Sign up with Google',
+                icon: 'assets/google.png',
+                onTap: controller.signUpWithGoogle,
+              ),
+              const SizedBox(height: 10),
+              SocialButton(
+                text: 'Sign up with Apple',
+                icon: 'assets/apple.png',
+                onTap: controller.signUpWithApple,
+              ),
+
+              const SizedBox(height: 4),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account? ',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF6B7280),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: controller.goTosignIn,
+                    child: Text(
+                      'Sign in',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
