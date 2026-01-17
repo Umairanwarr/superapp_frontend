@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:superapp/modal/chat_item_modal.dart';
+import 'package:superapp/screens/chat_detail_screen.dart';
 
 class ChatsController extends GetxController {
   final RxList<ChatItem> allChats = <ChatItem>[
@@ -26,6 +27,7 @@ class ChatsController extends GetxController {
       avatarUrl: 'https://i.pravatar.cc/150?img=5',
       status: MessageStatus.none,
       unreadCount: 14,
+      isVoice: true,
     ),
     const ChatItem(
       name: 'Maximillian Jacobson',
@@ -88,6 +90,6 @@ class ChatsController extends GetxController {
   }
 
   void onChatTap(ChatItem chat) {
-    Get.snackbar('Chat', 'Open: ${chat.name}');
+    Get.to(() => ChatDetailScreen(), arguments: chat);
   }
 }

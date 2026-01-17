@@ -25,15 +25,15 @@ class NotificationScreen extends StatelessWidget {
                       onPressed: () => controller.back(),
                       icon: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        size: 18,
+                        size: 28,
                         color: theme.colorScheme.primary,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+
                   Text(
                     'Notification',
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF111827),
                     ),
@@ -44,43 +44,41 @@ class NotificationScreen extends StatelessWidget {
 
             Expanded(
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/notification_empty.png',
-                        height: 220,
-                        fit: BoxFit.contain,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/notification_empty.png',
+                      height: 220,
+                      fit: BoxFit.contain,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    Text(
+                      'Empty',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFF111827),
                       ),
+                    ),
 
-                      const SizedBox(height: 18),
+                    const SizedBox(height: 6),
 
-                      Text(
-                        'Empty',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: const Color(0xFF111827),
-                        ),
+                    Text(
+                      "You don't have any notifications at this time",
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: const Color(0xFF6B7280),
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
                       ),
-
-                      const SizedBox(height: 6),
-
-                      Text(
-                        "You don't have any notifications at this time",
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w500,
-                          height: 1.3,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
+            SizedBox(height: 130),
           ],
         ),
       ),

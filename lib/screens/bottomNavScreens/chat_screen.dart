@@ -145,6 +145,15 @@ class _ChatTile extends StatelessWidget {
                       if (chat.status != MessageStatus.none)
                         const SizedBox(width: 6),
 
+                      if (chat.isVoice) ...[
+                        const Icon(
+                          Icons.mic,
+                          size: 16,
+                          color: Color(0xFFB0B0B0),
+                        ),
+                        const SizedBox(width: 6),
+                      ],
+
                       if (chat.isPhoto) ...[
                         const Icon(
                           Icons.photo_camera,
