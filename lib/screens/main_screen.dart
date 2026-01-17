@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/main_screen_controller.dart';
 import '../widgets/main_bottom_bar.dart';
 import 'hotel_search_screen.dart';
+import 'hotel_detail_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -545,9 +546,10 @@ class _FeaturedHotelsList extends StatelessWidget {
             title: hotel.name,
             location: hotel.location,
             rating: hotel.rating,
-            imageAssetPath:
-                index == 0 ? 'assets/hotel1.png' : 'assets/hotel2.png',
-            onTap: () {},
+            imageAssetPath: index == 0
+                ? 'assets/hotel1.png'
+                : 'assets/hotel2.png',
+            onTap: () => Get.to(() => const HotelDetailScreen()),
           );
         },
       ),
@@ -687,11 +689,14 @@ class _FeaturedHotelCard extends StatelessWidget {
                                       location,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.titleMedium?.copyWith(
-                                        color: Colors.white.withOpacity(0.95),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            color: Colors.white.withOpacity(
+                                              0.95,
+                                            ),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -808,9 +813,6 @@ class _MainBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainBottomBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-    );
+    return MainBottomBar(currentIndex: currentIndex, onTap: onTap);
   }
 }
