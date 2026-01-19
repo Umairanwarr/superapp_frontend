@@ -64,6 +64,37 @@ class OtpScreen extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     onChanged: controller.setOtp,
                     onCompleted: controller.setOtp,
+
+                    defaultPinTheme: PinTheme(
+                      width: 45,
+                      height: 45,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE5E7EB)),
+                      ),
+                    ),
+
+                    focusedPinTheme: PinTheme(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.teal, width: 2),
+                      ),
+                    ),
+
+                    submittedPinTheme: PinTheme(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.teal),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -72,7 +103,7 @@ class OtpScreen extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.verify,
                   style: ElevatedButton.styleFrom(

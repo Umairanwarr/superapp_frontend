@@ -107,6 +107,7 @@ class OnboardingScreen extends StatelessWidget {
               padding: const EdgeInsets.all(40),
               child: SizedBox(
                 width: double.infinity,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.next,
                   style: ElevatedButton.styleFrom(
@@ -124,7 +125,7 @@ class OnboardingScreen extends StatelessWidget {
                       isLast ? 'Get Started' : 'Next',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     );
                   }),

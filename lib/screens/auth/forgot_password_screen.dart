@@ -80,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.resetPassword,
                   style: ElevatedButton.styleFrom(

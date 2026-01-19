@@ -51,7 +51,7 @@ class NewPasswordSuccessScreen extends StatelessWidget {
 
                 SizedBox(
                   width: double.infinity,
-                  height: 45,
+                  height: 48,
                   child: ElevatedButton(
                     onPressed: controller.continueToLogin,
                     style: ElevatedButton.styleFrom(
@@ -65,7 +65,7 @@ class NewPasswordSuccessScreen extends StatelessWidget {
                       'Continue',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

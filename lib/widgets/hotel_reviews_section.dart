@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:superapp/screens/all_review_screen.dart';
 
 class HotelReviewsSection extends StatelessWidget {
   const HotelReviewsSection({super.key});
@@ -20,7 +22,7 @@ class HotelReviewsSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => Get.to(() => const AllReviewsScreen()),
               child: const Text(
                 'See All',
                 style: TextStyle(

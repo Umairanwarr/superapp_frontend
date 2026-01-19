@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
+import 'package:superapp/screens/notification_screen.dart';
 
 import '../modal/announcement_modal.dart';
 import '../modal/hotel_modal.dart';
 import '../screens/bottomNavScreen/booking_screen.dart';
 import '../screens/bottomNavScreen/explore_screen.dart';
+import '../screens/bottomNavScreen/profile_screen.dart';
+import '../screens/bottomNavScreen/chat_screen.dart';
 
 class MainScreenController extends GetxController {
   final RxInt bottomIndex = 0.obs;
@@ -77,7 +80,7 @@ class MainScreenController extends GetxController {
       case 3:
         if (categoryIndex.value == 1) {
           // Messages
-          // TODO: Navigate to Messages screen
+          Get.to(() => const ChatScreen());
         } else {
           // AI
           // TODO: Navigate to AI screen
@@ -85,12 +88,16 @@ class MainScreenController extends GetxController {
         break;
       case 4:
         // Profile
-        // TODO: Navigate to profile screen
+        Get.to(() => const ProfileScreen());
         break;
     }
   }
 
   void onCategoryTap(int index) {
     categoryIndex.value = index;
+  }
+
+  void goToNotifiction() {
+    Get.to(() => const NotificationScreen());
   }
 }

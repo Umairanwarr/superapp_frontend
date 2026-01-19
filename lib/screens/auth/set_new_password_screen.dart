@@ -97,7 +97,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: controller.updatePassword,
                   style: ElevatedButton.styleFrom(
