@@ -148,7 +148,7 @@ class _PropertyCard extends StatelessWidget {
               child: Image.asset(
                 imageAsset,
                 width: 80,
-                height: 70,
+                height: 85,
                 fit: BoxFit.cover,
               ),
             ),
@@ -191,6 +191,7 @@ class _PropertyCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         price,
@@ -199,18 +200,25 @@ class _PropertyCard extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      SizedBox(width: 120),
-                      const Icon(
-                        Icons.star_rounded,
-                        size: 18,
-                        color: Color(0xFFFFC107),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        rating,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: const Color(0xFF1D2330),
-                          fontWeight: FontWeight.w700,
+
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(right: 20),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.star_rounded,
+                              size: 18,
+                              color: Color(0xFFFFC107),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: const Color(0xFF1D2330),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -318,56 +326,80 @@ class _ComposerBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-      child: Expanded(
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: onAdd,
-              icon: Icon(Icons.add),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey, width: 0.5),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/message_add.png',
+              width: 20,
+              height: 20,
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: SizedBox(
-                height: 45,
-                child: TextField(
-                  controller: messageCtrl,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => onSend(),
-                  cursorColor: theme.colorScheme.primary,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.image_outlined,
-                        color: theme.colorScheme.primary,
-                      ),
+          ),
+
+          // const SizedBox(width: 5),
+          Expanded(
+            child: SizedBox(
+              height: 45,
+              child: TextField(
+                controller: messageCtrl,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (_) => onSend(),
+                cursorColor: theme.colorScheme.primary,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Image.asset(
+                      'assets/message_chat.png',
+                      width: 20,
+                      height: 20,
+                      color: theme.colorScheme.primary,
+                      colorBlendMode: BlendMode.srcIn,
                     ),
-                    focusColor: theme.colorScheme.primary,
-                    hintText: 'Message...',
-                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF9AA0AF),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    border: InputBorder.none,
+                  ),
+                  hintText: 'Message...',
+                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF9AA0AF),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: theme.colorScheme.primary),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 10),
-            IconButton(
-              onPressed: onCamera,
-              icon: Icon(Icons.camera_alt),
+          ),
+
+          // const SizedBox(width: 10),
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/message_camra.png',
+              width: 20,
+              height: 20,
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(width: 5),
-            IconButton(
-              onPressed: () => onMic,
-              icon: Icon(Icons.mic_rounded, color: theme.colorScheme.primary),
+          ),
+
+          // const SizedBox(width: 5),
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/message_mic.png',
+              width: 20,
+              height: 20,
+              color: theme.colorScheme.primary,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

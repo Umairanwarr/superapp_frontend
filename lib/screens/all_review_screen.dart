@@ -22,15 +22,18 @@ class AllReviewsScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Row(
                 children: [
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: Icon(
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 0.5),
+                    ),
+                    child: Icon(
                       Icons.arrow_back,
                       size: 20,
-                      color: theme.colorScheme.primary,
+                      color: Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 15),
                   Text(
                     'All Reviews',
                     style: theme.textTheme.bodyLarge?.copyWith(
@@ -42,7 +45,7 @@ class AllReviewsScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -161,11 +164,11 @@ class _ReviewCard extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE6E6E6), width: 1),
+        border: Border.all(color: Colors.black, width: 0.5),
       ),
       child: Padding(
         padding: EdgeInsetsGeometry.symmetric(horizontal: 10, vertical: 10),
@@ -186,7 +189,7 @@ class _ReviewCard extends StatelessWidget {
                     item.initials,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF1D2330),
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
@@ -249,7 +252,9 @@ class _ReviewCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            Divider(color: Colors.grey),
+            const SizedBox(height: 10),
 
             Align(
               alignment: Alignment.centerLeft,
