@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../modal/announcement_modal.dart';
 import '../modal/hotel_modal.dart';
 import '../screens/bottomNavScreen/booking_screen.dart';
+import '../screens/bottomNavScreen/explore_screen.dart';
 
 class MainScreenController extends GetxController {
   final RxInt bottomIndex = 0.obs;
@@ -13,11 +14,30 @@ class MainScreenController extends GetxController {
       name: 'Grand Plaza Hotel',
       location: 'Paris, France',
       rating: 4.8,
+      price: '\$180/night',
     ),
     HotelModal(
       name: 'Ocean View Resort',
       location: 'Maldives',
       rating: 4.9,
+      price: '\$220/night',
+    ),
+  ];
+
+  final List<HotelModal> featuredProperties = const [
+    HotelModal(
+      name: 'Luxury Villa',
+      location: 'Dubai Marina',
+      rating: 4.8,
+      price: '\$1.306 M',
+      tag: '+8.5%',
+    ),
+    HotelModal(
+      name: 'City Loft Villa',
+      location: 'Miami',
+      rating: 4.9,
+      price: '\$850 k',
+      tag: '+5.2%',
     ),
   ];
 
@@ -25,6 +45,12 @@ class MainScreenController extends GetxController {
     title: 'Summer Special!',
     description: 'Get 20% off on all hotel bookings this\nmonth',
     buttonText: 'Book now',
+  );
+
+  final AnnouncementModal propertyAnnouncement = const AnnouncementModal(
+    title: 'Investment Alert!',
+    description: 'Exclusive pre-launch properties with up\nto 15% ROI',
+    buttonText: 'Explore now',
   );
 
   void onBottomNavTap(int index) {
@@ -37,15 +63,25 @@ class MainScreenController extends GetxController {
         break;
       case 1:
         // Explore
-        // TODO: Navigate to explore screen
+        Get.to(() => const ExploreScreen());
         break;
       case 2:
-        // Bookings
-        Get.to(() => const BookingScreen());
+        if (categoryIndex.value == 1) {
+          // Dashboard
+          // TODO: Navigate to Dashboard screen
+        } else {
+          // Bookings
+          Get.to(() => const BookingScreen());
+        }
         break;
       case 3:
-        // AI
-        // TODO: Navigate to AI screen
+        if (categoryIndex.value == 1) {
+          // Messages
+          // TODO: Navigate to Messages screen
+        } else {
+          // AI
+          // TODO: Navigate to AI screen
+        }
         break;
       case 4:
         // Profile

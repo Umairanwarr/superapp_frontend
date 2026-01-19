@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../booking_details_screen.dart';
 import '../../widgets/booking_card.dart';
 import '../../widgets/main_bottom_bar.dart';
+import '../../controllers/main_screen_controller.dart';
+import 'explore_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -40,18 +43,10 @@ class _BookingScreenState extends State<BookingScreen>
                 children: [
                   GestureDetector(
                     onTap: () => Get.back(),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
+                    child: const Icon(
                         Icons.arrow_back_ios_new,
                         color: Color(0xFF2FC1BE),
                         size: 20,
-                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -117,8 +112,17 @@ class _BookingScreenState extends State<BookingScreen>
       bottomNavigationBar: MainBottomBar(
         currentIndex: 2,
         onTap: (index) {
-          if (index != 2) {
+          final controller = Get.find<MainScreenController>();
+          if (index == 2) return;
+
+          if (index == 0) {
+            controller.bottomIndex.value = 0;
             Get.back();
+          } else if (index == 1) {
+            controller.bottomIndex.value = 1;
+            Get.off(() => const ExploreScreen());
+          } else {
+            controller.onBottomNavTap(index);
           }
         },
       ),
@@ -136,7 +140,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Dec 13 - Dec 16 ,2025',
           status: 'Confirmed',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
         BookingCard(
@@ -146,7 +150,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Dec 22 - Dec 26 ,2025',
           status: 'Pending',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
       ],
@@ -164,7 +168,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Sep 13 - Sep 16 ,2025',
           status: 'Completed',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
         BookingCard(
@@ -174,7 +178,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Dec 22 - Dec 26 ,2023',
           status: 'Completed',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
       ],
@@ -192,7 +196,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Sep 13 - Sep 16 ,2022',
           status: 'Cancelled',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
         BookingCard(
@@ -202,7 +206,7 @@ class _BookingScreenState extends State<BookingScreen>
           dateRange: 'Dec 21 - Dec 26 ,2021',
           status: 'Cancelled',
           onBookingDetailsTap: () {
-            // Navigate to booking details
+            Get.to(() => const BookingDetailsScreen());
           },
         ),
       ],

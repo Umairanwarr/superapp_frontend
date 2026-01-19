@@ -10,6 +10,7 @@ class BookingDetailsCard extends StatelessWidget {
   final String checkOut;
   final int guests;
   final String totalPaid;
+  final String? paymentMethod;
 
   const BookingDetailsCard({
     super.key,
@@ -22,6 +23,7 @@ class BookingDetailsCard extends StatelessWidget {
     required this.checkOut,
     required this.guests,
     required this.totalPaid,
+    this.paymentMethod,
   });
 
   @override
@@ -155,6 +157,26 @@ class BookingDetailsCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (paymentMethod != null) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        size: 14,
+                        color: Color(0xFF9CA3AF),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        paymentMethod!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF9CA3AF),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

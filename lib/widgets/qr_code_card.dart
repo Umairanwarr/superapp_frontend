@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class QrCodeCard extends StatelessWidget {
   final VoidCallback? onDownload;
@@ -57,6 +58,15 @@ class QrCodeCard extends StatelessWidget {
             children: [
               _ActionButton(
                 icon: Icons.download,
+                iconWidget: SvgPicture.asset(
+                  'assets/material-symbols_download-rounded.svg',
+                  width: 18,
+                  height: 18,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFF1D2330),
+                    BlendMode.srcIn,
+                  ),
+                ),
                 label: 'Download',
                 onTap: onDownload,
               ),
@@ -72,10 +82,16 @@ class QrCodeCard extends StatelessWidget {
 
 class _ActionButton extends StatelessWidget {
   final IconData icon;
+  final Widget? iconWidget;
   final String label;
   final VoidCallback? onTap;
 
-  const _ActionButton({required this.icon, required this.label, this.onTap});
+  const _ActionButton({
+    required this.icon,
+    this.iconWidget,
+    required this.label,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +107,16 @@ class _ActionButton extends StatelessWidget {
 
         child: Row(
           children: [
-            Icon(icon, size: 18, color: const Color(0xFF1D2330)),
+            if (iconWidget != null)
+              IconTheme(
+                data: const IconThemeData(
+                  color: Color(0xFF1D2330),
+                  size: 18,
+                ),
+                child: iconWidget!,
+              )
+            else
+              Icon(icon, size: 18, color: const Color(0xFF1D2330)),
             const SizedBox(width: 6),
             Text(
               label,

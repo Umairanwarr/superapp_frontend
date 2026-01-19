@@ -4,11 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 class MainBottomBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool isPropertySelected;
 
   const MainBottomBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.isPropertySelected = false,
   });
 
   @override
@@ -17,11 +19,16 @@ class MainBottomBar extends StatelessWidget {
 
     const inactiveColor = Color(0xFFCFD6DC);
 
-    const items = <({String label, String assetPath})>[
+    final items = <({String label, String assetPath})>[
       (label: 'Home', assetPath: 'assets/bottombar1.svg'),
       (label: 'Explore', assetPath: 'assets/bottombar2.svg'),
-      (label: 'Bookings', assetPath: 'assets/bottombar3.svg'),
-      (label: 'AI', assetPath: 'assets/bottombar4.svg'),
+      if (isPropertySelected) ...[
+        (label: 'Dashboard', assetPath: 'assets/dashboard.svg'),
+        (label: 'Messages', assetPath: 'assets/chat.svg'),
+      ] else ...[
+        (label: 'Bookings', assetPath: 'assets/bottombar3.svg'),
+        (label: 'AI', assetPath: 'assets/bottombar4.svg'),
+      ],
       (label: 'Profile', assetPath: 'assets/bottombar5.svg'),
     ];
 

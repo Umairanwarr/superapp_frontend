@@ -6,6 +6,8 @@ import '../controllers/main_screen_controller.dart';
 import '../widgets/main_bottom_bar.dart';
 import 'hotel_search_screen.dart';
 import 'hotel_detail_screen.dart';
+import 'wishlist_screen.dart';
+import 'property_search_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -29,13 +31,27 @@ class MainScreen extends StatelessWidget {
                   children: [
                     const _RecommendationCard(),
                     const SizedBox(height: 18),
-                    _SectionHeader(
-                      title: 'Featured Hotels',
-                      actionText: 'See All',
-                      onActionTap: () {},
-                    ),
+                    Obx(() {
+                      final isProperty = controller.categoryIndex.value == 1;
+                      return _SectionHeader(
+                        title: isProperty ? 'Featured Properties' : 'Featured Hotels',
+                        actionText: 'See All',
+                        onActionTap: () {},
+                      );
+                    }),
                     const SizedBox(height: 10),
                     const _FeaturedHotelsList(),
+                    Obx(() {
+                      if (controller.categoryIndex.value == 1) {
+                        return Column(
+                          children: const [
+                            SizedBox(height: 18),
+                            _PropertyQuickActions(),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
                     const SizedBox(height: 18),
                     const _AnnouncementCard(),
                   ],
@@ -49,6 +65,7 @@ class MainScreen extends StatelessWidget {
         () => _MainBottomBar(
           currentIndex: controller.bottomIndex.value,
           onTap: controller.onBottomNavTap,
+          isPropertySelected: controller.categoryIndex.value == 1,
         ),
       ),
     );
@@ -338,6 +355,7 @@ class _SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.find<MainScreenController>();
 
     return Container(
       height: 54,
@@ -351,12 +369,18 @@ class _SearchBar extends StatelessWidget {
           const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
-            child: TextField(
-              onSubmitted: (value) => Get.to(() => const HotelSearchScreen()),
+            child: Obx(() => TextField(
+              onSubmitted: (value) {
+                if (controller.categoryIndex.value == 1) {
+                  Get.to(() => const PropertySearchScreen());
+                } else {
+                  Get.to(() => const HotelSearchScreen());
+                }
+              },
               cursorColor: theme.colorScheme.primary,
               selectionControls: materialTextSelectionControls,
               decoration: InputDecoration(
-                hintText: 'Search hotels...',
+                hintText: controller.categoryIndex.value == 1 ? 'Search properties...' : 'Search hotels...',
                 hintStyle: theme.textTheme.titleMedium?.copyWith(
                   color: const Color(0xFF9AA0AF),
                   fontWeight: FontWeight.w500,
@@ -369,10 +393,16 @@ class _SearchBar extends StatelessWidget {
                 errorBorder: InputBorder.none,
                 focusedErrorBorder: InputBorder.none,
               ),
-            ),
+            )),
           ),
           GestureDetector(
-            onTap: () => Get.to(() => const HotelSearchScreen()),
+            onTap: () {
+              if (controller.categoryIndex.value == 1) {
+                Get.to(() => const PropertySearchScreen());
+              } else {
+                Get.to(() => const HotelSearchScreen());
+              }
+            },
             child: Container(
               width: 40,
               height: 40,
@@ -536,22 +566,140 @@ class _FeaturedHotelsList extends StatelessWidget {
 
     return SizedBox(
       height: 270,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: controller.featuredHotels.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final hotel = controller.featuredHotels[index];
-          return _FeaturedHotelCard(
-            title: hotel.name,
-            location: hotel.location,
-            rating: hotel.rating,
-            imageAssetPath: index == 0
-                ? 'assets/hotel1.png'
-                : 'assets/hotel2.png',
-            onTap: () => Get.to(() => const HotelDetailScreen()),
-          );
-        },
+      child: Obx(() {
+        final isProperty = controller.categoryIndex.value == 1;
+        final list = isProperty ? controller.featuredProperties : controller.featuredHotels;
+
+        return ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: list.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          itemBuilder: (context, index) {
+            final item = list[index];
+            return _FeaturedHotelCard(
+              title: item.name,
+              location: item.location,
+              rating: item.rating,
+              price: isProperty ? item.price : null,
+              tag: isProperty ? item.tag : null,
+              imageAssetPath: index == 0
+                  ? 'assets/hotel1.png'
+                  : 'assets/hotel2.png',
+              onTap: () => Get.to(() => const HotelDetailScreen()),
+            );
+          },
+        );
+      }),
+    );
+  }
+}
+
+class _PropertyQuickActions extends StatelessWidget {
+  const _PropertyQuickActions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _QuickActionCard(
+            icon: Icons.home_outlined,
+            title: 'My Properties',
+            subtitle: 'Manage Listings',
+            color: const Color(0xFF2FC1BE),
+            onTap: () {},
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _QuickActionCard(
+            icon: Icons.favorite_border_rounded,
+            title: 'Wishlist',
+            subtitle: 'Saved properties',
+            color: const Color(0xFF2FC1BE),
+            onTap: () => Get.to(() => const WishlistScreen()),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFDDF4F4),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: const Color(0xFF2FC1BE).withOpacity(0.8),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF2FC1BE).withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                color: const Color(0xFF1D2330),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: const Color(0xFF747477),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -562,6 +710,8 @@ class _FeaturedHotelCard extends StatelessWidget {
   final String location;
   final double rating;
   final String imageAssetPath;
+  final String? price;
+  final String? tag;
   final VoidCallback onTap;
 
   const _FeaturedHotelCard({
@@ -569,6 +719,8 @@ class _FeaturedHotelCard extends StatelessWidget {
     required this.location,
     required this.rating,
     required this.imageAssetPath,
+    this.price,
+    this.tag,
     required this.onTap,
   });
 
@@ -637,6 +789,36 @@ class _FeaturedHotelCard extends StatelessWidget {
                 ),
               ),
             ),
+            if (tag != null)
+              Positioned(
+                right: 14,
+                top: 14,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF28C76F),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.trending_up_rounded,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        tag!,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Positioned(
               left: 0,
               right: 0,
@@ -674,13 +856,13 @@ class _FeaturedHotelCard extends StatelessWidget {
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
                                   Image.asset(
                                     'assets/search-location.png',
-                                    width: 18,
-                                    height: 18,
+                                    width: 14,
+                                    height: 14,
                                     color: Colors.white,
                                   ),
                                   const SizedBox(width: 6),
@@ -695,19 +877,30 @@ class _FeaturedHotelCard extends StatelessWidget {
                                               0.95,
                                             ),
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                           ),
                                     ),
                                   ),
                                 ],
                               ),
+                              if (price != null) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  price!,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 8),
                         Container(
-                          width: 56,
-                          height: 56,
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: const Color(0xFF2FC1BE).withOpacity(0.78),
                             shape: BoxShape.circle,
@@ -722,7 +915,7 @@ class _FeaturedHotelCard extends StatelessWidget {
                           child: const Icon(
                             Icons.arrow_outward_rounded,
                             color: Colors.white,
-                            size: 28,
+                            size: 24,
                           ),
                         ),
                       ],
@@ -745,74 +938,94 @@ class _AnnouncementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final controller = Get.find<MainScreenController>();
-    final announcement = controller.announcement;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFF8A2A), Color(0xFFFF6A3C), Color(0xFFFF4F55)],
+    return Obx(() {
+      final isProperty = controller.categoryIndex.value == 1;
+      final announcement = isProperty ? controller.propertyAnnouncement : controller.announcement;
+
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: isProperty
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF28C76F), Color(0xFF1CB55C)],
+                )
+              : const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFFF8A2A), Color(0xFFFF6A3C), Color(0xFFFF4F55)],
+                ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            announcement.title,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            announcement.description,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withOpacity(0.95),
-              height: 1.35,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            height: 44,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: Text(
-                announcement.buttonText,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              announcement.title,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 12),
+            Text(
+              announcement.description,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withOpacity(0.95),
+                height: 1.35,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  announcement.buttonText,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
 class _MainBottomBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool isPropertySelected;
 
-  const _MainBottomBar({required this.currentIndex, required this.onTap});
+  const _MainBottomBar({
+    required this.currentIndex,
+    required this.onTap,
+    this.isPropertySelected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MainBottomBar(currentIndex: currentIndex, onTap: onTap);
+    return MainBottomBar(
+      currentIndex: currentIndex,
+      onTap: onTap,
+      isPropertySelected: isPropertySelected,
+    );
   }
 }
