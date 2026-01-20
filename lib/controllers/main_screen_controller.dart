@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:superapp/screens/bottomNavScreen/dashboard_screen.dart';
 import 'package:superapp/screens/notification_screen.dart';
 
 import '../modal/announcement_modal.dart';
@@ -58,7 +59,7 @@ class MainScreenController extends GetxController {
 
   void onBottomNavTap(int index) {
     bottomIndex.value = index;
-    
+
     // Navigate to different screens based on index
     switch (index) {
       case 0:
@@ -71,7 +72,7 @@ class MainScreenController extends GetxController {
       case 2:
         if (categoryIndex.value == 1) {
           // Dashboard
-          // TODO: Navigate to Dashboard screen
+          Get.to(() => DashboardScreen());
         } else {
           // Bookings
           Get.to(() => const BookingScreen());

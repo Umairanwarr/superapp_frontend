@@ -165,16 +165,19 @@ class NotificationsSettingsScreen extends StatelessWidget {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
+                      // horizontal: 20,
                       vertical: 10,
                     ),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Reset Notification Settings',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: const Color(0xFFEF4444),
-                          fontWeight: FontWeight.w700,
+                    child: Align(
+                      alignment: AlignmentGeometry.centerLeft,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Reset Notification Settings',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: const Color(0xFFEF4444),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -310,7 +313,7 @@ class _SwitchRow extends StatelessWidget {
           Switch(
             value: value,
             onChanged: enabled ? onChanged : null,
-            activeColor: Color(0xFF34C759),
+            activeThumbColor: Color(0xFF34C759),
           ),
         ],
       ),

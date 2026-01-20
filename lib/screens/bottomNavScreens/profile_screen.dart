@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/profile_controller.dart';
-import 'package:superapp/controllers/main_screen_controller.dart';
-import 'package:superapp/widgets/main_bottom_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,7 +8,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
-    final mainController = Get.find<MainScreenController>();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -167,13 +164,14 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   _CardGroup(
                     children: [
+                      const SizedBox(height: 8),
                       _MenuTile(
-                        icon: Icons.person_outline_rounded,
+                        icon: Icons.edit_outlined,
                         title: 'Edit Profile',
                         onTap: controller.onEditProfile,
                       ),
                       _MenuTile(
-                        icon: Icons.shield_outlined,
+                        icon: Icons.verified_user_outlined,
                         title: 'Identity Verification',
                         trailing: const _Pending(
                           text: 'Pending',
@@ -183,7 +181,7 @@ class ProfileScreen extends StatelessWidget {
                         onTap: controller.onIdentity,
                       ),
                       _MenuTile(
-                        icon: Icons.settings_outlined,
+                        icon: Icons.tune_rounded,
                         title: 'Preferences',
                         onTap: controller.onPreferences,
                       ),
@@ -218,7 +216,6 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       _MenuTile(
                         icon: Icons.notifications_none_rounded,
-
                         title: 'Notifications',
                         onTap: controller.onNotifications,
                       ),
@@ -241,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
                         onTap: controller.onHelpCenter,
                       ),
                       _MenuTile(
-                        icon: Icons.description_outlined,
+                        icon: Icons.policy_outlined,
                         title: 'Term & Policy',
                         onTap: controller.onTermPolicy,
                       ),
@@ -253,8 +250,7 @@ class ProfileScreen extends StatelessWidget {
                   _CardGroup(
                     children: [
                       _MenuTile(
-                        icon: Icons.login_rounded,
-
+                        icon: Icons.logout_rounded,
                         title: 'Logout',
                         titleColor: const Color(0xFFEF4444),
                         iconColor: const Color(0xFFEF4444),
@@ -267,20 +263,6 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 4,
-        isPropertySelected: mainController.categoryIndex.value == 1,
-        onTap: (index) {
-          if (index == 4) return;
-
-          if (index == 0) {
-            mainController.bottomIndex.value = 0;
-            Get.back();
-          } else {
-            mainController.onBottomNavTap(index);
-          }
-        },
       ),
     );
   }
@@ -393,8 +375,7 @@ class _CardGroup extends StatelessWidget {
 
 class _MenuTile extends StatelessWidget {
   const _MenuTile({
-    this.icon,
-
+    required this.icon,
     required this.title,
     required this.onTap,
     this.trailing,
@@ -402,8 +383,7 @@ class _MenuTile extends StatelessWidget {
     this.iconColor,
   });
 
-  final IconData? icon;
-
+  final IconData icon;
   final String title;
   final VoidCallback onTap;
   final Widget? trailing;
@@ -429,17 +409,13 @@ class _MenuTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Icon(
-                icon ?? Icons.circle,
-                size: 18,
-                color: iconColor ?? primary,
-              ),
+              child: Icon(icon, size: 18, color: iconColor ?? primary),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 title,
-                style: theme.textTheme.bodyLarge?.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   color: titleColor ?? const Color(0xFF1D2330),
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
