@@ -53,10 +53,12 @@ class AddExpenseScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _Card(
+                          height: 150,
                           child: Padding(
                             padding: const EdgeInsets.all(14),
                             child: Column(
                               children: [
+                                SizedBox(height: 10),
                                 Text(
                                   "TOTAL AMOUNT",
                                   style: theme.textTheme.labelSmall?.copyWith(
@@ -65,7 +67,8 @@ class AddExpenseScreen extends StatelessWidget {
                                     letterSpacing: 0.5,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                SizedBox(height: 50),
+
                                 TextFormField(
                                   controller: controller.amountCtrl,
                                   keyboardType:
@@ -78,9 +81,20 @@ class AddExpenseScreen extends StatelessWidget {
                                         color: const Color(0xFF9AA0AF),
                                         fontWeight: FontWeight.w900,
                                       ),
-                                  decoration: const InputDecoration(
+
+                                  decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "\$0.00",
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    focusedErrorBorder: InputBorder.none,
+                                    hintText: "${"\$"}0.00",
+                                    hintStyle: theme.textTheme.bodyLarge
+                                        ?.copyWith(color: Colors.grey),
+
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
                                   ),
                                 ),
                               ],
@@ -371,12 +385,14 @@ class _ReceiptBox extends StatelessWidget {
 }
 
 class _Card extends StatelessWidget {
-  const _Card({required this.child});
+  const _Card({required this.child, required this.height});
   final Widget child;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),

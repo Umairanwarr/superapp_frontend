@@ -373,7 +373,7 @@ class _TrendCard extends StatelessWidget {
             const SizedBox(height: 12),
 
             SizedBox(
-              height: 100,
+              height: 170,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final maxBarHeight = constraints.maxHeight - 26;

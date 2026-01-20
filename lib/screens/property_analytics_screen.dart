@@ -698,7 +698,7 @@ class _Bar extends StatelessWidget {
           ),
         const SizedBox(height: 6),
         Container(
-          width: 70,
+          width: 60,
           height: height.clamp(8, 100),
           decoration: BoxDecoration(
             color: color,

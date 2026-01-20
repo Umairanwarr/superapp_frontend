@@ -15,7 +15,7 @@ class PropertySearchScreen extends StatefulWidget {
 }
 
 class _PropertySearchScreenState extends State<PropertySearchScreen> {
-  int _selectedType = 0; // 0 for Buy, 1 for Rent
+  int _selectedType = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +27,17 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 10, 16, 0),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                        color: Color(0xFF2FC1BE), size: 28),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Color(0xFF2FC1BE),
+                      size: 28,
+                    ),
                   ),
                   const Text(
                     'Featured Properties',
@@ -63,8 +65,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            
-            // Search Bar
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -73,15 +74,15 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(26),
-                  border: Border.all(
-                    color: const Color(0x9CBAB1B1),
-                    width: 1,
-                  ),
+                  border: Border.all(color: const Color(0x9CBAB1B1), width: 1),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.search_rounded,
-                        color: Color(0xFF9E9E9F), size: 24),
+                    const Icon(
+                      Icons.search_rounded,
+                      color: Color(0xFF9E9E9F),
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
@@ -89,8 +90,10 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                         selectionControls: materialTextSelectionControls,
                         decoration: const InputDecoration(
                           hintText: 'Search Properties...',
-                          hintStyle:
-                              TextStyle(color: Color(0xFF9AA0AF), fontSize: 18),
+                          hintStyle: TextStyle(
+                            color: Color(0xFF9AA0AF),
+                            fontSize: 18,
+                          ),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -106,7 +109,8 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          builder: (context) => const PropertyFilterBottomSheet(),
+                          builder: (context) =>
+                              const PropertyFilterBottomSheet(),
                         );
                       },
                       child: Container(
@@ -121,7 +125,10 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                             'assets/filter.svg',
                             width: 18,
                             height: 18,
-                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
@@ -132,7 +139,6 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Buy/Rent Toggle
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -149,7 +155,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                         child: Container(
                           margin: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: _selectedType == 0 ? Colors.white : Colors.transparent,
+                            color: _selectedType == 0
+                                ? Colors.white
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: _selectedType == 0
                                 ? [
@@ -157,7 +165,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                                       color: Colors.black.withOpacity(0.1),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
-                                    )
+                                    ),
                                   ]
                                 : null,
                           ),
@@ -181,7 +189,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                         child: Container(
                           margin: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: _selectedType == 1 ? Colors.white : Colors.transparent,
+                            color: _selectedType == 1
+                                ? Colors.white
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: _selectedType == 1
                                 ? [
@@ -189,7 +199,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                                       color: Colors.black.withOpacity(0.1),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
-                                    )
+                                    ),
                                   ]
                                 : null,
                           ),
@@ -214,7 +224,6 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
 
             const SizedBox(height: 20),
 
-            // Results Info & Sort
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -229,12 +238,17 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                     ),
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8F1F1),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF2FC1BE), width: 0.5),
+                      border: Border.all(
+                        color: const Color(0xFF2FC1BE),
+                        width: 0.5,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -247,8 +261,11 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Icon(Icons.keyboard_arrow_down_rounded,
-                            size: 18, color: theme.colorScheme.primary),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: theme.colorScheme.primary,
+                        ),
                       ],
                     ),
                   ),
@@ -256,8 +273,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            
-            // Property List
+
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
