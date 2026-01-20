@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:superapp/screens/booking_confirmation_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final String bookingType;
+
+  const PaymentScreen({super.key, this.bookingType = 'hotel'});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -15,6 +17,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isProperty = widget.bookingType == 'property';
+    final String totalAmount = isProperty ? '\$1,774,000' : '\$1774';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7FAFA),
       body: SafeArea(
@@ -76,8 +81,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             'Total amount',
                             style: TextStyle(
                               color: Colors.white,
@@ -85,17 +90,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            '\$1774',
-                            style: TextStyle(
+                            totalAmount,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Text(
+                          const SizedBox(height: 4),
+                          const Text(
                             'Including taxes and fees',
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
@@ -120,29 +125,60 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Payment Methods Tabs
-                Row(
-                  children: [
-                    _PaymentTab(
-                      text: 'Card',
-                      isSelected: _selectedMethod == 'Card',
-                      onTap: () => setState(() => _selectedMethod = 'Card'),
-                    ),
-                    const SizedBox(width: 12),
-                    _PaymentTab(
-                      text: 'Wallet',
-                      isSelected: _selectedMethod == 'Wallet',
-                      onTap: () => setState(() => _selectedMethod = 'Wallet'),
-                    ),
-                    const SizedBox(width: 12),
-                    _PaymentTab(
-                      text: 'Apple pay',
-                      isSelected: _selectedMethod == 'Apple pay',
-                      onTap: () =>
-                          setState(() => _selectedMethod = 'Apple pay'),
-                    ),
-                  ],
-                ),
+                // Payment Methods Tabs - Different for property vs hotel
+                if (isProperty)
+                  // Property: Card, Wallet, PayPal, Stripe
+                  Row(
+                    children: [
+                      _PaymentTab(
+                        text: 'Card',
+                        isSelected: _selectedMethod == 'Card',
+                        onTap: () => setState(() => _selectedMethod = 'Card'),
+                      ),
+                      const SizedBox(width: 10),
+                      _PaymentTab(
+                        text: 'Wallet',
+                        isSelected: _selectedMethod == 'Wallet',
+                        onTap: () => setState(() => _selectedMethod = 'Wallet'),
+                      ),
+                      const SizedBox(width: 10),
+                      _PaymentTab(
+                        text: 'PayPal',
+                        isSelected: _selectedMethod == 'PayPal',
+                        onTap: () => setState(() => _selectedMethod = 'PayPal'),
+                      ),
+                      const SizedBox(width: 10),
+                      _PaymentTab(
+                        text: 'Stripe',
+                        isSelected: _selectedMethod == 'Stripe',
+                        onTap: () => setState(() => _selectedMethod = 'Stripe'),
+                      ),
+                    ],
+                  )
+                else
+                  // Hotel: Card, Wallet, Apple Pay
+                  Row(
+                    children: [
+                      _PaymentTab(
+                        text: 'Card',
+                        isSelected: _selectedMethod == 'Card',
+                        onTap: () => setState(() => _selectedMethod = 'Card'),
+                      ),
+                      const SizedBox(width: 12),
+                      _PaymentTab(
+                        text: 'Wallet',
+                        isSelected: _selectedMethod == 'Wallet',
+                        onTap: () => setState(() => _selectedMethod = 'Wallet'),
+                      ),
+                      const SizedBox(width: 12),
+                      _PaymentTab(
+                        text: 'Apple pay',
+                        isSelected: _selectedMethod == 'Apple pay',
+                        onTap: () =>
+                            setState(() => _selectedMethod = 'Apple pay'),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 24),
 
                 // Conditional Content based on selected payment method
@@ -406,6 +442,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
+                ] else if (_selectedMethod == 'PayPal') ...[
+                  // PayPal Section
+                  _PayPalSection(),
+                  const SizedBox(height: 24),
+                ] else if (_selectedMethod == 'Stripe') ...[
+                  // Stripe Section
+                  _StripeSection(),
+                  const SizedBox(height: 24),
                 ] else ...[
                   // Apple Pay Section
                   Container(
@@ -491,7 +535,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white, // In image it looks white.
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: const Color(0xFFE0E0E0).withOpacity(0.5),
@@ -565,8 +609,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Pay Button (hidden for Apple Pay)
-                if (_selectedMethod != 'Apple pay')
+                // Pay Button (hidden for Apple Pay, PayPal, Stripe)
+                if (_selectedMethod != 'Apple pay' &&
+                    _selectedMethod != 'PayPal' &&
+                    _selectedMethod != 'Stripe')
                   SizedBox(
                     width: double.infinity,
                     height: 54,
@@ -584,16 +630,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.lock_outline,
                             size: 18,
                             color: Colors.white,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
-                            'Pay \$1774',
-                            style: TextStyle(
+                            'Pay $totalAmount',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -719,6 +765,270 @@ class _PaymentTextField extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
       ),
+    );
+  }
+}
+
+// PayPal Payment Section
+class _PayPalSection extends StatelessWidget {
+  const _PayPalSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // PayPal Logo with Text - Header
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset('assets/logos_paypal.svg', height: 50),
+              const SizedBox(width: 8),
+              RichText(
+                text: const TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Pay',
+                      style: TextStyle(
+                        color: Color(0xFF1D2330),
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Pal',
+                      style: TextStyle(
+                        color: Color(0xFF1D2330),
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Saved Accounts
+        const Text(
+          'Saved Accounts',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1D2330),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Saved Account Card
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE0E0E0)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // PayPal icon aligned with name row
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: SvgPicture.asset(
+                  'assets/logos_paypal.svg',
+                  height: 36,
+                  width: 36,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Alex Hales',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1D2330),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'alex@gmail.com',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF878787)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Add Account
+        const Text(
+          'Add Account',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1D2330),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // PayPal Button - Orange with logo and text
+        SizedBox(
+          width: double.infinity,
+          height: 54,
+          child: ElevatedButton(
+            onPressed: () {
+              Get.to(() => const BookingConfirmationScreen());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF5A623),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset('assets/logos_paypal.svg', height: 24),
+                const SizedBox(width: 8),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Pay',
+                        style: TextStyle(
+                          color: Color(0xFF003087),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Pal',
+                        style: TextStyle(
+                          color: Color(0xFF009CDE),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Stripe Payment Section
+class _StripeSection extends StatelessWidget {
+  const _StripeSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Stripe Logo - Official SVG
+        Center(child: SvgPicture.asset('assets/stripe.svg', height: 50)),
+        const SizedBox(height: 24),
+
+        // Saved Accounts
+        const Text(
+          'Saved Accounts',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1D2330),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Saved Account Card
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE0E0E0)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // "S" letter in Stripe purple color (no background)
+              const Text(
+                'S',
+                style: TextStyle(
+                  color: Color(0xFF635BFF),
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Alex Hales',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1D2330),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'alex@gmail.com',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF878787)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Add Account
+        const Text(
+          'Add Account',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1D2330),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Stripe Button - Light teal with official SVG logo
+        SizedBox(
+          width: double.infinity,
+          height: 54,
+          child: ElevatedButton(
+            onPressed: () {
+              Get.to(() => const BookingConfirmationScreen());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD4F4E8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 0,
+            ),
+            child: SvgPicture.asset('assets/stripe.svg', height: 24),
+          ),
+        ),
+      ],
     );
   }
 }

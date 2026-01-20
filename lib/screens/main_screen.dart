@@ -8,6 +8,7 @@ import 'bottomNavScreen/explore_screen.dart';
 import 'bottomNavScreen/booking_screen.dart';
 import 'bottomNavScreen/profile_screen.dart';
 import 'bottomNavScreen/chat_screen.dart';
+import 'bottomNavScreen/ai_assistant_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -21,20 +22,19 @@ class MainScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Obx(() {
         final isProperty = controller.categoryIndex.value == 1;
-        
+
         switch (controller.bottomIndex.value) {
           case 0:
             return const HomeScreen();
           case 1:
             return const ExploreScreen();
           case 2:
-            return isProperty 
+            return isProperty
                 ? const Center(child: Text("Dashboard Coming Soon"))
                 : const BookingScreen();
           case 3:
-            return isProperty 
-                ? const ChatScreen() 
-                : const Center(child: Text("AI Coming Soon"));
+            return isProperty ? const ChatScreen() : const AiAssistantScreen();
+
           case 4:
             return const ProfileScreen();
           default:

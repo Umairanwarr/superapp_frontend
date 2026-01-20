@@ -6,6 +6,7 @@ import '../widgets/property_filter_bottom_sheet.dart';
 import '../widgets/property_card.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../controllers/main_screen_controller.dart';
+import 'property_detail_screen.dart';
 
 class PropertySearchScreen extends StatefulWidget {
   const PropertySearchScreen({super.key});
@@ -261,7 +262,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: const [
+                children: [
                   PropertyCard(
                     title: 'Luxury Villa',
                     location: 'Dubai Marina',
@@ -270,6 +271,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                     price: '\$1.306 M',
                     tag: '+8.5%',
                     isLiked: true,
+                    onTap: () => Get.to(() => const PropertyDetailScreen()),
                   ),
                   PropertyCard(
                     title: 'City Loft Villa',
@@ -278,6 +280,7 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                     rating: 4.9,
                     price: '\$850 K',
                     tag: '+5.5%',
+                    onTap: () => Get.to(() => const PropertyDetailScreen()),
                   ),
                 ],
               ),

@@ -7,6 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.superapp"
+    buildToolsVersion = "35.0.1"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

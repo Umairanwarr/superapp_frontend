@@ -85,11 +85,10 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   controller.username.toString(),
-                                  style: theme.textTheme.titleMedium
-                                      ?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800,
-                                      ),
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
@@ -169,6 +168,7 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Edit Profile',
                       onTap: controller.onEditProfile,
                     ),
+
                     _MenuTile(
                       icon: Icons.verified_user_outlined,
                       title: 'Identity Verification',
@@ -206,10 +206,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 14),
-                _SectionTitle(
-                  title: 'Notifications & Settings',
-                  theme: theme,
-                ),
+                _SectionTitle(title: 'Notifications & Settings', theme: theme),
                 const SizedBox(height: 14),
                 _CardGroup(
                   children: [

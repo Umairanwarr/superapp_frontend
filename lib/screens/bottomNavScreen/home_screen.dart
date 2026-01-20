@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../controllers/main_screen_controller.dart';
 import '../hotel_search_screen.dart';
 import '../hotel_detail_screen.dart';
+import '../property_detail_screen.dart';
 import '../wishlist_screen.dart';
 import '../property_search_screen.dart';
 
@@ -574,7 +575,11 @@ class _FeaturedHotelsList extends StatelessWidget {
               imageAssetPath: index == 0
                   ? 'assets/hotel1.png'
                   : 'assets/hotel2.png',
-              onTap: () => Get.to(() => const HotelDetailScreen()),
+              onTap: () => Get.to(
+                () => isProperty
+                    ? const PropertyDetailScreen()
+                    : const HotelDetailScreen(),
+              ),
             );
           },
         );
@@ -723,17 +728,46 @@ class _FeaturedHotelCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              if (price != null) ...[
+                                const SizedBox(height: 6),
+                                Text(
+                                  price!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
-                        if (price != null)
-                          Text(
-                            price!,
-                            style: theme.textTheme.titleMedium?.copyWith(
+                        InkWell(
+                          onTap: onTap,
+                          borderRadius: BorderRadius.circular(999),
+                          child: Container(
+                            height: 56,
+                            width: 56,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2FC1BE),
+                              shape: BoxShape.circle,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x33000000),
+                                  blurRadius: 14,
+                                  offset: Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              Icons.north_east_rounded,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              size: 24,
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -843,10 +877,10 @@ class _QuickActionCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: Colors.white, size: 24),
             ),
             const SizedBox(height: 12),
             Text(
@@ -886,64 +920,64 @@ class _AnnouncementCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF38CAC7), Color(0xFF119C99)],
+            colors: isProperty
+                ? const [Color(0xFF21C96A), Color(0xFF0FAE5B)]
+                : const [Color(0xFFFF7A2F), Color(0xFFFF4D6D)],
           ),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF38CAC7).withOpacity(0.3),
+              color: (isProperty ? const Color(0xFF21C96A) : const Color(0xFFFF7A2F))
+                  .withOpacity(0.3),
               blurRadius: 14,
               offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    announcement.title,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    announcement.description,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: Text(
-                      announcement.buttonText,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ],
+            Text(
+              announcement.title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
               ),
             ),
-            // Could add an illustration here
+            const SizedBox(height: 10),
+            Text(
+              announcement.description,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withOpacity(0.9),
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 22),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2FC1BE),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  announcement.buttonText,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
           ],
         ),
       );

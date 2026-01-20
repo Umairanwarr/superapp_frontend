@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class PropertyFilterBottomSheet extends StatefulWidget {
@@ -17,12 +18,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   final TextEditingController maxAreaController = TextEditingController();
 
   final List<Map<String, dynamic>> propertyTypes = [
-    {'icon': Icons.home_rounded, 'label': 'House'},
-    {'icon': Icons.apartment_rounded, 'label': 'Appartment'},
-    {'icon': Icons.business_rounded, 'label': 'Condo'},
-    {'icon': Icons.landscape_rounded, 'label': 'Land'},
-    {'icon': Icons.villa_rounded, 'label': 'Villa'},
-    {'icon': Icons.store_mall_directory_rounded, 'label': 'Townhouse'},
+    {'iconPath': 'assets/filter-home.svg', 'label': 'House'},
+    {'iconPath': 'assets/appartment.svg', 'label': 'Appartment'},
+    {'iconPath': 'assets/condo.svg', 'label': 'Condo'},
+    {'iconPath': 'assets/land.svg', 'label': 'Land'},
+    {'iconPath': 'assets/vila.svg', 'label': 'Villa'},
+    {'iconPath': 'assets/twinhouse.svg', 'label': 'Townhouse'},
   ];
 
   final List<String> bedroomOptions = ['Any', '1', '2', '3', '4+'];
@@ -138,10 +139,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                propertyTypes[index]['icon'],
-                                color: isSelected ? const Color(0xFF2FC1BE) : const Color(0xFF747477),
-                                size: 32,
+                              SvgPicture.asset(
+                                propertyTypes[index]['iconPath'],
+                                height: 34,
+                                width: 34,
+                                colorFilter: ColorFilter.mode(
+                                  isSelected ? const Color(0xFF2FC1BE) : const Color(0xFF747477),
+                                  BlendMode.srcIn,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text(

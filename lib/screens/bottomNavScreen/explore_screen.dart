@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/explore_hotel_card.dart';
 import '../../controllers/main_screen_controller.dart';
+import '../property_detail_screen.dart';
 import 'booking_screen.dart';
 import 'directions_screen.dart';
 
@@ -310,21 +311,23 @@ class ExploreScreen extends StatelessWidget {
                   return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: isProperty
-                        ? const [
+                        ? [
                             ExploreHotelCard(
                               title: 'Luxury Villa',
                               location: 'Dubai Marina · Waterfront',
-                              imagePath: 'assets/property_1.png',
+                              imagePath: 'assets/hotel1.png',
                               rating: 4.9,
                               price: 850,
+                              onTap: () => Get.to(() => const PropertyDetailScreen()),
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             ExploreHotelCard(
                               title: 'City Loft',
                               location: 'New York · Manhattan',
-                              imagePath: 'assets/property_2.png',
+                              imagePath: 'assets/hotel2.png',
                               rating: 4.7,
                               price: 450,
+                              onTap: () => Get.to(() => const PropertyDetailScreen()),
                             ),
                           ]
                         : const [

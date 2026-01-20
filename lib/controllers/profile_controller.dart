@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:superapp/screens/bottomNavScreen/edit_profile_screen.dart';
 import 'package:superapp/screens/notification_setting_screen.dart';
 import 'package:superapp/screens/security_setting_screen.dart';
+import 'package:superapp/screens/my_listing_screen.dart';
 
 class ProfileController extends GetxController {
   final bookings = 12.obs;
@@ -43,7 +44,7 @@ class ProfileController extends GetxController {
   void onNotifications() => Get.to(() => const NotificationsSettingsScreen());
   void onSecurity() => Get.to(() => const SecuritySettingsScreen());
 
-  void onTermPolicy() => Get.snackbar('Settings', 'Term & Policy');
+  void onTermPolicy() => Get.to(() => const MyListingScreen());
   void onHelpCenter() => Get.snackbar('Support', 'Help Center');
   void onLogout() => Get.snackbar('Auth', 'Logout');
 }
