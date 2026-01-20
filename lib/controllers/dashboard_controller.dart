@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:superapp/screens/earning_screen.dart';
+import 'package:superapp/screens/expanse_tracking_screen.dart';
+import 'package:superapp/screens/expanses_screen.dart';
+import 'package:superapp/screens/property_analytics_screen.dart';
 
 class DashboardController extends GetxController {
   final totalEarnings = 12450.0.obs;
@@ -12,10 +16,10 @@ class DashboardController extends GetxController {
   void onActiveListings() => Get.snackbar('Listings', 'Active Listings');
   void onPendingRequests() => Get.snackbar('Requests', 'Pending Requests');
 
-  void onMyListings() => Get.snackbar('My Listings', 'Open My Listings');
-  void onEarnings() => Get.snackbar('Earnings', 'Open Earnings');
-  void onExpenses() => Get.snackbar('Expenses', 'Open Expenses');
-  void onAnalytics() => Get.snackbar('Analytics', 'Open Analytics');
+  void onMyListings() => Get.to(() => ExpenseTrackingScreen());
+  void onEarnings() => Get.to(() => EarningsScreen());
+  void onExpenses() => Get.to(() => ExpensesScreen());
+  void onAnalytics() => Get.to(() => PropertyAnalyticsScreen());
 
   String get earningsFormatted {
     final v = totalEarnings.value.toStringAsFixed(0);
