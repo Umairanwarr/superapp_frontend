@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/chat_controller.dart';
-import 'package:superapp/controllers/main_screen_controller.dart';
 import 'package:superapp/modal/chat_item_modal.dart';
-import 'package:superapp/widgets/main_bottom_bar.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -32,85 +30,64 @@ class _ChatScreenState extends State<ChatScreen> {
       color: const Color(0xFF111111),
     );
 
-    final mainController = Get.find<MainScreenController>();
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text('Chats', style: titleStyle),
+          ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Chats', style: titleStyle),
-            ),
+          const SizedBox(height: 10),
 
-            const SizedBox(height: 10),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                height: 44,
-                child: TextFormField(
-                  controller: _searchController,
-                  onChanged: controller.onSearchChanged,
-                  textInputAction: TextInputAction.search,
-                  decoration: const InputDecoration(
-                    hintText: 'Search peoples...',
-                    prefixIcon: Icon(Icons.search, size: 20),
-                  ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              height: 44,
+              child: TextFormField(
+                controller: _searchController,
+                onChanged: controller.onSearchChanged,
+                textInputAction: TextInputAction.search,
+                decoration: const InputDecoration(
+                  hintText: 'Search peoples...',
+                  prefixIcon: Icon(Icons.search, size: 20),
                 ),
               ),
             ),
+          ),
 
-            const SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-            Expanded(
-              child: Obx(() {
-                final items = controller.filteredChats;
+          Expanded(
+            child: Obx(() {
+              final items = controller.filteredChats;
 
-                return ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemCount: items.length,
-                  separatorBuilder: (_, __) => const Divider(
-                    height: 1,
-                    indent: 76,
-                    endIndent: 16,
-                    color: Color(0xFFEFEFEF),
-                  ),
-                  itemBuilder: (context, index) {
-                    final chat = items[index];
-                    return _ChatTile(
-                      chat: chat,
-                      accent: theme.colorScheme.primary,
-                      onTap: () => controller.onChatTap(chat),
-                    );
-                  },
-                );
-              }),
-            ),
+              return ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: items.length,
+                separatorBuilder: (_, __) => const Divider(
+                  height: 1,
+                  indent: 76,
+                  endIndent: 16,
+                  color: Color(0xFFEFEFEF),
+                ),
+                itemBuilder: (context, index) {
+                  final chat = items[index];
+                  return _ChatTile(
+                    chat: chat,
+                    accent: theme.colorScheme.primary,
+                    onTap: () => controller.onChatTap(chat),
+                  );
+                },
+              );
+            }),
+          ),
 
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 3,
-        isPropertySelected: mainController.categoryIndex.value == 1,
-        onTap: (index) {
-          if (index == 3) return;
-
-          if (index == 0) {
-            mainController.bottomIndex.value = 0;
-            Get.back();
-          } else {
-            // For other tabs, we rely on the controller or use Get.off to avoid stacking
-            // Since onBottomNavTap uses Get.to, we might want to manually handle replacements if we want to avoid stack buildup
-            // But for consistency with ExploreScreen pattern:
-            mainController.onBottomNavTap(index);
-          }
-        },
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

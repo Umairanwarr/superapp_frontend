@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/explore_hotel_card.dart';
-import '../../widgets/filter_bottom_sheet.dart';
-import '../../widgets/main_bottom_bar.dart';
 import '../../controllers/main_screen_controller.dart';
 import 'booking_screen.dart';
 import 'directions_screen.dart';
@@ -13,13 +11,13 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RxInt selectedTabIndex = 0.obs;
+    final controller = Get.find<MainScreenController>();
     final RxBool isMapView = false.obs;
     final RxInt propertyTypeIndex = 0.obs; // 0 for Buy, 1 for Rent
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
-      body: SafeArea(
+    return Container(
+      color: const Color(0xFFF4F8F8),
+      child: SafeArea(
         bottom: false,
         child: Column(
           children: [
@@ -43,6 +41,8 @@ class ExploreScreen extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF2FC1BE),
+                      decoration: TextDecoration.none,
+                      fontFamily: 'Inter', // Assuming default font
                     ),
                   ),
                 ],
@@ -53,8 +53,8 @@ class ExploreScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Obx(() => _CategoryToggle(
-                selectedIndex: selectedTabIndex.value,
-                onChanged: (index) => selectedTabIndex.value = index,
+                selectedIndex: controller.categoryIndex.value,
+                onChanged: controller.onCategoryTap,
               )),
             ),
             const SizedBox(height: 16),
@@ -126,7 +126,7 @@ class ExploreScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // Buy/Rent Toggle (Only visible when Properties tab is selected)
             Obx(() {
-              if (selectedTabIndex.value == 1) {
+              if (controller.categoryIndex.value == 1) {
                 return Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
                   child: _PropertyTypeToggle(
@@ -188,6 +188,7 @@ class ExploreScreen extends StatelessWidget {
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
+                                        decoration: TextDecoration.none,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -201,6 +202,7 @@ class ExploreScreen extends StatelessWidget {
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             color: Color(0xFF878787),
+                                            decoration: TextDecoration.none,
                                           ),
                                         ),
                                         const SizedBox(width: 4),
@@ -209,6 +211,7 @@ class ExploreScreen extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Color(0xFF878787),
+                                            decoration: TextDecoration.none,
                                           ),
                                         ),
                                       ],
@@ -221,6 +224,7 @@ class ExploreScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: Color(0xFF878787),
+                                        decoration: TextDecoration.none,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -237,6 +241,7 @@ class ExploreScreen extends StatelessWidget {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xFFFFA500),
+                                                  decoration: TextDecoration.none,
                                                 ),
                                               ),
                                               const SizedBox(width: 12),
@@ -246,6 +251,7 @@ class ExploreScreen extends StatelessWidget {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
+                                                  decoration: TextDecoration.none,
                                                 ),
                                               ),
                                             ],
@@ -281,6 +287,7 @@ class ExploreScreen extends StatelessWidget {
                                                   fontSize: 14,
                                                   color: Color(0xFF2FC1BE),
                                                   fontWeight: FontWeight.w500,
+                                                  decoration: TextDecoration.none,
                                                 ),
                                               ),
                                             ),
@@ -298,64 +305,68 @@ class ExploreScreen extends StatelessWidget {
                     ],
                   );
                 }
-                return ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: const [
-                    ExploreHotelCard(
-                      title: 'Grand Plaza Hotel',
-                      location: 'Paris, France · 2.5 km away from centre',
-                      imagePath: 'assets/hotel1.png',
-                      rating: 4.8,
-                      price: 180,
-                    ),
-                    SizedBox(height: 16),
-                    ExploreHotelCard(
-                      title: 'Ocean View Resort',
-                      location: 'Maldives · Beach-front',
-                      imagePath: 'assets/hotel2.png',
-                      rating: 4.9,
-                      price: 220,
-                    ),
-                    SizedBox(height: 16),
-                    ExploreHotelCard(
-                      title: 'Alpine Lodge',
-                      location: 'Switzerland · Mountain View',
-                      imagePath: 'assets/hotel1.png',
-                      rating: 4.7,
-                      price: 250,
-                    ),
-                    SizedBox(height: 16),
-                    ExploreHotelCard(
-                      title: 'Urban Boutique',
-                      location: 'New York · City Center',
-                      imagePath: 'assets/hotel2.png',
-                      rating: 4.6,
-                      price: 300,
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                );
+                return Obx(() {
+                  final isProperty = controller.categoryIndex.value == 1;
+                  return ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: isProperty
+                        ? const [
+                            ExploreHotelCard(
+                              title: 'Luxury Villa',
+                              location: 'Dubai Marina · Waterfront',
+                              imagePath: 'assets/property_1.png',
+                              rating: 4.9,
+                              price: 850,
+                            ),
+                            SizedBox(height: 16),
+                            ExploreHotelCard(
+                              title: 'City Loft',
+                              location: 'New York · Manhattan',
+                              imagePath: 'assets/property_2.png',
+                              rating: 4.7,
+                              price: 450,
+                            ),
+                          ]
+                        : const [
+                            ExploreHotelCard(
+                              title: 'Grand Plaza Hotel',
+                              location: 'Paris, France · 2.5 km away from centre',
+                              imagePath: 'assets/hotel1.png',
+                              rating: 4.8,
+                              price: 180,
+                            ),
+                            SizedBox(height: 16),
+                            ExploreHotelCard(
+                              title: 'Ocean View Resort',
+                              location: 'Maldives · Beach-front',
+                              imagePath: 'assets/hotel2.png',
+                              rating: 4.9,
+                              price: 220,
+                            ),
+                            SizedBox(height: 16),
+                            ExploreHotelCard(
+                              title: 'Alpine Lodge',
+                              location: 'Switzerland · Mountain View',
+                              imagePath: 'assets/hotel1.png',
+                              rating: 4.7,
+                              price: 250,
+                            ),
+                            SizedBox(height: 16),
+                            ExploreHotelCard(
+                              title: 'Urban Boutique',
+                              location: 'New York · City Center',
+                              imagePath: 'assets/hotel2.png',
+                              rating: 4.6,
+                              price: 300,
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                  );
+                });
               }),
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 1,
-        onTap: (index) {
-          final controller = Get.find<MainScreenController>();
-          if (index == 1) return;
-
-          if (index == 0) {
-            controller.bottomIndex.value = 0;
-            Get.back();
-          } else if (index == 2) {
-            controller.bottomIndex.value = 2;
-            Get.off(() => const BookingScreen());
-          } else {
-            controller.onBottomNavTap(index);
-          }
-        },
       ),
     );
   }
@@ -456,6 +467,7 @@ class _CategoryChip extends StatelessWidget {
                     : const Color(0xFF2FC1BE),
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
+                decoration: TextDecoration.none,
               ),
             ),
           ],
@@ -488,35 +500,40 @@ class _SearchBar extends StatelessWidget {
           const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
-            child: TextField(
-              cursorColor: theme.colorScheme.primary,
-              selectionControls: materialTextSelectionControls,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: const InputDecoration(
-                hintText: 'Search hotels...',
-                hintStyle: TextStyle(color: Color(0xFF9AA0AF), fontSize: 18),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-                isCollapsed: true,
-              ),
+            child: Material(
+              color: Colors.transparent,
+              child: Obx(() => TextField(
+                cursorColor: theme.colorScheme.primary,
+                selectionControls: materialTextSelectionControls,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  hintText: Get.find<MainScreenController>().categoryIndex.value == 1 
+                      ? 'Search properties...' 
+                      : 'Search hotels...',
+                  hintStyle: const TextStyle(color: Color(0xFF9AA0AF), fontSize: 18),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+              )),
             ),
           ),
           Container(
             width: 40,
             height: 40,
-            decoration: const BoxDecoration(
-              color: Color(0xFF2FC1BE),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.tune_rounded,
-              color: Colors.white,
-              size: 20,
+            child: Center(
+              child: Image.asset(
+                'assets/search-location.png',
+                width: 18,
+                height: 18,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -537,11 +554,14 @@ class _PropertyTypeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      padding: const EdgeInsets.all(4),
+      height: 46,
       decoration: BoxDecoration(
-        color: const Color(0xFFE0E0E0),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(23),
+        border: Border.all(
+          color: const Color(0xFFE8E8E8),
+          width: 1,
+        ),
       ),
       child: Row(
         children: [
@@ -549,17 +569,18 @@ class _PropertyTypeToggle extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onChanged(0),
               child: Container(
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: selectedIndex == 0 ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10),
+                  color: selectedIndex == 0 ? const Color(0xFF2FC1BE) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(23),
                 ),
+                alignment: Alignment.center,
                 child: Text(
                   'Buy',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: selectedIndex == 0 ? const Color(0xFF2FC1BE) : const Color(0xFF878787),
+                    color: selectedIndex == 0 ? Colors.white : const Color(0xFF878787),
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ),
@@ -569,17 +590,18 @@ class _PropertyTypeToggle extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onChanged(1),
               child: Container(
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: selectedIndex == 1 ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10),
+                  color: selectedIndex == 1 ? const Color(0xFF2FC1BE) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(23),
                 ),
+                alignment: Alignment.center,
                 child: Text(
                   'Rent',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: selectedIndex == 1 ? const Color(0xFF2FC1BE) : const Color(0xFF878787),
+                    color: selectedIndex == 1 ? Colors.white : const Color(0xFF878787),
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ),

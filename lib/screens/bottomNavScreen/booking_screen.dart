@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../booking_details_screen.dart';
 import '../../widgets/booking_card.dart';
-import '../../widgets/main_bottom_bar.dart';
 import '../../controllers/main_screen_controller.dart';
 import 'explore_screen.dart';
 
@@ -31,9 +30,9 @@ class _BookingScreenState extends State<BookingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
-      body: SafeArea(
+    return Container(
+      color: const Color(0xFFF4F8F8),
+      child: SafeArea(
         child: Column(
           children: [
             // Header
@@ -56,6 +55,8 @@ class _BookingScreenState extends State<BookingScreen>
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF2FC1BE),
+                      decoration: TextDecoration.none,
+                      fontFamily: 'Inter',
                     ),
                   ),
                 ],
@@ -82,10 +83,12 @@ class _BookingScreenState extends State<BookingScreen>
                 labelStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
                 ),
                 unselectedLabelStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
+                  fontFamily: 'Inter',
                 ),
                 tabs: const [
                   Tab(text: 'Upcoming'),
@@ -108,23 +111,6 @@ class _BookingScreenState extends State<BookingScreen>
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 2,
-        onTap: (index) {
-          final controller = Get.find<MainScreenController>();
-          if (index == 2) return;
-
-          if (index == 0) {
-            controller.bottomIndex.value = 0;
-            Get.back();
-          } else if (index == 1) {
-            controller.bottomIndex.value = 1;
-            Get.off(() => const ExploreScreen());
-          } else {
-            controller.onBottomNavTap(index);
-          }
-        },
       ),
     );
   }

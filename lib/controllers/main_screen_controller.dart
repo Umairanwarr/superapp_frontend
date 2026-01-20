@@ -58,39 +58,6 @@ class MainScreenController extends GetxController {
 
   void onBottomNavTap(int index) {
     bottomIndex.value = index;
-    
-    // Navigate to different screens based on index
-    switch (index) {
-      case 0:
-        // Home - already on main screen
-        break;
-      case 1:
-        // Explore
-        Get.to(() => const ExploreScreen());
-        break;
-      case 2:
-        if (categoryIndex.value == 1) {
-          // Dashboard
-          // TODO: Navigate to Dashboard screen
-        } else {
-          // Bookings
-          Get.to(() => const BookingScreen());
-        }
-        break;
-      case 3:
-        if (categoryIndex.value == 1) {
-          // Messages
-          Get.to(() => const ChatScreen());
-        } else {
-          // AI
-          // TODO: Navigate to AI screen
-        }
-        break;
-      case 4:
-        // Profile
-        Get.to(() => const ProfileScreen());
-        break;
-    }
   }
 
   void onCategoryTap(int index) {

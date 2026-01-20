@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/profile_controller.dart';
 import 'package:superapp/controllers/main_screen_controller.dart';
-import 'package:superapp/widgets/main_bottom_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,276 +9,258 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
-    final mainController = Get.find<MainScreenController>();
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  height: 250,
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(60),
-                      bottomRight: Radius.circular(60),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      stops: [0.02, 0.49, 1.0],
-                      colors: [
-                        Color(0xFF38CAC7),
-                        Color(0xFF27B9B6),
-                        Color(0xFF119C99),
+    return SafeArea(
+      child: Column(
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                height: 250,
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(60),
+                    bottomRight: Radius.circular(60),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    stops: [0.02, 0.49, 1.0],
+                    colors: [
+                      Color(0xFF38CAC7),
+                      Color(0xFF27B9B6),
+                      Color(0xFF119C99),
+                    ],
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: controller.back,
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.white,
+                            size: 25,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Profile',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Spacer(),
                       ],
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
+                    const SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
                         children: [
-                          IconButton(
-                            onPressed: controller.back,
-                            icon: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: const BoxDecoration(
                               color: Colors.white,
-                              size: 25,
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/avatar.png',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Profile',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.username.toString(),
+                                  style: theme.textTheme.titleMedium
+                                      ?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  controller.email.toString(),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white.withOpacity(0.85),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const Spacer(),
                         ],
                       ),
-                      const SizedBox(height: 40),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 56,
-                              height: 56,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'assets/avatar.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.username.toString(),
-                                    style: theme.textTheme.titleMedium
-                                        ?.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    controller.email.toString(),
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: Colors.white.withOpacity(0.85),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                    ),
+                  ],
+                ),
+              ),
+
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: -40,
+                child: SizedBox(
+                  height: 82,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Obx(
+                          () => _StatCard(
+                            value: controller.bookings.value,
+                            label: 'Bookings',
+                            primary: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Obx(
+                          () => _StatCard(
+                            value: controller.reviews.value,
+                            label: 'Reviews',
+                            primary: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Obx(
+                          () => _StatCard(
+                            value: controller.points.value,
+                            label: 'Points',
+                            primary: theme.colorScheme.primary,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
+              ),
+            ],
+          ),
 
-                Positioned(
-                  left: 16,
-                  right: 16,
-                  bottom: -40,
-                  child: SizedBox(
-                    height: 82,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Obx(
-                            () => _StatCard(
-                              value: controller.bookings.value,
-                              label: 'Bookings',
-                              primary: theme.colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Obx(
-                            () => _StatCard(
-                              value: controller.reviews.value,
-                              label: 'Reviews',
-                              primary: theme.colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Obx(
-                            () => _StatCard(
-                              value: controller.points.value,
-                              label: 'Points',
-                              primary: theme.colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ],
+          const SizedBox(height: 42),
+
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
+              children: [
+                _SectionTitle(title: 'Account', theme: theme),
+                const SizedBox(height: 8),
+                _CardGroup(
+                  children: [
+                    const SizedBox(height: 8),
+                    _MenuTile(
+                      icon: Icons.edit_outlined,
+                      title: 'Edit Profile',
+                      onTap: controller.onEditProfile,
                     ),
-                  ),
+                    _MenuTile(
+                      icon: Icons.verified_user_outlined,
+                      title: 'Identity Verification',
+                      trailing: const _Pending(
+                        text: 'Pending',
+                        bg: Color(0xFFFFF3D6),
+                        fg: Color(0xFFF59E0B),
+                      ),
+                      onTap: controller.onIdentity,
+                    ),
+                    _MenuTile(
+                      icon: Icons.tune_rounded,
+                      title: 'Preferences',
+                      onTap: controller.onPreferences,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+                _SectionTitle(title: 'Wallet & Payments', theme: theme),
+                const SizedBox(height: 14),
+                _CardGroup(
+                  children: [
+                    _MenuTile(
+                      icon: Icons.account_balance_wallet_outlined,
+                      title: 'My Wallet',
+                      onTap: controller.onMyWallet,
+                    ),
+                    _MenuTile(
+                      icon: Icons.credit_card_outlined,
+                      title: 'Payment Methods',
+                      onTap: controller.onPaymentMethods,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+                _SectionTitle(
+                  title: 'Notifications & Settings',
+                  theme: theme,
+                ),
+                const SizedBox(height: 14),
+                _CardGroup(
+                  children: [
+                    _MenuTile(
+                      icon: Icons.notifications_none_rounded,
+                      title: 'Notifications',
+                      onTap: controller.onNotifications,
+                    ),
+                    _MenuTile(
+                      icon: Icons.lock_outline_rounded,
+                      title: 'Security Settings',
+                      onTap: controller.onSecurity,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+                _SectionTitle(title: 'Support', theme: theme),
+                const SizedBox(height: 14),
+                _CardGroup(
+                  children: [
+                    _MenuTile(
+                      icon: Icons.help_outline_rounded,
+                      title: 'Help Center',
+                      onTap: controller.onHelpCenter,
+                    ),
+                    _MenuTile(
+                      icon: Icons.policy_outlined,
+                      title: 'Term & Policy',
+                      onTap: controller.onTermPolicy,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                _CardGroup(
+                  children: [
+                    _MenuTile(
+                      icon: Icons.logout_rounded,
+                      title: 'Logout',
+                      titleColor: const Color(0xFFEF4444),
+                      iconColor: const Color(0xFFEF4444),
+                      onTap: controller.onLogout,
+                    ),
+                  ],
                 ),
               ],
             ),
-
-            const SizedBox(height: 42),
-
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
-                children: [
-                  _SectionTitle(title: 'Account', theme: theme),
-                  const SizedBox(height: 8),
-                  _CardGroup(
-                    children: [
-                      const SizedBox(height: 8),
-                      _MenuTile(
-                        icon: Icons.edit_outlined,
-                        title: 'Edit Profile',
-                        onTap: controller.onEditProfile,
-                      ),
-                      _MenuTile(
-                        icon: Icons.verified_user_outlined,
-                        title: 'Identity Verification',
-                        trailing: const _Pending(
-                          text: 'Pending',
-                          bg: Color(0xFFFFF3D6),
-                          fg: Color(0xFFF59E0B),
-                        ),
-                        onTap: controller.onIdentity,
-                      ),
-                      _MenuTile(
-                        icon: Icons.tune_rounded,
-                        title: 'Preferences',
-                        onTap: controller.onPreferences,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 14),
-                  _SectionTitle(title: 'Wallet & Payments', theme: theme),
-                  const SizedBox(height: 14),
-                  _CardGroup(
-                    children: [
-                      _MenuTile(
-                        icon: Icons.account_balance_wallet_outlined,
-                        title: 'My Wallet',
-                        onTap: controller.onMyWallet,
-                      ),
-                      _MenuTile(
-                        icon: Icons.credit_card_outlined,
-                        title: 'Payment Methods',
-                        onTap: controller.onPaymentMethods,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 14),
-                  _SectionTitle(
-                    title: 'Notifications & Settings',
-                    theme: theme,
-                  ),
-                  const SizedBox(height: 14),
-                  _CardGroup(
-                    children: [
-                      _MenuTile(
-                        icon: Icons.notifications_none_rounded,
-                        title: 'Notifications',
-                        onTap: controller.onNotifications,
-                      ),
-                      _MenuTile(
-                        icon: Icons.lock_outline_rounded,
-                        title: 'Security Settings',
-                        onTap: controller.onSecurity,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 14),
-                  _SectionTitle(title: 'Support', theme: theme),
-                  const SizedBox(height: 14),
-                  _CardGroup(
-                    children: [
-                      _MenuTile(
-                        icon: Icons.help_outline_rounded,
-                        title: 'Help Center',
-                        onTap: controller.onHelpCenter,
-                      ),
-                      _MenuTile(
-                        icon: Icons.policy_outlined,
-                        title: 'Term & Policy',
-                        onTap: controller.onTermPolicy,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  _CardGroup(
-                    children: [
-                      _MenuTile(
-                        icon: Icons.logout_rounded,
-                        title: 'Logout',
-                        titleColor: const Color(0xFFEF4444),
-                        iconColor: const Color(0xFFEF4444),
-                        onTap: controller.onLogout,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 4,
-        isPropertySelected: mainController.categoryIndex.value == 1,
-        onTap: (index) {
-          if (index == 4) return;
-
-          if (index == 0) {
-            mainController.bottomIndex.value = 0;
-            Get.back();
-          } else {
-            mainController.onBottomNavTap(index);
-          }
-        },
+          ),
+        ],
       ),
     );
   }
@@ -470,6 +451,7 @@ class _Pending extends StatelessWidget {
         style: const TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w800,
+          fontFamily: 'Inter',
         ).copyWith(color: fg),
       ),
     );
