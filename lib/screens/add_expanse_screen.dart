@@ -346,31 +346,47 @@ class _ReceiptBox extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.12),
+              color: Colors.grey.shade200,
               borderRadius: BorderRadius.circular(12),
             ),
             alignment: Alignment.center,
             child: Icon(Icons.camera_alt_outlined, size: 18, color: primary),
           ),
           const SizedBox(height: 10),
-          TextButton(
-            onPressed: onTapUpload,
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(0, 0),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Text(
-              hasFile ? "Selected: $fileName" : "Click to upload",
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: primary,
-                fontWeight: FontWeight.w800,
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: onTapUpload,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  hasFile ? "Selected: $fileName" : "Click to upload",
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 4),
+              Text(
+                "or drag and drop ",
+                textAlign: TextAlign.center,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFF9AA0AF),
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
+
           Text(
-            "or drag and drop\nSVG, PNG, JPG or PDF",
+            "SVG, PNG, JPG or PDF",
             textAlign: TextAlign.center,
             style: theme.textTheme.labelSmall?.copyWith(
               color: const Color(0xFF9AA0AF),

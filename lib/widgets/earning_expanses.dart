@@ -437,25 +437,37 @@ class _TxnTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    IconData iconFromType(int t) {
-      switch (t) {
-        case 0:
-          return Icons.home_outlined;
-        case 1:
-          return Icons.flash_on_outlined;
+    // ✅ Image based on txn.title
+    Widget imageFromTitle(String title) {
+      final t = title.toLowerCase().trim();
+      String asset;
 
-        case 2:
-          return Icons.shopping_bag_outlined;
-        case 3:
-          return Icons.local_gas_station_outlined;
-        default:
-          return Icons.receipt_long_outlined;
+      if (t.contains("sea")) {
+        asset = "assets/earning_home.png";
+      } else if (t.contains("electric") ||
+          t.contains("electricity") ||
+          t.contains("bill") ||
+          t.contains("downtown")) {
+        asset = "assets/earning_flash.png";
+      } else if (t.contains("shopping") ||
+          t.contains("mart") ||
+          t.contains("grocery")) {
+        asset = "assets/expanse_shopping.png";
+      } else if (t.contains("fuel") ||
+          t.contains("petrol") ||
+          t.contains("gas")) {
+        asset = "assets/expanse_fuel.png"; // ✅ apna actual asset path
+      } else {
+        asset = "assets/expanse_fuel.png";
       }
+
+      return Image.asset(asset, width: 15, height: 15, fit: BoxFit.contain);
     }
 
     final amountColor = positive
         ? const Color(0xFF22C55E)
         : const Color(0xFFEF4444);
+
     final amountText =
         "${positive ? "+" : "-"}\$${txn.amount.abs().toStringAsFixed(2)}";
 
@@ -468,7 +480,9 @@ class _TxnTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(iconFromType(txn.iconType), size: 18, color: Color(0xFF1D2330)),
+          // ✅ Icon ki jagah title-based Image
+          imageFromTitle(txn.title),
+
           const SizedBox(width: 10),
           Expanded(
             child: Column(

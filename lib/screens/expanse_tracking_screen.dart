@@ -278,10 +278,10 @@ class _TotalExpenseCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,
-                child: const Icon(
-                  Icons.copy_rounded,
-                  size: 16,
-                  color: Colors.white,
+                child: Image.asset(
+                  'assets/wallet_icon.png',
+                  height: 16,
+                  width: 16,
                 ),
               ),
             ],
