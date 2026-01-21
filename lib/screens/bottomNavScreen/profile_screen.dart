@@ -73,19 +73,24 @@ class ProfileScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  controller.username.toString(),
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
+                                Obx(
+                                  () => Text(
+                                    controller.username.value,
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                        ),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
-                                Text(
-                                  controller.email.toString(),
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: Colors.white.withOpacity(0.85),
-                                    fontWeight: FontWeight.w500,
+                                Obx(
+                                  () => Text(
+                                    controller.email.value,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: Colors.white.withOpacity(0.85),
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -157,7 +162,6 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Edit Profile',
                       onTap: controller.onEditProfile,
                     ),
-
                     _MenuTile(
                       icon: Icons.verified_user_outlined,
                       title: 'Identity Verification',
@@ -209,6 +213,15 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Security Settings',
                       onTap: controller.onSecurity,
                     ),
+
+                    Obx(
+                      () => _SwitchMenuTile(
+                        icon: Icons.dark_mode_outlined,
+                        title: 'Dark Mode',
+                        value: controller.isDark.value,
+                        onChanged: controller.toggleTheme,
+                      ),
+                    ),
                   ],
                 ),
 
@@ -246,6 +259,56 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SwitchMenuTile extends StatelessWidget {
+  const _SwitchMenuTile({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String title;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+    final effectiveBg = primary.withOpacity(0.10);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: effectiveBg,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, size: 18, color: primary),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              title,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Switch(value: value, onChanged: onChanged),
         ],
       ),
     );
@@ -366,7 +429,6 @@ class _CardGroup extends StatelessWidget {
 class _MenuTile extends StatelessWidget {
   const _MenuTile({
     this.icon,
-
     required this.title,
     required this.onTap,
     this.trailing,
@@ -375,7 +437,6 @@ class _MenuTile extends StatelessWidget {
   });
 
   final IconData? icon;
-
   final String title;
   final VoidCallback onTap;
   final Widget? trailing;
