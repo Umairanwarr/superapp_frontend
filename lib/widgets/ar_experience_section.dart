@@ -7,11 +7,12 @@ class ARExperienceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         // 16% opacity teal background
-        color: const Color(0x292FC1BE),
+        color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.1) : const Color(0x292FC1BE),
         borderRadius: BorderRadius.circular(30),
         // full-opacity teal border
         border: Border.all(
@@ -47,20 +48,20 @@ class ARExperienceSection extends StatelessWidget {
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Experience in AR',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'Take a virtual 360º tour of rooms',
                     style: TextStyle(
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1D2330),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

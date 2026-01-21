@@ -9,6 +9,7 @@ import 'bottomNavScreen/booking_screen.dart';
 import 'bottomNavScreen/profile_screen.dart';
 import 'bottomNavScreen/chat_screen.dart';
 import 'bottomNavScreen/ai_assistant_screen.dart';
+import 'bottomNavScreen/dashboard_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -16,7 +17,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(MainScreenController());
+    final controller = Get.put(MainScreenController(), permanent: true);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -30,7 +31,7 @@ class MainScreen extends StatelessWidget {
             return const ExploreScreen();
           case 2:
             return isProperty
-                ? const Center(child: Text("Dashboard Coming Soon"))
+                ? const DashboardScreen()
                 : const BookingScreen();
           case 3:
             return isProperty ? const ChatScreen() : const AiAssistantScreen();

@@ -11,7 +11,7 @@ class WellcomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(vertical: 20),
@@ -48,7 +48,9 @@ class WellcomeScreen extends StatelessWidget {
                       'Have a better sharing experience',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF353B4A),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF353B4A),
                         fontWeight: FontWeight.w500,
                       ),
                     ),

@@ -16,8 +16,11 @@ class _MyListingScreenState extends State<MyListingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Get.back(),
@@ -36,13 +39,16 @@ class _MyListingScreenState extends State<MyListingScreen> {
         ),
         centerTitle: false,
         titleSpacing: 0,
-        backgroundColor: const Color(0xFFF4F8F8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
 
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.tune_rounded, color: Color(0xFF5A6375)),
+            icon: Icon(
+              Icons.tune_rounded,
+              color: isDark ? Colors.white70 : const Color(0xFF5A6375),
+            ),
           ),
         ],
       ),
@@ -71,11 +77,15 @@ class _MyListingScreenState extends State<MyListingScreen> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFF2FC1BE)
-                            : Colors.white,
+                            : theme.cardColor,
                         borderRadius: BorderRadius.circular(30),
                         border: isSelected
                             ? null
-                            : Border.all(color: const Color(0xFFE5E7EB)),
+                            : Border.all(
+                                color: isDark
+                                    ? Colors.white24
+                                    : const Color(0xFFE5E7EB),
+                              ),
                       ),
                       child: Text(
                         _filters[index],
@@ -84,7 +94,9 @@ class _MyListingScreenState extends State<MyListingScreen> {
                           fontWeight: FontWeight.w500,
                           color: isSelected
                               ? Colors.white
-                              : const Color(0xFF5A6375),
+                              : isDark
+                                  ? Colors.white70
+                                  : const Color(0xFF5A6375),
                         ),
                       ),
                     ),
@@ -179,13 +191,16 @@ class ListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -272,7 +287,7 @@ class ListingCard extends StatelessWidget {
                             style: GoogleFonts.outfit(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: const Color(0xFF111827),
+                              color: isDark ? Colors.white : const Color(0xFF111827),
                             ),
                           ),
                           if (titleLine2 != null)
@@ -281,7 +296,7 @@ class ListingCard extends StatelessWidget {
                               style: GoogleFonts.outfit(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: const Color(0xFF111827),
+                                color: isDark ? Colors.white : const Color(0xFF111827),
                               ),
                             ),
                         ],
@@ -325,7 +340,7 @@ class ListingCard extends StatelessWidget {
                       style: GoogleFonts.outfit(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
-                        color: const Color(0xFF6B7280),
+                        color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                       ),
                     ),
                   ],
@@ -339,8 +354,9 @@ class ListingCard extends StatelessWidget {
                         icon: const Icon(Icons.edit_outlined, size: 18),
                         label: const Text('Edit'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF374151),
-                          side: const BorderSide(color: Color(0xFFE5E7EB)),
+                          foregroundColor: isDark ? Colors.white : const Color(0xFF374151),
+                          side: BorderSide(
+                              color: isDark ? Colors.white24 : const Color(0xFFE5E7EB)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

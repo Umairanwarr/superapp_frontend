@@ -8,6 +8,7 @@ import '../hotel_detail_screen.dart';
 import '../property_detail_screen.dart';
 import '../wishlist_screen.dart';
 import '../property_search_screen.dart';
+import '../my_listing_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,7 +33,9 @@ class HomeScreen extends StatelessWidget {
                   Obx(() {
                     final isProperty = controller.categoryIndex.value == 1;
                     return _SectionHeader(
-                      title: isProperty ? 'Featured Properties' : 'Featured Hotels',
+                      title: isProperty
+                          ? 'Featured Properties'
+                          : 'Featured Hotels',
                       actionText: 'See All',
                       onActionTap: () {},
                     );
@@ -317,19 +320,14 @@ class _CategoryChip extends StatelessWidget {
               iconAssetPath,
               width: 22,
               height: 22,
-              color: selected
-                  ? theme.colorScheme.primary
-                  : Colors.white.withOpacity(0.9),
+              color: selected ? theme.colorScheme.primary : Colors.white,
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: selected
-                    ? theme.colorScheme.primary
-                    : Colors.white.withOpacity(0.9),
-                fontWeight: FontWeight.w600,
                 fontSize: 18,
+                color: selected ? theme.colorScheme.primary : Colors.white,
               ),
             ),
           ],
@@ -351,7 +349,7 @@ class _SearchBar extends StatelessWidget {
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(26),
       ),
       child: Row(
@@ -359,31 +357,35 @@ class _SearchBar extends StatelessWidget {
           const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
-            child: Obx(() => TextField(
-              onSubmitted: (value) {
-                if (controller.categoryIndex.value == 1) {
-                  Get.to(() => const PropertySearchScreen());
-                } else {
-                  Get.to(() => const HotelSearchScreen());
-                }
-              },
-              cursorColor: theme.colorScheme.primary,
-              selectionControls: materialTextSelectionControls,
-              decoration: InputDecoration(
-                hintText: controller.categoryIndex.value == 1 ? 'Search properties...' : 'Search hotels...',
-                hintStyle: theme.textTheme.titleMedium?.copyWith(
-                  color: const Color(0xFF9AA0AF),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
+            child: Obx(
+              () => TextField(
+                onSubmitted: (value) {
+                  if (controller.categoryIndex.value == 1) {
+                    Get.to(() => const PropertySearchScreen());
+                  } else {
+                    Get.to(() => const HotelSearchScreen());
+                  }
+                },
+                cursorColor: theme.colorScheme.primary,
+                selectionControls: materialTextSelectionControls,
+                decoration: InputDecoration(
+                  hintText: controller.categoryIndex.value == 1
+                      ? 'Search properties...'
+                      : 'Search hotels...',
+                  hintStyle: theme.textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF9AA0AF),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
                 ),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
               ),
-            )),
+            ),
           ),
           GestureDetector(
             onTap: () {
@@ -427,7 +429,9 @@ class _RecommendationCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFDDF4F4),
+        color: theme.brightness == Brightness.dark
+            ? theme.cardColor
+            : const Color(0xFFDDF4F4),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: theme.colorScheme.primary.withOpacity(0.55),
@@ -461,7 +465,9 @@ class _RecommendationCard extends StatelessWidget {
                 Text(
                   'AI Recommendations Ready',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFF747477),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF747477),
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
                   ),
@@ -470,7 +476,9 @@ class _RecommendationCard extends StatelessWidget {
                 Text(
                   'We found 12 perfect matches based\non your preferences',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF747477),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.7)
+                        : const Color(0xFF747477),
                     height: 1.25,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -526,7 +534,7 @@ class _SectionHeader extends StatelessWidget {
           child: Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: const Color(0xFF1D2330),
+              color: theme.textTheme.titleMedium?.color,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -558,7 +566,9 @@ class _FeaturedHotelsList extends StatelessWidget {
       height: 270,
       child: Obx(() {
         final isProperty = controller.categoryIndex.value == 1;
-        final list = isProperty ? controller.featuredProperties : controller.featuredHotels;
+        final list = isProperty
+            ? controller.featuredProperties
+            : controller.featuredHotels;
 
         return ListView.separated(
           scrollDirection: Axis.horizontal,
@@ -622,7 +632,7 @@ class _FeaturedHotelCard extends StatelessWidget {
             Container(
               height: 240,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: const [
                   BoxShadow(
@@ -721,9 +731,12 @@ class _FeaturedHotelCard extends StatelessWidget {
                                       location,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: Colors.white.withOpacity(0.9),
-                                      ),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: Colors.white.withOpacity(
+                                              0.9,
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -779,7 +792,10 @@ class _FeaturedHotelCard extends StatelessWidget {
                 top: 14,
                 right: 14,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(8),
@@ -813,7 +829,7 @@ class _PropertyQuickActions extends StatelessWidget {
             title: 'My Properties',
             subtitle: 'Manage Listings',
             color: const Color(0xFF2FC1BE),
-            onTap: () {},
+            onTap: () => Get.to(() => const MyListingScreen()),
           ),
         ),
         const SizedBox(width: 16),
@@ -876,10 +892,7 @@ class _QuickActionCard extends StatelessWidget {
             Container(
               width: 48,
               height: 48,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: Icon(icon, color: Colors.white, size: 24),
             ),
             const SizedBox(height: 12),
@@ -914,7 +927,9 @@ class _AnnouncementCard extends StatelessWidget {
 
     return Obx(() {
       final isProperty = controller.categoryIndex.value == 1;
-      final announcement = isProperty ? controller.propertyAnnouncement : controller.announcement;
+      final announcement = isProperty
+          ? controller.propertyAnnouncement
+          : controller.announcement;
 
       return Container(
         width: double.infinity,
@@ -930,8 +945,11 @@ class _AnnouncementCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: (isProperty ? const Color(0xFF21C96A) : const Color(0xFFFF7A2F))
-                  .withOpacity(0.3),
+              color:
+                  (isProperty
+                          ? const Color(0xFF21C96A)
+                          : const Color(0xFFFF7A2F))
+                      .withOpacity(0.3),
               blurRadius: 14,
               offset: const Offset(0, 8),
             ),

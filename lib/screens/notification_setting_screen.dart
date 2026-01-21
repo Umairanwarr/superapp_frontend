@@ -132,11 +132,12 @@ class NotificationsSettingsScreen extends StatelessWidget {
 
                   const SizedBox(height: 14),
 
-                  _SectionTitle('In-App Notifications'),
                   SizedBox(height: 10),
                   _Card(
                     child: _NavRow(
-                      title: 'Banners, Sounds, Vibrate',
+                      title: 'In-App Notifications',
+                      subTitle: 'Banners, Sounds, Vibrate',
+
                       onTap: controller.openInAppNotifications,
                     ),
                   ),
@@ -150,8 +151,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                         Obx(
                           () => _SwitchRow(
                             title: 'Show Preview',
-                            subtitle:
-                                'Preview message text inside new message notifications.',
+
                             value: controller.showPreview.value,
                             onChanged: (v) => controller.showPreview.value = v,
                             dense: false,
@@ -160,21 +160,39 @@ class NotificationsSettingsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                    child: Text(
+                      'Preview message text inside new message notifications.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(height: 16),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Reset Notification Settings',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: const Color(0xFFEF4444),
-                          fontWeight: FontWeight.w700,
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: _Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          // horizontal: 20,
+                          vertical: 10,
+                        ),
+                        child: Align(
+                          alignment: AlignmentGeometry.centerLeft,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Reset Notification Settings',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: const Color(0xFFEF4444),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -219,14 +237,15 @@ class _Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: const [
+        color: theme.cardColor,
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0F000000),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 16,
-            offset: Offset(0, 8),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -240,7 +259,12 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Divider(height: 1, thickness: 1, color: Color(0xFFF2F2F2));
+    final theme = Theme.of(context);
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: Get.isDarkMode ? Colors.white24 : const Color(0xFFF2F2F2),
+    );
   }
 }
 
@@ -275,7 +299,7 @@ class _SwitchRow extends StatelessWidget {
                     title,
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: enabled
-                          ? const Color(0xFF1D2330)
+                          ? (Get.isDarkMode ? Colors.white : const Color(0xFF1D2330))
                           : const Color(0xFF9AA0AF),
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
@@ -288,7 +312,7 @@ class _SwitchRow extends StatelessWidget {
                         title,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: enabled
-                              ? const Color(0xFF1D2330)
+                              ? (Get.isDarkMode ? Colors.white : const Color(0xFF1D2330))
                               : const Color(0xFF9AA0AF),
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -310,7 +334,7 @@ class _SwitchRow extends StatelessWidget {
           Switch(
             value: value,
             onChanged: enabled ? onChanged : null,
-            activeColor: Color(0xFF34C759),
+            activeThumbColor: Color(0xFF34C759),
           ),
         ],
       ),
@@ -319,9 +343,15 @@ class _SwitchRow extends StatelessWidget {
 }
 
 class _NavRow extends StatelessWidget {
-  const _NavRow({required this.title, required this.onTap, this.trailingText});
+  const _NavRow({
+    required this.title,
+    required this.onTap,
+    this.trailingText,
+    this.subTitle,
+  });
 
   final String title;
+  final String? subTitle;
   final String? trailingText;
   final VoidCallback onTap;
 
@@ -334,17 +364,35 @@ class _NavRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: const Color(0xFF1D2330),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+
+                  if (subTitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subTitle!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF9AA0AF),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
+
             if (trailingText != null) ...[
               Text(
                 trailingText!,
@@ -355,6 +403,7 @@ class _NavRow extends StatelessWidget {
               ),
               const SizedBox(width: 8),
             ],
+
             const Icon(Icons.chevron_right_rounded, color: Color(0xFF9AA0AF)),
           ],
         ),

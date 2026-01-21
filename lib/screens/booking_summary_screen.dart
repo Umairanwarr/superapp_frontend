@@ -11,9 +11,10 @@ class BookingSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isProperty = bookingType == 'property';
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -111,7 +112,9 @@ class BookingSummaryScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE3F9D6),
+                          color: theme.brightness == Brightness.dark
+                              ? const Color(0xFF43A047).withOpacity(0.1)
+                              : const Color(0xFFE3F9D6),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -146,7 +149,7 @@ class BookingSummaryScreen extends StatelessWidget {
         ),
       ),
       bottomSheet: Container(
-        color: const Color(0xFFF7FAFA),
+        color: theme.scaffoldBackgroundColor,
         padding: const EdgeInsets.all(20),
         child: SafeArea(
           child: Row(
@@ -157,16 +160,22 @@ class BookingSummaryScreen extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFFB0B0B0)),
+                      backgroundColor: theme.cardColor,
+                      side: BorderSide(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : const Color(0xFFB0B0B0),
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Cancel',
                       style: TextStyle(
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -228,12 +237,18 @@ class _SummaryRoomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF2FC1BE), width: 1),
+        border: Border.all(
+          color: theme.brightness == Brightness.dark
+              ? const Color(0xFF2FC1BE).withOpacity(0.3)
+              : const Color(0xFF2FC1BE),
+          width: 1,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,18 +270,22 @@ class _SummaryRoomCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1D2330),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF1D2330),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   specs,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF878787),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white70
+                        : const Color(0xFF878787),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -281,10 +300,12 @@ class _SummaryRoomCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const TextSpan(
+                      TextSpan(
                         text: '/night',
                         style: TextStyle(
-                          color: Color(0xFF878787),
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white70
+                              : const Color(0xFF878787),
                           fontSize: 14,
                         ),
                       ),
@@ -313,10 +334,13 @@ class _DateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0x292FC1BE),
+        color: theme.brightness == Brightness.dark
+            ? const Color(0xFF2FC1BE).withOpacity(0.1)
+            : const Color(0x292FC1BE),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFF2FC1BE), width: 1.5),
         boxShadow: [
@@ -335,10 +359,12 @@ class _DateCard extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF878787),
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white70
+                      : const Color(0xFF878787),
                 ),
               ),
               Icon(icon, color: const Color(0xFF2FC1BE), size: 24),
@@ -347,10 +373,12 @@ class _DateCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             date,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D2330),
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : const Color(0xFF1D2330),
             ),
           ),
         ],
@@ -364,12 +392,17 @@ class _GuestDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(
+          color: theme.brightness == Brightness.dark
+              ? Colors.white24
+              : const Color(0xFFE0E0E0),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -380,12 +413,13 @@ class _GuestDetailsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildCounterRow('Number of Adults', 'Ages 12+', 2),
+          _buildCounterRow('Number of Adults', 'Ages 12+', 2, theme),
           const SizedBox(height: 20),
           _buildCounterRow(
             'Number of Adults',
             'Ages 0-11',
             1,
+            theme,
           ), // Using 'Adults' to match image typo? Or fix? Image says "Number of Adults" twice. I'll match text but it's weird.
           // Wait, actually user says "divide it into widgets like ... adults".
           // I'll stick to image text for "pixel perfect".
@@ -394,7 +428,12 @@ class _GuestDetailsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCounterRow(String label, String subLabel, int count) {
+  Widget _buildCounterRow(
+    String label,
+    String subLabel,
+    int count,
+    ThemeData theme,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -403,33 +442,52 @@ class _GuestDetailsCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1D2330),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF1D2330),
               ),
             ),
             const SizedBox(height: 4),
             Text(
               subLabel,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF878787)),
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : const Color(0xFF878787),
+              ),
             ),
           ],
         ),
         Row(
           children: [
-            _CounterButton(icon: Icons.remove, color: const Color(0xFFBEEBEA)),
+            _CounterButton(
+              icon: Icons.remove,
+              color: theme.brightness == Brightness.dark
+                  ? const Color(0xFF2FC1BE).withOpacity(0.2)
+                  : const Color(0xFFBEEBEA),
+            ),
             const SizedBox(width: 14),
             Text(
               '$count',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1D2330),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF1D2330),
               ),
             ),
             const SizedBox(width: 14),
-            _CounterButton(icon: Icons.add, color: const Color(0xFFBEEBEA)),
+            _CounterButton(
+              icon: Icons.add,
+              color: theme.brightness == Brightness.dark
+                  ? const Color(0xFF2FC1BE).withOpacity(0.2)
+                  : const Color(0xFFBEEBEA),
+            ),
           ],
         ),
       ],
@@ -459,15 +517,18 @@ class _PromoCodeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Promo Code',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 10),
@@ -478,14 +539,22 @@ class _PromoCodeSection extends StatelessWidget {
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFE0E0E0)),
+                  border: Border.all(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white24
+                        : const Color(0xFFE0E0E0),
+                  ),
                 ),
                 alignment: Alignment.centerLeft,
-                child: const Text(
+                child: Text(
                   'Promo code',
-                  style: TextStyle(color: Color(0xFF9E9E9E)),
+                  style: TextStyle(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white60
+                        : const Color(0xFF9E9E9E),
+                  ),
                 ),
               ),
             ),
@@ -520,23 +589,26 @@ class _PriceDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Price Details',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 12),
-        _buildPriceRow('2 Room x 3 Nights', '\$1590'),
+        _buildPriceRow('2 Room x 3 Nights', '\$1590', theme),
         const SizedBox(height: 8),
-        _buildPriceRow('Taxes & Fees (10%)', '\$159'),
+        _buildPriceRow('Taxes & Fees (10%)', '\$159', theme),
         const SizedBox(height: 8),
-        _buildPriceRow('Service Charge', '\$25'),
+        _buildPriceRow('Service Charge', '\$25', theme),
         const SizedBox(height: 16),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -550,7 +622,11 @@ class _PriceDetailsSection extends StatelessWidget {
                   width: dashWidth,
                   height: dashHeight,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.grey[300]),
+                    decoration: BoxDecoration(
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.grey[700]
+                          : Colors.grey[300],
+                    ),
                   ),
                 );
               }),
@@ -563,24 +639,28 @@ class _PriceDetailsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRow(String label, String amount) {
+  Widget _buildPriceRow(String label, String amount, ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: Color(0xFF878787),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white70
+                : const Color(0xFF878787),
             fontWeight: FontWeight.w500,
           ),
         ),
         Text(
           amount,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
       ],
@@ -593,33 +673,43 @@ class _TotalSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const Text(
+        Text(
           'Total',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: const [
+          children: [
             Text(
               '\$1774',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2FC1BE),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF2FC1BE),
               ),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
               'Includes all taxes',
-              style: TextStyle(fontSize: 10, color: Color(0xFF878787)),
+              style: TextStyle(
+                fontSize: 10,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : const Color(0xFF878787),
+              ),
             ),
           ],
         ),
@@ -634,12 +724,18 @@ class _PropertySummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF2FC1BE), width: 1),
+        border: Border.all(
+          color: theme.brightness == Brightness.dark
+              ? const Color(0xFF2FC1BE).withOpacity(0.3)
+              : const Color(0xFF2FC1BE),
+          width: 1,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -659,22 +755,35 @@ class _PropertySummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Luxury Villa',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1D2330),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF1D2330),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Row(
-                  children: const [
-                    Icon(Icons.location_on, size: 14, color: Color(0xFF878787)),
-                    SizedBox(width: 4),
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      size: 14,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF878787),
+                    ),
+                    const SizedBox(width: 4),
                     Text(
                       'Dubai Marina',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF878787)),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white70
+                            : const Color(0xFF878787),
+                      ),
                     ),
                   ],
                 ),
@@ -689,15 +798,17 @@ class _PropertySummaryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Row(
-                  children: const [
-                    Icon(Icons.star, color: Color(0xFFFFB300), size: 18),
-                    SizedBox(width: 4),
+                  children: [
+                    const Icon(Icons.star, color: Color(0xFFFFB300), size: 18),
+                    const SizedBox(width: 4),
                     Text(
                       '4.8',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                       ),
                     ),
                   ],
@@ -716,23 +827,26 @@ class _PropertyPriceDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Payment Details',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 14),
-        _buildPriceRow('Purchase Price', '\$1,250,000.00'),
+        _buildPriceRow('Purchase Price', '\$1,250,000.00', theme),
         const SizedBox(height: 10),
-        _buildPriceRow('Closing Costs Estimate', '\$18,500.00'),
+        _buildPriceRow('Closing Costs Estimate', '\$18,500.00', theme),
         const SizedBox(height: 10),
-        _buildPriceRow('Agent Fees', '\$37,500.00'),
+        _buildPriceRow('Agent Fees', '\$37,500.00', theme),
         const SizedBox(height: 18),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -746,7 +860,11 @@ class _PropertyPriceDetailsSection extends StatelessWidget {
                   width: dashWidth,
                   height: dashHeight,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.grey[300]),
+                    decoration: BoxDecoration(
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.grey[700]
+                          : Colors.grey[300],
+                    ),
                   ),
                 );
               }),
@@ -759,24 +877,28 @@ class _PropertyPriceDetailsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRow(String label, String amount) {
+  Widget _buildPriceRow(String label, String amount, ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: Color(0xFF878787),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white70
+                : const Color(0xFF878787),
             fontWeight: FontWeight.w500,
           ),
         ),
         Text(
           amount,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
       ],
@@ -789,14 +911,15 @@ class _PropertyTotalSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               'Down Payment Required',
               style: TextStyle(
                 fontSize: 16,
@@ -804,8 +927,8 @@ class _PropertyTotalSection extends StatelessWidget {
                 color: Color(0xFF2FC1BE),
               ),
             ),
-            SizedBox(height: 4),
-            Text(
+            const SizedBox(height: 4),
+            const Text(
               '(20%)',
               style: TextStyle(
                 fontSize: 14,
@@ -813,28 +936,40 @@ class _PropertyTotalSection extends StatelessWidget {
                 color: Color(0xFF2FC1BE),
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(
               'Due today to secure property',
-              style: TextStyle(fontSize: 12, color: Color(0xFF878787)),
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : const Color(0xFF878787),
+              ),
             ),
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: const [
+          children: [
             Text(
               '\$1,306,000',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2FC1BE),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF2FC1BE),
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               'Includes all taxes',
-              style: TextStyle(fontSize: 11, color: Color(0xFF878787)),
+              style: TextStyle(
+                fontSize: 11,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : const Color(0xFF878787),
+              ),
             ),
           ],
         ),

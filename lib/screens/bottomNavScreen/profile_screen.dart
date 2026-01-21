@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/profile_controller.dart';
-import 'package:superapp/controllers/main_screen_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -40,15 +39,6 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: controller.back,
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
-                            size: 25,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
                         Text(
                           'Profile',
                           style: theme.textTheme.titleMedium?.copyWith(
@@ -162,7 +152,6 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 _CardGroup(
                   children: [
-                    const SizedBox(height: 8),
                     _MenuTile(
                       icon: Icons.edit_outlined,
                       title: 'Edit Profile',
@@ -281,7 +270,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       height: 78,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(18),
         boxShadow: const [
           BoxShadow(
@@ -345,7 +334,7 @@ class _CardGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
@@ -360,7 +349,13 @@ class _CardGroup extends StatelessWidget {
           for (int i = 0; i < children.length; i++) ...[
             children[i],
             if (i != children.length - 1)
-              const Divider(height: 1, thickness: 1, color: Color(0xFFF2F2F2)),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white10
+                    : const Color(0xFFF2F2F2),
+              ),
           ],
         ],
       ),
@@ -370,7 +365,8 @@ class _CardGroup extends StatelessWidget {
 
 class _MenuTile extends StatelessWidget {
   const _MenuTile({
-    required this.icon,
+    this.icon,
+
     required this.title,
     required this.onTap,
     this.trailing,
@@ -378,7 +374,8 @@ class _MenuTile extends StatelessWidget {
     this.iconColor,
   });
 
-  final IconData icon;
+  final IconData? icon;
+
   final String title;
   final VoidCallback onTap;
   final Widget? trailing;
@@ -389,6 +386,7 @@ class _MenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final effectiveBg = (iconColor ?? primary).withOpacity(0.10);
 
     return InkWell(
       onTap: onTap,
@@ -400,19 +398,23 @@ class _MenuTile extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.10),
+                color: effectiveBg,
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Icon(icon, size: 18, color: iconColor ?? primary),
+              child: Icon(
+                icon ?? Icons.circle,
+                size: 18,
+                color: iconColor ?? primary,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: titleColor ?? const Color(0xFF1D2330),
-                  fontWeight: FontWeight.w700,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: titleColor ?? theme.textTheme.bodyLarge?.color,
+                  fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),
               ),

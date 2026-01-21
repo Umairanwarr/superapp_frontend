@@ -9,6 +9,7 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NotificationController());
     final theme = Theme.of(context);
+    final isDark = Get.isDarkMode;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -35,7 +36,7 @@ class NotificationScreen extends StatelessWidget {
                     'Notification',
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                   ),
                 ],
@@ -59,7 +60,7 @@ class NotificationScreen extends StatelessWidget {
                       'Empty',
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                       ),
                     ),
 
@@ -69,7 +70,7 @@ class NotificationScreen extends StatelessWidget {
                       "You don't have any notifications at this time",
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF6B7280),
+                        color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                         fontWeight: FontWeight.w500,
                         height: 1.3,
                       ),

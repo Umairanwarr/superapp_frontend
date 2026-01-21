@@ -30,8 +30,9 @@ class _BookingScreenState extends State<BookingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      color: const Color(0xFFF4F8F8),
+      color: theme.scaffoldBackgroundColor,
       child: SafeArea(
         child: Column(
           children: [
@@ -40,15 +41,6 @@ class _BookingScreenState extends State<BookingScreen>
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Color(0xFF2FC1BE),
-                        size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
                   const Text(
                     'My Bookings',
                     style: TextStyle(
@@ -67,19 +59,19 @@ class _BookingScreenState extends State<BookingScreen>
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8E8E8),
+                color: theme.brightness == Brightness.dark ? const Color(0xFF2C2C2E) : const Color(0xFFE8E8E8),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(26),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
-                labelColor: const Color(0xFF1D2330),
-                unselectedLabelColor: const Color(0xFF1D2330),
+                labelColor: theme.textTheme.bodyMedium?.color,
+                unselectedLabelColor: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1D2330),
                 labelStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

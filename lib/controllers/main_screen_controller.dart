@@ -3,10 +3,6 @@ import 'package:superapp/screens/notification_screen.dart';
 
 import '../modal/announcement_modal.dart';
 import '../modal/hotel_modal.dart';
-import '../screens/bottomNavScreen/booking_screen.dart';
-import '../screens/bottomNavScreen/explore_screen.dart';
-import '../screens/bottomNavScreen/profile_screen.dart';
-import '../screens/bottomNavScreen/chat_screen.dart';
 
 class MainScreenController extends GetxController {
   final RxInt bottomIndex = 0.obs;

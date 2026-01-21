@@ -17,11 +17,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final bool isProperty = widget.bookingType == 'property';
     final String totalAmount = isProperty ? '\$1,774,000' : '\$1774';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -187,9 +188,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : const Color(0xFFE0E0E0),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,12 +211,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Text(
+                            Text(
                               'Card Details',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF1D2330),
+                                color: theme.textTheme.titleMedium?.color,
                               ),
                             ),
                           ],
@@ -281,21 +286,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   const SizedBox(height: 24),
 
                   // Saved Cards
-                  const Text(
+                  Text(
                     'Saved Cards',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : const Color(0xFFE0E0E0),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -318,21 +329,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               '.... .... .... 4242',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF1D2330),
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF1D2330),
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               'Expires 12/25',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Color(0xFF878787),
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white70
+                                    : const Color(0xFF878787),
                               ),
                             ),
                           ],
@@ -347,7 +362,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC9FACF).withOpacity(0.44),
+                      color: theme.brightness == Brightness.dark
+                          ? const Color(0xFF22C55E).withOpacity(0.15)
+                          : const Color(0xFFC9FACF).withOpacity(0.44),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -374,16 +391,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             const SizedBox(width: 14),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
                                   'Wallet Balance',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xFF6B7280),
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.white70
+                                        : const Color(0xFF6B7280),
                                   ),
                                 ),
-                                Text(
+                                const Text(
                                   '\$2950.00',
                                   style: TextStyle(
                                     fontSize: 30,
@@ -396,11 +415,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           'You have sufficient balance to complete this booking.',
                           style: TextStyle(
                             fontSize: 15,
-                            color: Color(0xFF5A606A),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF5A606A),
                           ),
                         ),
                       ],
@@ -416,21 +437,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : const Color(0xFFE0E0E0),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
                           'Remaining balance after payment:',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFF1D2330),
                           ),
                         ),
-                        Text(
+                        const Text(
                           '\$1176',
                           style: TextStyle(
                             fontSize: 18,
@@ -459,33 +486,47 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       horizontal: 20,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : const Color(0xFFE0E0E0),
+                      ),
                     ),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.apple, size: 50, color: Colors.black),
-                            SizedBox(width: 4),
+                          children: [
+                            Icon(
+                              Icons.apple,
+                              size: 50,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                            const SizedBox(width: 4),
                             Text(
                               'Pay',
                               style: TextStyle(
                                 fontSize: 42,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'Fast and secure payment with Apple Pay',
                           style: TextStyle(
                             fontSize: 15,
-                            color: Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF1D2330),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -498,7 +539,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             },
 
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
@@ -506,19 +549,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.apple,
                                   size: 24,
-                                  color: Colors.white,
+                                  color: theme.brightness == Brightness.dark
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
                                   'Pay with Apple Pay',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.black
+                                        : Colors.white,
                                   ),
                                 ),
                               ],
@@ -535,20 +582,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFFE0E0E0).withOpacity(0.5),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white10
+                          : const Color(0xFFE0E0E0).withOpacity(0.5),
                     ),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 2),
                         child: Icon(
                           Icons.lock_outline,
-                          color: const Color(0xFF2FC1BE),
+                          color: Color(0xFF2FC1BE),
                           size: 24,
                         ),
                       ),
@@ -556,21 +605,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               'Secure Payment',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF1D2330),
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF1D2330),
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               'Your payment information is encrypted and secure. We never store your full card details.',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Color(0xFF9CA3AF),
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white60
+                                    : const Color(0xFF9CA3AF),
                                 height: 1.4,
                               ),
                             ),
@@ -585,10 +638,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 // Terms text
                 RichText(
                   textAlign: TextAlign.start,
-                  text: const TextSpan(
+                  text: TextSpan(
                     style: TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF1D2330),
                       height: 1.4,
                     ),
                     children: [
@@ -680,6 +735,8 @@ class _PaymentTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? const Color(0xFF28C2C0)
+                : Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF2C2C2E)
                 : const Color(0xFFFBF4F4),
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
@@ -717,12 +774,15 @@ class _LabelInfo extends StatelessWidget {
   const _LabelInfo(this.text);
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF1D2330),
+        color: Get.isDarkMode
+            ? Colors.white
+            : const Color(0xFF1D2330),
       ),
     );
   }
@@ -733,12 +793,17 @@ class _PaymentTextField extends StatelessWidget {
   const _PaymentTextField({required this.hint});
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(
+          color: Get.isDarkMode
+              ? Colors.white24
+              : const Color(0xFFE0E0E0),
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       alignment: Alignment.centerLeft,
@@ -751,17 +816,19 @@ class _PaymentTextField extends StatelessWidget {
           errorBorder: InputBorder.none,
           focusedErrorBorder: InputBorder.none,
           hintText: hint,
-          hintStyle: const TextStyle(
-            color: Color(0xFFBDBDBD),
+          hintStyle: TextStyle(
+            color: Get.isDarkMode
+                ? Colors.white38
+                : const Color(0xFFBDBDBD),
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
           isDense: true,
           contentPadding: EdgeInsets.zero,
         ),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
-          color: Color(0xFF1D2330),
+          color: theme.textTheme.bodyMedium?.color,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -775,6 +842,7 @@ class _PayPalSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -786,12 +854,14 @@ class _PayPalSection extends StatelessWidget {
               SvgPicture.asset('assets/logos_paypal.svg', height: 50),
               const SizedBox(width: 8),
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   children: [
                     TextSpan(
                       text: 'Pay',
                       style: TextStyle(
-                        color: Color(0xFF1D2330),
+                        color: Get.isDarkMode
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
@@ -799,7 +869,9 @@ class _PayPalSection extends StatelessWidget {
                     TextSpan(
                       text: 'Pal',
                       style: TextStyle(
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
@@ -813,12 +885,14 @@ class _PayPalSection extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Saved Accounts
-        const Text(
+        Text(
           'Saved Accounts',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 12),
@@ -827,9 +901,13 @@ class _PayPalSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE0E0E0)),
+            border: Border.all(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white24
+                  : const Color(0xFFE0E0E0),
+            ),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -846,19 +924,26 @@ class _PayPalSection extends StatelessWidget {
               const SizedBox(width: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Alex Hales',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF1D2330),
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'alex@gmail.com',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF878787)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF878787),
+                    ),
                   ),
                 ],
               ),
@@ -868,12 +953,14 @@ class _PayPalSection extends StatelessWidget {
         const SizedBox(height: 20),
 
         // Add Account
-        const Text(
+        Text(
           'Add Account',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 12),
@@ -937,6 +1024,7 @@ class _StripeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -945,12 +1033,14 @@ class _StripeSection extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Saved Accounts
-        const Text(
+        Text(
           'Saved Accounts',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 12),
@@ -959,9 +1049,13 @@ class _StripeSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE0E0E0)),
+            border: Border.all(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white24
+                  : const Color(0xFFE0E0E0),
+            ),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -978,19 +1072,26 @@ class _StripeSection extends StatelessWidget {
               const SizedBox(width: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Alex Hales',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF1D2330),
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'alex@gmail.com',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF878787)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF878787),
+                    ),
                   ),
                 ],
               ),
@@ -1000,12 +1101,14 @@ class _StripeSection extends StatelessWidget {
         const SizedBox(height: 20),
 
         // Add Account
-        const Text(
+        Text(
           'Add Account',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 12),

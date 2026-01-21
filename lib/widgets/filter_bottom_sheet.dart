@@ -25,14 +25,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(32),
           topRight: Radius.circular(32),
         ),
@@ -46,7 +47,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               width: 60,
               height: 5,
               decoration: BoxDecoration(
-                color: const Color(0xFFCFD6DC),
+                color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFCFD6DC),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -58,14 +59,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             children: [
               IconButton(
                 onPressed: () => Get.back(),
-                icon: const Icon(Icons.close, color: Color(0xFF1D2330), size: 24),
+                icon: Icon(Icons.close, color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330), size: 24),
               ),
-              const Text(
+              Text(
                 'Filter options',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1D2330),
+                  color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                 ),
               ),
               TextButton(
@@ -96,12 +97,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Number of Guests
-                  const Text(
+                  Text(
                     'Number of Guests',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -116,45 +117,45 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       children: [
                         _circularButton(Icons.remove, () {
                           if (adults > 1) setState(() => adults--);
-                        }),
+                        }, theme),
                         Text(
                           '$adults Adults, $children Child',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                           ),
                         ),
-                        _circularButton(Icons.add, () => setState(() => adults++)),
+                        _circularButton(Icons.add, () => setState(() => adults++), theme),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _counterRow('Adults', adults, (val) => setState(() => adults = val)),
-                  _counterRow('Childrens', children, (val) => setState(() => children = val)),
+                  _counterRow('Adults', adults, (val) => setState(() => adults = val), theme),
+                  _counterRow('Childrens', children, (val) => setState(() => children = val), theme),
                   
                   const SizedBox(height: 32),
                   // Price Range
-                  const Text(
+                  Text(
                     'Price Range',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('\$50',
                           style: TextStyle(
-                              color: Color(0xFF9AA0AF),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                               fontWeight: FontWeight.w600,
                               fontSize: 16)),
                       Text('\$1000+',
                           style: TextStyle(
-                              color: Color(0xFF9AA0AF),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                               fontWeight: FontWeight.w600,
                               fontSize: 16)),
                     ],
@@ -163,7 +164,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   SliderTheme(
                     data: SliderThemeData(
                       activeTrackColor: const Color(0xFF2FC1BE).withOpacity(0.3),
-                      inactiveTrackColor: const Color(0xFFE8F1F1),
+                      inactiveTrackColor: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8F1F1),
                       thumbColor: const Color(0xFF2FC1BE),
                       overlayColor: const Color(0xFF2FC1BE).withOpacity(0.2),
                       trackHeight: 6,
@@ -181,12 +182,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
                   const SizedBox(height: 24),
                   // Calendar
-                  const Text(
+                  Text(
                     'Check-in/Check-out Dates',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -194,38 +195,38 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFADAEBC), width: 1.5),
+                      border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFADAEBC), width: 1.5),
                     ),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'December',
                           style: TextStyle(
-                            color: Color(0xFF9AA0AF),
+                            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildCalendarGrid(),
+                        _buildCalendarGrid(theme),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text('Check-in', style: TextStyle(color: Color(0xFF9AA0AF), fontSize: 14, fontWeight: FontWeight.w500)),
-                                SizedBox(height: 4),
-                                Text('Dec 13', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                              children: [
+                                Text('Check-in', style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF), fontSize: 14, fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 4),
+                                Text('Dec 13', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330))),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
-                              children: const [
-                                Text('Check-out', style: TextStyle(color: Color(0xFF9AA0AF), fontSize: 14, fontWeight: FontWeight.w500)),
-                                SizedBox(height: 4),
-                                Text('Dec 16', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                              children: [
+                                Text('Check-out', style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF), fontSize: 14, fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 4),
+                                Text('Dec 16', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330))),
                               ],
                             ),
                           ],
@@ -236,12 +237,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
                   const SizedBox(height: 24),
                   // Amenities
-                  const Text(
+                  Text(
                     'Amenities',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -263,10 +264,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFFE8F1F1) : Colors.white,
+                            color: isSelected 
+                              ? (theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.2) : const Color(0xFFE8F1F1))
+                              : theme.cardColor,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: const Color(0xFF2FC1BE),
+                              color: isSelected ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white24 : Colors.transparent),
                               width: 1.5,
                             ),
                           ),
@@ -316,7 +319,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _buildCalendarGrid() {
+  Widget _buildCalendarGrid(ThemeData theme) {
     final List<String> weekdays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
     
     return Column(
@@ -328,7 +331,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               child: Text(
                 day,
                 style: TextStyle(
-                  color: (day == 'Sa' || day == 'Su') ? const Color(0xFF2FC1BE) : const Color(0xFF9AA0AF),
+                  color: (day == 'Sa' || day == 'Su') ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF)),
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),
@@ -361,7 +364,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 style: TextStyle(
                   color: (isSelectedStart || isSelectedEnd || inRange) 
                       ? const Color(0xFF1D2330) // Dark for selection
-                      : (isWeekend ? const Color(0xFF2FC1BE) : const Color(0xFF9AA0AF)),
+                      : (isWeekend ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF))),
                   fontWeight: (isSelectedStart || isSelectedEnd) ? FontWeight.w800 : FontWeight.w500,
                   fontSize: 14,
                 ),
@@ -373,13 +376,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _circularButton(IconData icon, VoidCallback onTap) {
+  Widget _circularButton(IconData icon, VoidCallback onTap, ThemeData theme) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
@@ -394,7 +397,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _counterRow(String label, int value, Function(int) onChanged) {
+  Widget _counterRow(String label, int value, Function(int) onChanged, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -402,28 +405,28 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1D2330),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
             ),
           ),
           Row(
             children: [
               _smallCounterButton(Icons.remove, () {
                 if (value > 0) onChanged(value - 1);
-              }),
+              }, theme),
               const SizedBox(width: 16),
               Text(
                 '$value',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1D2330),
+                  color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                 ),
               ),
               const SizedBox(width: 16),
-              _smallCounterButton(Icons.add, () => onChanged(value + 1)),
+              _smallCounterButton(Icons.add, () => onChanged(value + 1), theme),
             ],
           ),
         ],
@@ -431,14 +434,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _smallCounterButton(IconData icon, VoidCallback onTap) {
+  Widget _smallCounterButton(IconData icon, VoidCallback onTap, ThemeData theme) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: const Color(0xFFDDF4F4),
+          color: theme.brightness == Brightness.dark ? const Color(0xFF2C2C2E) : const Color(0xFFDDF4F4),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: const Color(0xFF2FC1BE), size: 18),

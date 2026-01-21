@@ -31,8 +31,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = Get.isDarkMode;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Get.back(),
@@ -51,7 +54,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         ),
         centerTitle: false, // Aligned to left
         titleSpacing: 0,
-        backgroundColor: const Color(0xFFF4F8F8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -67,22 +70,22 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               width: 140, // Approximate size from image
               height: 120,
               decoration: DottedDecoration(
-                color: const Color(0xFFD1D5DB),
+                color: isDark ? Colors.white24 : const Color(0xFFD1D5DB),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.camera_alt_outlined,
-                    color: Color(0xFF9CA3AF),
+                    color: isDark ? Colors.white54 : const Color(0xFF9CA3AF),
                     size: 28,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Add Photo',
                     style: GoogleFonts.outfit(
-                      color: const Color(0xFF9CA3AF),
+                      color: isDark ? Colors.white54 : const Color(0xFF9CA3AF),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -118,18 +121,18 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? const Color(0xFF2FC1BE)
-                              : Colors.white,
+                              : (isDark ? theme.cardColor : Colors.white),
                           borderRadius: BorderRadius.circular(30),
                           border: isSelected
                               ? null
-                              : Border.all(color: const Color(0xFFE5E7EB)),
+                              : Border.all(color: isDark ? Colors.white24 : const Color(0xFFE5E7EB)),
                         ),
                         child: Text(
                           type,
                           style: GoogleFonts.outfit(
                             color: isSelected
                                 ? Colors.white
-                                : const Color(0xFF4B5563),
+                                : (isDark ? Colors.white70 : const Color(0xFF4B5563)),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -185,18 +188,18 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       decoration: BoxDecoration(
                         color: _listingType == 'For Rent'
                             ? const Color(0xFF2FC1BE)
-                            : Colors.white,
+                            : (isDark ? theme.cardColor : Colors.white),
                         borderRadius: BorderRadius.circular(16),
                         border: _listingType == 'For Rent'
                             ? null
-                            : Border.all(color: const Color(0xFFE5E7EB)),
+                            : Border.all(color: isDark ? Colors.white24 : const Color(0xFFE5E7EB)),
                       ),
                       child: Text(
                         'For Rent',
                         style: GoogleFonts.outfit(
                           color: _listingType == 'For Rent'
                               ? Colors.white
-                              : const Color(0xFF4B5563),
+                              : (isDark ? Colors.white70 : const Color(0xFF4B5563)),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -266,18 +269,18 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     decoration: BoxDecoration(
                       color: isSelected
                           ? const Color(0xFF2FC1BE)
-                          : Colors.white,
+                          : (isDark ? theme.cardColor : Colors.white),
                       borderRadius: BorderRadius.circular(30),
                       border: isSelected
                           ? null
-                          : Border.all(color: const Color(0xFFE5E7EB)),
+                          : Border.all(color: isDark ? Colors.white24 : const Color(0xFFE5E7EB)),
                     ),
                     child: Text(
                       amenity,
                       style: GoogleFonts.outfit(
                         color: isSelected
                             ? Colors.white
-                            : const Color(0xFF4B5563),
+                            : (isDark ? Colors.white70 : const Color(0xFF4B5563)),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
@@ -326,42 +329,50 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   }
 
   Widget _buildTextField({required String hint, int maxLines = 1}) {
+    final isDark = Get.isDarkMode;
     return TextField(
       maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.outfit(
-          color: const Color(0xFF9CA3AF),
+          color: isDark ? Colors.white54 : const Color(0xFF9CA3AF),
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: isDark ? Theme.of(context).cardColor : Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF9CA3AF), width: 1),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white24 : const Color(0xFF9CA3AF),
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFF2FC1BE), width: 1.5),
         ),
       ),
-      style: GoogleFonts.outfit(color: const Color(0xFF1F2937), fontSize: 16),
+      style: GoogleFonts.outfit(
+        color: isDark ? Colors.white : const Color(0xFF1F2937),
+        fontSize: 16,
+      ),
     );
   }
 
   Widget _buildDetailInput({required String label, required String hint}) {
+    final isDark = Get.isDarkMode;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: GoogleFonts.outfit(
-            color: const Color(0xFF6B7280),
+            color: isDark ? Colors.white70 : const Color(0xFF6B7280),
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -382,7 +393,7 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text,
       style: GoogleFonts.outfit(
-        color: const Color(0xFF374151),
+        color: Get.isDarkMode ? Colors.white : const Color(0xFF374151),
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),

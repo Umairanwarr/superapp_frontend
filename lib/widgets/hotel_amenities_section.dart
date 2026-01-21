@@ -5,6 +5,7 @@ class HotelAmenitiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final List<Map<String, dynamic>> amenities = [
       {'label': 'Free Wifi', 'icon': Icons.wifi_rounded},
       {'label': 'Breakfast', 'icon': Icons.local_cafe_rounded},
@@ -15,12 +16,12 @@ class HotelAmenitiesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Amenities',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 20),
@@ -34,7 +35,7 @@ class HotelAmenitiesSection extends StatelessWidget {
                   height: 65,
                   decoration: BoxDecoration(
                     // 16% opacity teal background
-                    color: const Color(0x292FC1BE),
+                    color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.1) : const Color(0x292FC1BE),
                     borderRadius: BorderRadius.circular(20),
                     // full-opacity teal border
                     border: Border.all(
@@ -43,15 +44,15 @@ class HotelAmenitiesSection extends StatelessWidget {
                   ),
                   child: Icon(
                     item['icon'],
-                    color: const Color(0xFF1B8785),
+                    color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE) : const Color(0xFF1B8785),
                     size: 30,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   item['label'],
-                  style: const TextStyle(
-                    color: Color(0xFF9AA0AF),
+                  style: TextStyle(
+                    color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),

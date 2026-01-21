@@ -9,8 +9,9 @@ class BookingConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -22,12 +23,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Title
-                const Text(
+                Text(
                   'Booking Confirmed!',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1D2330),
+                    color: theme.textTheme.titleLarge?.color,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -170,19 +171,19 @@ class BookingConfirmationScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.home_outlined,
                           size: 22,
-                          color: Color(0xFF1D2330),
+                          color: theme.textTheme.bodyLarge?.color,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           'Back To Home',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1D2330),
+                            color: theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                       ],

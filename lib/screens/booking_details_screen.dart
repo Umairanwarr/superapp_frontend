@@ -9,8 +9,9 @@ class BookingDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -50,7 +51,7 @@ class BookingDetailsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFF5A606A),
+                          color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF5A606A),
                         ),
                       ),
                     ],
@@ -89,8 +90,8 @@ class BookingDetailsScreen extends StatelessWidget {
                   'assets/material-symbols_download-rounded.svg',
                   width: 20,
                   height: 20,
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFF1D2330),
+                  colorFilter: ColorFilter.mode(
+                    theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     BlendMode.srcIn,
                   ),
                 ),
@@ -114,15 +115,15 @@ class BookingDetailsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD0FBAF).withOpacity(0.57),
+                  color: theme.brightness == Brightness.dark ? const Color(0xFF1B5E20).withOpacity(0.3) : const Color(0xFFD0FBAF).withOpacity(0.57),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.check_circle_outline,
-                      color: Color(0xFF2E7D32),
+                      color: theme.brightness == Brightness.dark ? const Color(0xFF4CAF50) : const Color(0xFF2E7D32),
                       size: 20,
                     ),
                     const SizedBox(width: 12),
@@ -131,7 +132,7 @@ class BookingDetailsScreen extends StatelessWidget {
                         'Free cancellation until 24 hours before check-in. After that cancellation fees may apply.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: const Color(0xFF1B5E20),
+                          color: theme.brightness == Brightness.dark ? const Color(0xFFA5D6A7) : const Color(0xFF1B5E20),
                           height: 1.4,
                         ),
                       ),
@@ -169,15 +170,16 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isPrimary ? const Color(0xFF2FC1BE) : Colors.white,
+          color: isPrimary ? const Color(0xFF2FC1BE) : theme.cardColor,
           borderRadius: BorderRadius.circular(30),
-          border: isPrimary ? null : Border.all(color: const Color(0xFFE0E0E0)),
+          border: isPrimary ? null : Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE0E0E0)),
           boxShadow: isPrimary
               ? [
                   BoxShadow(
@@ -194,7 +196,7 @@ class _ActionButton extends StatelessWidget {
             if (iconWidget != null)
               IconTheme(
                 data: IconThemeData(
-                  color: iconColor ?? (isPrimary ? Colors.white : const Color(0xFF1D2330)),
+                  color: iconColor ?? (isPrimary ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330))),
                   size: 20,
                 ),
                 child: iconWidget!,
@@ -202,7 +204,7 @@ class _ActionButton extends StatelessWidget {
             else
               Icon(
                 icon,
-                color: iconColor ?? (isPrimary ? Colors.white : const Color(0xFF1D2330)),
+                color: iconColor ?? (isPrimary ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330))),
                 size: 20,
               ),
             const SizedBox(width: 8),
@@ -211,7 +213,7 @@ class _ActionButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: textColor ?? (isPrimary ? Colors.white : const Color(0xFF1D2330)),
+                color: textColor ?? (isPrimary ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330))),
               ),
             ),
           ],

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:superapp/screens/bottomNavScreen/edit_profile_screen.dart';
+import 'package:superapp/screens/my_wallet_screen.dart';
 import 'package:superapp/screens/notification_setting_screen.dart';
 import 'package:superapp/screens/security_setting_screen.dart';
-import 'package:superapp/screens/my_listing_screen.dart';
 
 class ProfileController extends GetxController {
   final bookings = 12.obs;
@@ -38,13 +38,13 @@ class ProfileController extends GetxController {
   void onIdentity() => Get.snackbar('Account', 'Identity Verification');
   void onPreferences() => Get.snackbar('Account', 'Preferences');
 
-  void onMyWallet() => Get.snackbar('Wallet', 'My Wallet');
+  void onMyWallet() => Get.to(() => MyWalletScreen());
   void onPaymentMethods() => Get.snackbar('Wallet', 'Payment Methods');
 
   void onNotifications() => Get.to(() => const NotificationsSettingsScreen());
   void onSecurity() => Get.to(() => const SecuritySettingsScreen());
 
-  void onTermPolicy() => Get.to(() => const MyListingScreen());
+  void onTermPolicy() => Get.snackbar('Support', 'Term & Policy');
   void onHelpCenter() => Get.snackbar('Support', 'Help Center');
   void onLogout() => Get.snackbar('Auth', 'Logout');
 }

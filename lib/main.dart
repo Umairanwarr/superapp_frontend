@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: kPrimaryColor,
@@ -69,6 +70,61 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme:
+            ColorScheme.fromSeed(
+              seedColor: kPrimaryColor,
+              brightness: Brightness.dark,
+            ).copyWith(
+              primary: kPrimaryColor,
+              background: Colors.black,
+              surface: const Color(0xFF1C1C1E),
+            ),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: kPrimaryColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+        textTheme: baseTextTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF1C1C1E),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          hintStyle: baseTextTheme.bodyLarge?.copyWith(
+            color: const Color(0xFF6C6C6C),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF2C2C2E), width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: kPrimaryColor,
+            foregroundColor: Colors.black, // Or white depending on contrast
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            textStyle: baseTextTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        cardColor: const Color(0xFF1C1C1E),
         useMaterial3: true,
       ),
       builder: (context, child) {

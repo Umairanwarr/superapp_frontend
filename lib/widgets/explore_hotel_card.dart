@@ -23,12 +23,13 @@ class ExploreHotelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap ?? () => Get.to(() => const HotelDetailScreen()),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: const Color(0xFF2FC1BE), width: 1.5),
         ),
@@ -62,10 +63,12 @@ class ExploreHotelCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -77,9 +80,9 @@ class ExploreHotelCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           location,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF747477),
+                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF747477),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -99,8 +102,10 @@ class ExploreHotelCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             rating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              color: Color(0xFF1D2330),
+                            style: TextStyle(
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : const Color(0xFF1D2330),
                               fontWeight: FontWeight.w800,
                               fontSize: 14,
                             ),

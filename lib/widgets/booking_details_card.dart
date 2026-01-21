@@ -28,10 +28,11 @@ class BookingDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFF2FC1BE).withOpacity(0.35)),
       ),
@@ -73,10 +74,10 @@ class BookingDetailsCard extends StatelessWidget {
                   children: [
                     Text(
                       hotelName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                       ),
                     ),
                     Container(
@@ -102,24 +103,24 @@ class BookingDetailsCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       size: 14,
-                      color: Color(0xFF9CA3AF),
+                      color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       location,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF9CA3AF),
+                        color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF),
                       ),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 16),
-                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                Divider(height: 1, color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE0E0E0)),
                 const SizedBox(height: 16),
                 // Booking Details
                 _DetailRow(
@@ -133,17 +134,17 @@ class BookingDetailsCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 _DetailRow(label: 'Guests', value: guests.toString()),
                 const SizedBox(height: 16),
-                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                Divider(height: 1, color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE0E0E0)),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Total Paid',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                       ),
                     ),
 
@@ -161,17 +162,17 @@ class BookingDetailsCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_circle_outline,
                         size: 14,
-                        color: Color(0xFF9CA3AF),
+                        color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         paymentMethod!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF9CA3AF),
+                          color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF),
                         ),
                       ),
                     ],
@@ -194,16 +195,17 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF5A606A),
+            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF5A606A),
           ),
         ),
 
@@ -211,10 +213,10 @@ class _DetailRow extends StatelessWidget {
           child: Text(
             value,
             textAlign: TextAlign.right,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1D2330),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
             ),
           ),
         ),

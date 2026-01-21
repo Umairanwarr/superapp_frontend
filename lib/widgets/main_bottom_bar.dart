@@ -33,13 +33,13 @@ class MainBottomBar extends StatelessWidget {
     ];
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark ? theme.cardColor : Colors.white,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(32),
           topRight: Radius.circular(32),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Color(0x0F000000),
             blurRadius: 20,

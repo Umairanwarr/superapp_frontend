@@ -161,7 +161,7 @@ class EditProfileScreen extends StatelessWidget {
     return Text(
       text,
       style: theme.textTheme.labelLarge?.copyWith(
-        color: const Color(0xFF1D2330),
+        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
         fontWeight: FontWeight.w900,
       ),
     );

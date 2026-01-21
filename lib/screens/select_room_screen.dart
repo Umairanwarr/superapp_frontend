@@ -57,8 +57,9 @@ class _SelectRoomScreenState extends State<SelectRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       bottomNavigationBar: MainBottomBar(
         currentIndex: 0, // Home tab
         onTap: (index) {},
@@ -100,17 +101,21 @@ class _SelectRoomScreenState extends State<SelectRoomScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 32),
                             child: RichText(
-                              text: const TextSpan(
-                                style: TextStyle(
+                              text: TextSpan(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'Outfit',
                                 ),
                                 children: [
                                   TextSpan(
                                     text: 'Dec 13 - Dec 16 (3 Nights) ',
-                                    style: TextStyle(color: Color(0xFF6B7280)),
+                                    style: TextStyle(
+                                      color: theme.brightness == Brightness.dark
+                                          ? Colors.white70
+                                          : const Color(0xFF6B7280),
+                                    ),
                                   ),
-                                  TextSpan(
+                                  const TextSpan(
                                     text: 'Edit',
                                     style: TextStyle(
                                       color: Color(0xFF2FC1BE),
@@ -137,12 +142,14 @@ class _SelectRoomScreenState extends State<SelectRoomScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     '3 Rooms Found',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF1D2330),
                     ),
                   ),
                   Container(
@@ -151,9 +158,15 @@ class _SelectRoomScreenState extends State<SelectRoomScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFDFF9F8),
+                      color: theme.brightness == Brightness.dark
+                          ? const Color(0xFF2FC1BE).withOpacity(0.1)
+                          : const Color(0xFFDFF9F8),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFBFEFED)),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? const Color(0xFF2FC1BE).withOpacity(0.3)
+                            : const Color(0xFFBFEFED),
+                      ),
                     ),
                     child: Row(
                       children: const [

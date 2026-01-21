@@ -9,11 +9,12 @@ class QrCodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFF2FC1BE).withOpacity(0.35)),
       ),
@@ -39,18 +40,18 @@ class QrCodeCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Your Check-in QR Code',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D2330),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Show this code at the hotel reception',
-            style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF)),
+            style: TextStyle(fontSize: 13, color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF)),
           ),
           const SizedBox(height: 20),
           Row(

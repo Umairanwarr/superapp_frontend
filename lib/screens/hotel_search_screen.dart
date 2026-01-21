@@ -5,6 +5,7 @@ import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/hotel_card.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../controllers/main_screen_controller.dart';
+import 'main_screen.dart';
 
 class HotelSearchScreen extends StatelessWidget {
   const HotelSearchScreen({super.key});
@@ -12,10 +13,12 @@ class HotelSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.find<MainScreenController>();
+    final controller = Get.isRegistered<MainScreenController>()
+        ? Get.find<MainScreenController>()
+        : Get.put(MainScreenController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -40,15 +43,15 @@ class HotelSearchScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 56, right: 24),
+            Padding(
+              padding: const EdgeInsets.only(left: 56, right: 24),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Explore hotels curated for your stay',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF1D2330),
+                    color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1D2330),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -62,10 +65,10 @@ class HotelSearchScreen extends StatelessWidget {
                 height: 54,
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(26),
                   border: Border.all(
-                    color: const Color(0x9CBAB1B1), // BAB1B1 at 61% opacity
+                    color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0x9CBAB1B1),
                     width: 1,
                   ),
                 ),
@@ -128,19 +131,19 @@ class HotelSearchScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     '142 Hotels Found',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE8F1F1),
+                      color: theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFE8F1F1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: const Color(0xFF2FC1BE), width: 0.5),
                     ),
@@ -194,7 +197,12 @@ class HotelSearchScreen extends StatelessWidget {
       bottomNavigationBar: Obx(
         () => MainBottomBar(
           currentIndex: controller.bottomIndex.value,
-          onTap: controller.onBottomNavTap,
+          isPropertySelected: controller.categoryIndex.value == 1,
+          onTap: (index) {
+            controller.categoryIndex.value = 0;
+            controller.bottomIndex.value = index;
+            Get.offAll(() => const MainScreen());
+          },
         ),
       ),
     );

@@ -36,11 +36,12 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       height: 135,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -84,10 +85,10 @@ class BookingCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           hotelName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -141,9 +142,9 @@ class BookingCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           location,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF747477),
+                            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF747477),
                             fontWeight: FontWeight.w400,
                           ),
                           maxLines: 1,
@@ -165,9 +166,9 @@ class BookingCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           dateRange,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF747477),
+                            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF747477),
                             fontWeight: FontWeight.w400,
                           ),
                           maxLines: 1,
@@ -186,10 +187,10 @@ class BookingCard extends StatelessWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF5F5F5),
+                        color: theme.brightness == Brightness.dark ? Colors.white10 : const Color(0xFFF5F5F5),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: const Color(0xFFE0E0E0),
+                          color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE0E0E0),
                           width: 1,
                         ),
                       ),
@@ -200,18 +201,18 @@ class BookingCard extends StatelessWidget {
                             'assets/booking-detail.svg',
                             width: 13,
                             height: 13,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF1D2330),
+                            colorFilter: ColorFilter.mode(
+                              theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                               BlendMode.srcIn,
                             ),
                           ),
                           const SizedBox(width: 4),
-                          const Text(
+                          Text(
                             'Booking Details',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF1D2330),
+                              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                             ),
                           ),
                         ],

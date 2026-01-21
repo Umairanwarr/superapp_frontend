@@ -5,6 +5,7 @@ class SelectRoomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final List<Map<String, dynamic>> rooms = [
       {
         'title': 'Standard Room',
@@ -32,28 +33,28 @@ class SelectRoomSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select Room',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 20),
         Column(
-          children: rooms.map((room) => _roomCard(room)).toList(),
+          children: rooms.map((room) => _roomCard(room, theme)).toList(),
         ),
       ],
     );
   }
 
-  Widget _roomCard(Map<String, dynamic> room) {
+  Widget _roomCard(Map<String, dynamic> room, ThemeData theme) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
             color: const Color(0xFF2FC1BE).withOpacity(0.3), width: 1.5),
@@ -89,62 +90,62 @@ class SelectRoomSection extends StatelessWidget {
                   children: [
                     Text(
                       room['title'],
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                       ),
                     ),
                     if (room['match'] != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4ECD76),
-                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFF2FC1BE),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           room['match'],
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   room['details'],
-                  style: const TextStyle(
-                    color: Color(0xFF9AA0AF),
+                  style: TextStyle(
+                    color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 10),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '\$${room['price']}',
-                        style: const TextStyle(
-                          color: Color(0xFF2FC1BE),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text(
+                      '\$${room['price']}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFF2FC1BE),
                       ),
-                      const TextSpan(
-                        text: '/night',
-                        style: TextStyle(
-                          color: Color(0xFF9AA0AF),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    ),
+                    Text(
+                      '/night',
+                      style: TextStyle(
+                        color: theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9AA0AF),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

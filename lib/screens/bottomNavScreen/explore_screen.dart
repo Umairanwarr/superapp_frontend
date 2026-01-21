@@ -15,9 +15,10 @@ class ExploreScreen extends StatelessWidget {
     final controller = Get.find<MainScreenController>();
     final RxBool isMapView = false.obs;
     final RxInt propertyTypeIndex = 0.obs; // 0 for Buy, 1 for Rent
+    final theme = Theme.of(context);
 
     return Container(
-      color: const Color(0xFFF4F8F8),
+      color: theme.scaffoldBackgroundColor,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -27,15 +28,6 @@ class ExploreScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Color(0xFF2FC1BE),
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
                   const Text(
                     'Explore',
                     style: TextStyle(
@@ -70,7 +62,7 @@ class ExploreScreen extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: !isMapView.value ? const Color(0xFF2FC1BE) : const Color(0xFFF1F2F3),
+                        color: !isMapView.value ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFF1F2F3)),
                         borderRadius: BorderRadius.circular(12),
                         border: isMapView.value
                             ? Border.all(color: const Color(0xFFE8E8E8), width: 1)
@@ -82,7 +74,7 @@ class ExploreScreen extends StatelessWidget {
                           width: 20,
                           height: 20,
                           colorFilter: ColorFilter.mode(
-                            !isMapView.value ? Colors.white : const Color(0xFF1D2330),
+                            !isMapView.value ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
                             BlendMode.srcIn,
                           ),
                         ),
@@ -96,7 +88,7 @@ class ExploreScreen extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: isMapView.value ? const Color(0xFF2FC1BE) : const Color(0xFFF1F2F3),
+                        color: isMapView.value ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFF1F2F3)),
                         borderRadius: BorderRadius.circular(12),
                         border: !isMapView.value
                             ? Border.all(color: const Color(0xFFE8E8E8), width: 1)
@@ -108,7 +100,7 @@ class ExploreScreen extends StatelessWidget {
                           width: 20,
                           height: 20,
                           colorFilter: ColorFilter.mode(
-                            isMapView.value ? Colors.white : const Color(0xFF1D2330),
+                            isMapView.value ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
                             BlendMode.srcIn,
                           ),
                         ),
@@ -155,7 +147,7 @@ class ExploreScreen extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 16),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -183,12 +175,12 @@ class ExploreScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Heden golf',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                                        color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
@@ -197,34 +189,34 @@ class ExploreScreen extends StatelessWidget {
                                       children: [
                                         const Icon(Icons.star, color: Color(0xFFFFA500), size: 16),
                                         const SizedBox(width: 4),
-                                        const Text(
+                                        Text(
                                           '3.9',
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
-                                            color: Color(0xFF878787),
+                                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
                                             decoration: TextDecoration.none,
                                           ),
                                         ),
                                         const SizedBox(width: 4),
-                                        const Text(
+                                        Text(
                                           'Reviews (200)',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: Color(0xFF878787),
+                                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
                                             decoration: TextDecoration.none,
                                           ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 4),
-                                    const Text(
+                                    Text(
                                       'Set in landscaped gardens overlooking the ...',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 13,
-                                        color: Color(0xFF878787),
+                                        color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
@@ -246,12 +238,12 @@ class ExploreScreen extends StatelessWidget {
                                                 ),
                                               ),
                                               const SizedBox(width: 12),
-                                              const Text(
+                                              Text(
                                                 '\$127',
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
+                                                  color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                                                   decoration: TextDecoration.none,
                                                 ),
                                               ),
@@ -491,7 +483,7 @@ class _SearchBar extends StatelessWidget {
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(26),
         border: Border.all(
           color: const Color(0x9CBAB1B1),
@@ -500,7 +492,7 @@ class _SearchBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
+          Icon(Icons.search_rounded, color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF9E9E9F), size: 24),
           const SizedBox(width: 8),
           Expanded(
             child: Material(
@@ -520,6 +512,7 @@ class _SearchBar extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                 ),
+                style: theme.textTheme.bodyMedium,
               )),
             ),
           ),
@@ -556,10 +549,11 @@ class _PropertyTypeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: 46,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(23),
         border: Border.all(
           color: const Color(0xFFE8E8E8),

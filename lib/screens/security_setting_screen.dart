@@ -36,7 +36,7 @@ class SecuritySettingsScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 12),
           Container(
-            color: Colors.white,
+            color: theme.cardColor,
             child: Column(
               children: [
                 Obx(
@@ -48,10 +48,10 @@ class SecuritySettingsScreen extends StatelessWidget {
                     onChanged: controller.rememberMeButton,
                   ),
                 ),
-                const Divider(
+                Divider(
                   height: 1,
                   thickness: 1,
-                  color: Color(0xFFE5E7EB),
+                  color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE5E7EB),
                 ),
 
                 Obx(
@@ -63,10 +63,10 @@ class SecuritySettingsScreen extends StatelessWidget {
                     onChanged: controller.faceIdButton,
                   ),
                 ),
-                const Divider(
+                Divider(
                   height: 1,
                   thickness: 1,
-                  color: Color(0xFFE5E7EB),
+                  color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE5E7EB),
                 ),
 
                 Obx(
@@ -105,7 +105,7 @@ class SecuritySettingsScreen extends StatelessWidget {
               child: Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: const Color(0xFF1D2330),
+                  color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),

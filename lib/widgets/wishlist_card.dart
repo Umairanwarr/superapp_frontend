@@ -27,10 +27,13 @@ class WishlistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       height: 120,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: const Color(0xFF2FC1BE), // Teal border
@@ -59,8 +62,8 @@ class WishlistCard extends StatelessWidget {
                 left: 8,
                 child: Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.black54 : Colors.white,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -90,10 +93,10 @@ class WishlistCard extends StatelessWidget {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
                       ),
@@ -130,9 +133,9 @@ class WishlistCard extends StatelessWidget {
                           location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: isDark ? Colors.white70 : Colors.grey,
                           ),
                         ),
                       ),
@@ -158,9 +161,9 @@ class WishlistCard extends StatelessWidget {
                           if (savedTime != null)
                             Text(
                               savedTime!,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 10,
-                                color: Colors.grey,
+                                color: isDark ? Colors.white60 : Colors.grey,
                               ),
                             ),
                         ],
@@ -175,9 +178,10 @@ class WishlistCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             rating.toString(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
                             ),
                           ),
                           const SizedBox(width: 20),

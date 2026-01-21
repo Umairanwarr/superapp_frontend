@@ -32,9 +32,14 @@ class HotelCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xFF2FC1BE), width: 1.5),
+          border: Border.all(
+            color: theme.brightness == Brightness.dark
+                ? Colors.transparent
+                : const Color(0xFF2FC1BE), // Or keep the border if desired
+            width: 1.5,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,8 +71,11 @@ class HotelCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.star_rounded,
-                          color: Color(0xFFFFC107), size: 18),
+                      const Icon(
+                        Icons.star_rounded,
+                        color: Color(0xFFFFC107),
+                        size: 18,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         rating.toString(),
@@ -114,10 +122,10 @@ class HotelCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF1D2330),
+                            color: theme.textTheme.titleLarge?.color,
                           ),
                         ),
                       ),
@@ -148,15 +156,18 @@ class HotelCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_rounded,
-                          size: 16, color: Color(0xFF9AA0AF)),
+                      const Icon(
+                        Icons.location_on_rounded,
+                        size: 16,
+                        color: Color(0xFF9AA0AF),
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           location,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF747477),
+                            color: theme.textTheme.bodyMedium?.color,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -166,10 +177,12 @@ class HotelCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: amenities
-                        .map((amenity) => Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: _AmenityTag(label: amenity),
-                            ))
+                        .map(
+                          (amenity) => Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: _AmenityTag(label: amenity),
+                          ),
+                        )
                         .toList(),
                   ),
                 ],
@@ -192,7 +205,9 @@ class _AmenityTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F1F1),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF2FC1BE).withOpacity(0.15)
+            : const Color(0xFFE8F1F1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFF2FC1BE), width: 1),
       ),

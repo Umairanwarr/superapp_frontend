@@ -33,9 +33,14 @@ class PropertyCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xFF2FC1BE), width: 1.5),
+          border: Border.all(
+            color: theme.brightness == Brightness.dark
+                ? Colors.transparent
+                : const Color(0xFF2FC1BE),
+            width: 1.5,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,17 +77,17 @@ class PropertyCard extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: isLiked 
-                        ? const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 24,
-                          )
-                        : SvgPicture.asset(
-                            'assets/heart.svg',
-                            width: 24,
-                            height: 24,
-                          ),
+                      child: isLiked
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                              size: 24,
+                            )
+                          : SvgPicture.asset(
+                              'assets/heart.svg',
+                              width: 24,
+                              height: 24,
+                            ),
                     ),
                   ),
                 ),
@@ -92,15 +97,24 @@ class PropertyCard extends StatelessWidget {
                     top: 20,
                     right: 20,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4ADE80), // Greenish color for tag
+                        color: const Color(
+                          0xFF4ADE80,
+                        ), // Greenish color for tag
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.trending_up, color: Colors.white, size: 14),
+                          const Icon(
+                            Icons.trending_up,
+                            color: Colors.white,
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             tag!,
@@ -124,23 +138,26 @@ class PropertyCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.textTheme.titleLarge?.color,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_rounded,
-                          size: 16, color: Color(0xFF9AA0AF)),
+                      const Icon(
+                        Icons.location_on_rounded,
+                        size: 16,
+                        color: Color(0xFF9AA0AF),
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         location,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF747477),
+                          color: theme.textTheme.bodyMedium?.color,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -152,14 +169,18 @@ class PropertyCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded, color: Color(0xFFFFC107), size: 20),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Color(0xFFFFC107),
+                            size: 20,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             rating.toString(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                         ],

@@ -5,22 +5,23 @@ class HotelAboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'About',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
           'Experience luxury at its finest in the heart of London. Our hotel offers world-class service, elegant rooms, and breathtaking views of the city. Perfect for both business and leisure travelers.',
           style: TextStyle(
-            color: Color(0xFF9AA0AF),
+            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
             fontSize: 15,
             height: 1.6,
             fontWeight: FontWeight.w600,

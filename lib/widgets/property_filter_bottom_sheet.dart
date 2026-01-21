@@ -31,14 +31,15 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(32),
           topRight: Radius.circular(32),
         ),
@@ -52,7 +53,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
               width: 60,
               height: 5,
               decoration: BoxDecoration(
-                color: const Color(0xFFCFD6DC),
+                color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFCFD6DC),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -64,14 +65,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
             children: [
               IconButton(
                 onPressed: () => Get.back(),
-                icon: const Icon(Icons.close, color: Color(0xFF1D2330), size: 24),
+                icon: Icon(Icons.close, color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330), size: 24),
               ),
-              const Text(
+              Text(
                 'Filter options',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1D2330),
+                  color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                 ),
               ),
               TextButton(
@@ -104,12 +105,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Property Type
-                  const Text(
+                  Text(
                     'Property Type',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -129,10 +130,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         onTap: () => setState(() => selectedPropertyTypeIndex = index),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFFE0F7F6) : Colors.white,
+                            color: isSelected 
+                                ? (theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.2) : const Color(0xFFE0F7F6)) 
+                                : theme.cardColor,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isSelected ? const Color(0xFF2FC1BE) : const Color(0xFFE8E8E8),
+                              color: isSelected ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                               width: isSelected ? 2 : 1,
                             ),
                           ),
@@ -166,26 +169,26 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                   
                   const SizedBox(height: 32),
                   // Price Range
-                  const Text(
+                  Text(
                     'Price Range',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('\$50',
                           style: TextStyle(
-                              color: Color(0xFF9AA0AF),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                               fontWeight: FontWeight.w600,
                               fontSize: 16)),
                       Text('\$8M+',
                           style: TextStyle(
-                              color: Color(0xFF9AA0AF),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                               fontWeight: FontWeight.w600,
                               fontSize: 16)),
                     ],
@@ -194,7 +197,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                   SliderTheme(
                     data: SliderThemeData(
                       activeTrackColor: const Color(0xFF2FC1BE).withOpacity(0.3),
-                      inactiveTrackColor: const Color(0xFFE8F1F1),
+                      inactiveTrackColor: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8F1F1),
                       thumbColor: const Color(0xFF2FC1BE),
                       overlayColor: const Color(0xFF2FC1BE).withOpacity(0.2),
                       trackHeight: 6,
@@ -211,12 +214,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   const SizedBox(height: 24),
                   // Bedrooms
-                  const Text(
+                  Text(
                     'Bedrooms',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -231,10 +234,10 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           height: 40,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFF2FC1BE) : Colors.white,
+                            color: isSelected ? const Color(0xFF2FC1BE) : theme.cardColor,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? const Color(0xFF2FC1BE) : const Color(0xFFE8E8E8),
+                              color: isSelected ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                             ),
                           ),
                           child: Text(
@@ -252,12 +255,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   const SizedBox(height: 24),
                   // Bathrooms
-                  const Text(
+                  Text(
                     'Bathrooms',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1D2330),
+                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -272,10 +275,10 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           height: 40,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFF2FC1BE) : Colors.white,
+                            color: isSelected ? const Color(0xFF2FC1BE) : theme.cardColor,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? const Color(0xFF2FC1BE) : const Color(0xFFE8E8E8),
+                              color: isSelected ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                             ),
                           ),
                           child: Text(
@@ -295,13 +298,13 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                   // Living Area
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
                         'Living Area',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1D2330),
+                          color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
                         ),
                       ),
                       Text(
@@ -309,7 +312,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF9AA0AF),
+                          color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
                         ),
                       ),
                     ],
@@ -322,30 +325,35 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           height: 50,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFE8E8E8)),
+                            border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                           ),
                           alignment: Alignment.centerLeft,
                           child: TextField(
                             controller: minAreaController,
-                            decoration: const InputDecoration(
+                            style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
+                            decoration: InputDecoration(
                               hintText: 'Min',
                               border: InputBorder.none,
-                              hintStyle: TextStyle(color: Color(0xFF9AA0AF)),
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintStyle: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9AA0AF)),
                             ),
                             keyboardType: TextInputType.number,
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           '-',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF9AA0AF),
+                            color: theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9AA0AF),
                           ),
                         ),
                       ),
@@ -354,17 +362,22 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           height: 50,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFE8E8E8)),
+                            border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                           ),
                           alignment: Alignment.centerLeft,
                           child: TextField(
                             controller: maxAreaController,
-                            decoration: const InputDecoration(
+                            style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
+                            decoration: InputDecoration(
                               hintText: 'Max',
                               border: InputBorder.none,
-                              hintStyle: TextStyle(color: Color(0xFF9AA0AF)),
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintStyle: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9AA0AF)),
                             ),
                             keyboardType: TextInputType.number,
                           ),

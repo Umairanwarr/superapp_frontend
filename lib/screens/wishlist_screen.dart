@@ -44,8 +44,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           _buildHeader(),
@@ -206,10 +208,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
             height: 54,
             padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(26),
               border: Border.all(
-                color: const Color(0x9CBAB1B1),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.transparent
+                    : const Color(0x9CBAB1B1),
                 width: 1,
               ),
             ),
@@ -222,9 +226,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     cursorColor: theme.colorScheme.primary,
                     selectionControls: materialTextSelectionControls,
                     textAlignVertical: TextAlignVertical.center,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Search Saved Properties...',
-                      hintStyle: TextStyle(color: Color(0xFF9AA0AF), fontSize: 18),
+                      hintStyle: TextStyle(
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white54
+                              : const Color(0xFF9AA0AF),
+                          fontSize: 18),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -233,6 +241,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       focusedErrorBorder: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                       isCollapsed: true,
+                    ),
+                    style: TextStyle(
+                      color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -258,6 +269,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   }
 
   Widget _buildBottomBar() {
+    final theme = Theme.of(context);
     // Reusing the style from the image, but this might need to be the actual MainBottomBar if we want navigation to work.
     // For now, I'll just create a placeholder row to match the image visually if needed, 
     // or better, use the MainBottomBar if possible.
@@ -271,10 +283,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
     return Container(
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -294,6 +306,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
   }
 
   Widget _buildBottomNavItem(IconData icon, String label, bool isSelected) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -305,7 +320,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
           ),
           child: Icon(
             icon,
-            color: isSelected ? Colors.white : Colors.grey[400],
+            color: isSelected ? Colors.white : (isDark ? Colors.white54 : Colors.grey[400]),
             size: 24,
           ),
         ),

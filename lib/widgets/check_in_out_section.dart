@@ -7,6 +7,7 @@ class CheckInOutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
@@ -15,6 +16,7 @@ class CheckInOutSection extends StatelessWidget {
             subtitle: 'Check-in',
             icon: Icons.calendar_today_outlined,
             onTap: () => Get.to(() => const SelectDatesScreen(initialTabIndex: 0)),
+            theme: theme,
           ),
         ),
         const SizedBox(width: 16),
@@ -24,6 +26,7 @@ class CheckInOutSection extends StatelessWidget {
             subtitle: 'Check-out',
             icon: Icons.calendar_today_outlined,
             onTap: () => Get.to(() => const SelectDatesScreen(initialTabIndex: 1)),
+            theme: theme,
           ),
         ),
       ],
@@ -34,14 +37,15 @@ class CheckInOutSection extends StatelessWidget {
       {required String title,
       required String subtitle,
       required IconData icon,
-      required VoidCallback onTap}) {
+      required VoidCallback onTap,
+      required ThemeData theme}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         // 16% opacity teal background
-        color: const Color(0x292FC1BE),
+        color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.1) : const Color(0x292FC1BE),
         borderRadius: BorderRadius.circular(24),
         // full-opacity teal border
         border: Border.all(
@@ -68,17 +72,17 @@ class CheckInOutSection extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1D2330),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(
-              color: Color(0xFF1D2330),
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1D2330),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

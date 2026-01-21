@@ -31,7 +31,7 @@ class PermissionsFlowScreen extends StatelessWidget {
                       constraints: const BoxConstraints(maxWidth: 460),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: theme.cardColor,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: theme.colorScheme.primary.withOpacity(0.45),
@@ -58,7 +58,9 @@ class PermissionsFlowScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: const Color(0xFF353B4A),
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF353B4A),
                               ),
                             ),
                             const SizedBox(height: 8),

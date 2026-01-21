@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/main_screen_controller.dart';
+import '../screens/main_screen.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../widgets/hotel_image_carousel.dart';
 import '../widgets/hotel_header_info.dart';
@@ -15,8 +17,13 @@ class HotelDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.isRegistered<MainScreenController>()
+        ? Get.find<MainScreenController>()
+        : Get.put(MainScreenController());
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,9 +55,16 @@ class HotelDetailScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: MainBottomBar(
-        currentIndex: 0,
-        onTap: (index) => Get.back(),
+      bottomNavigationBar: Obx(
+        () => MainBottomBar(
+          currentIndex: controller.bottomIndex.value,
+          isPropertySelected: controller.categoryIndex.value == 1,
+          onTap: (index) {
+            controller.categoryIndex.value = 0;
+            controller.bottomIndex.value = index;
+            Get.offAll(() => const MainScreen());
+          },
+        ),
       ),
     );
   }

@@ -10,8 +10,9 @@ class DirectionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -60,7 +61,7 @@ class DirectionsScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.black,
+                              color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                               width: 2.5,
                             ),
                           ),
@@ -74,8 +75,8 @@ class DirectionsScreen extends StatelessWidget {
                               (index) => Container(
                                 width: 4,
                                 height: 4,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black,
+                                decoration: BoxDecoration(
+                                  color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -99,15 +100,15 @@ class DirectionsScreen extends StatelessWidget {
                         Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFE8E8E8)),
+                            border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: const Text(
+                          child: Text(
                             'Your Location',
                             style: TextStyle(
-                              color: Color(0xFF555555),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF555555),
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
@@ -117,15 +118,15 @@ class DirectionsScreen extends StatelessWidget {
                         Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFE8E8E8)),
+                            border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE8E8E8)),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: const Text(
+                          child: Text(
                             'Heden golf Hotel',
                             style: TextStyle(
-                              color: Color(0xFF555555),
+                              color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF555555),
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),

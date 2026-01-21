@@ -68,7 +68,9 @@ class OnboardingScreen extends StatelessWidget {
                           item.subtitle,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: const Color(0xFF353B4A),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFF353B4A),
                             fontWeight: FontWeight.w500,
                             height: 1.25,
                           ),

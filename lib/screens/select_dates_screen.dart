@@ -29,9 +29,10 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isContinueEnabled = _checkOut != null;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -92,8 +93,8 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
                 children: [
                   Text(
                     _monthTitle(_visibleMonth),
-                    style: const TextStyle(
-                      color: Color(0xFF6B7280),
+                    style: TextStyle(
+                      color: theme.textTheme.titleMedium?.color,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -209,7 +210,8 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
     required bool isActive,
     required VoidCallback onTap,
   }) {
-    final Color bg = isActive ? const Color(0xFF2FC1BE) : Colors.white;
+    final theme = Theme.of(context);
+    final Color bg = isActive ? const Color(0xFF2FC1BE) : theme.cardColor;
     final Color labelColor = isActive ? Colors.white : const Color(0xFF2FC1BE);
     final Color dateColor = isActive ? Colors.white : const Color(0xFF2FC1BE);
 
@@ -467,6 +469,7 @@ class _DayCellView extends StatelessWidget {
 
     // This draws a continuous line by bleeding into the grid spacing.
     // Range fill should not appear behind start/end circles, only between them.
+    final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         // Must cover the grid spacing (crossAxisSpacing=8) so there are no seams.
@@ -524,7 +527,7 @@ class _DayCellView extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Color.alphaBlend(
                       const Color(0xFF2FC1BE).withOpacity(0.18),
-                      const Color(0xFFF7FAFA),
+                      theme.scaffoldBackgroundColor,
                     ),
                     borderRadius: radius,
                   ),

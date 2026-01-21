@@ -35,12 +35,13 @@ class RoomSelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: const Color(0xFF2FC1BE).withOpacity(0.5),
@@ -98,18 +99,20 @@ class RoomSelectionCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1D2330),
+                      color: theme.textTheme.titleLarge?.color,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     description,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF878787),
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF878787),
                       height: 1.4,
                     ),
                   ),
@@ -118,10 +121,12 @@ class RoomSelectionCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _IconText(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.crop_free,
                           size: 17.5,
-                          color: Color(0xFF5A606A),
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white70
+                              : const Color(0xFF5A606A),
                         ),
                         text: size,
                       ),
@@ -130,8 +135,10 @@ class RoomSelectionCard extends StatelessWidget {
                           'assets/bed.svg',
                           width: 14,
                           height: 14,
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFF6B7280),
+                          colorFilter: ColorFilter.mode(
+                            theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF6B7280),
                             BlendMode.srcIn,
                           ),
                         ),
@@ -142,8 +149,10 @@ class RoomSelectionCard extends StatelessWidget {
                           'assets/guests.svg',
                           width: 14,
                           height: 14,
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFF6B7280),
+                          colorFilter: ColorFilter.mode(
+                            theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF6B7280),
                             BlendMode.srcIn,
                           ),
                         ),
@@ -160,7 +169,11 @@ class RoomSelectionCard extends StatelessWidget {
                         .toList(),
                   ),
                   const SizedBox(height: 16),
-                  const Divider(color: Color(0xFFE0E0E0)),
+                  Divider(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white24
+                        : const Color(0xFFE0E0E0),
+                  ),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,11 +182,13 @@ class RoomSelectionCard extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Price per night',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Color(0xFF878787),
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white70
+                                  : const Color(0xFF878787),
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -193,9 +208,10 @@ class RoomSelectionCard extends StatelessWidget {
                           const SizedBox(width: 14),
                           Text(
                             '$quantity',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: theme.textTheme.bodyLarge?.color,
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -222,15 +238,18 @@ class _IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         icon,
         const SizedBox(width: 6),
         Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: Color(0xFF6B7280),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white70
+                : const Color(0xFF6B7280),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -279,7 +298,9 @@ class _QuantityButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFFDFF9F8),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF2FC1BE).withOpacity(0.2)
+              : const Color(0xFFDFF9F8),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 16, color: const Color(0xFF2FC1BE)),

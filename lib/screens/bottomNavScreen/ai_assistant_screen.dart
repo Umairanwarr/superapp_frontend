@@ -7,8 +7,9 @@ class AiAssistantScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           _buildHeader(context),
@@ -24,7 +25,7 @@ class AiAssistantScreen extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -39,7 +40,7 @@ class AiAssistantScreen extends StatelessWidget {
                       style: GoogleFonts.outfit(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF1F2937),
+                        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1F2937),
                       ),
                     ),
                   ),
@@ -121,12 +122,6 @@ class AiAssistantScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 22,
-          ),
-          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -154,11 +149,12 @@ class AiAssistantScreen extends StatelessWidget {
   }
 
   Widget _buildInputArea(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFF3F4F6))),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        border: Border(top: BorderSide(color: theme.brightness == Brightness.dark ? Colors.white10 : const Color(0xFFF3F4F6))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +166,7 @@ class AiAssistantScreen extends StatelessWidget {
                 'Ask about hotels, prices, rooms...',
                 style: GoogleFonts.outfit(
                   fontSize: 14,
-                  color: const Color(0xFF9CA3AF),
+                  color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9CA3AF),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -218,18 +214,19 @@ class _SuggestionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF6B7280), width: 1),
+        border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF6B7280), width: 1),
       ),
       child: Text(
         label,
         style: GoogleFonts.outfit(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: const Color(0xFF374151),
+          color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF374151),
         ),
       ),
     );
@@ -242,10 +239,11 @@ class _AiMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -285,7 +283,7 @@ class _AiMessage extends StatelessWidget {
               fontSize: 14,
               height: 1.5,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF1F2937),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
         ],
@@ -300,10 +298,11 @@ class _UserMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -343,7 +342,7 @@ class _UserMessage extends StatelessWidget {
               fontSize: 14,
               height: 1.5,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF1F2937),
+              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
         ],
@@ -357,9 +356,10 @@ class _HotelRecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFF1CB5B3), width: 1),
         boxShadow: [
@@ -399,7 +399,7 @@ class _HotelRecommendationCard extends StatelessWidget {
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1F2937),
+                            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1F2937),
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -483,10 +483,11 @@ class _PricePredictionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -552,7 +553,7 @@ class _PricePredictionCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFECFDF5),
+              color: theme.brightness == Brightness.dark ? const Color(0xFF059669).withOpacity(0.2) : const Color(0xFFECFDF5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
