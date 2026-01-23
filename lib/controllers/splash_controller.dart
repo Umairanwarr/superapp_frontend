@@ -9,7 +9,7 @@ class SplashController extends GetxController {
   }
 
   Future<void> _nextScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 4));
     Get.offAll(() => const OnboardingScreen());
   }
 }
