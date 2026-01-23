@@ -82,7 +82,9 @@ class EarningExpansesWidget extends StatelessWidget {
                     Text(
                       "Recent Transactions",
                       style: theme.textTheme.titleSmall?.copyWith(
-                        color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
+                        color: Get.isDarkMode
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -147,7 +149,11 @@ class EarningExpansesWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  icon: const Icon(Icons.download_rounded, size: 18),
+                  icon: Icon(
+                    Icons.download_rounded,
+                    size: 18,
+                    color: theme.iconTheme.color,
+                  ),
                   label: Text(
                     "Export Full Report",
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -186,7 +192,9 @@ class _RangeTabs extends StatelessWidget {
             height: 30,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isSel ? theme.colorScheme.primary : (isDark ? theme.cardColor : Colors.white),
+              color: isSel
+                  ? theme.colorScheme.primary
+                  : (isDark ? theme.cardColor : Colors.white),
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
                 color: isSel
@@ -198,7 +206,9 @@ class _RangeTabs extends StatelessWidget {
             child: Text(
               text,
               style: theme.textTheme.labelMedium?.copyWith(
-                color: isSel ? Colors.white : (isDark ? Colors.white : const Color(0xFF1D2330)),
+                color: isSel
+                    ? Colors.white
+                    : (isDark ? Colors.white : const Color(0xFF1D2330)),
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -245,7 +255,9 @@ class _TotalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFEDEFF5)),
+        border: Border.all(
+          color: isDark ? Colors.white24 : const Color(0xFFEDEFF5),
+        ),
       ),
       child: Column(
         children: [
@@ -330,7 +342,9 @@ class _TrendCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? theme.cardColor : Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFEDEFF5)),
+          border: Border.all(
+            color: isDark ? Colors.white24 : const Color(0xFFEDEFF5),
+          ),
         ),
         child: Column(
           children: [
@@ -350,7 +364,9 @@ class _TrendCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isDark ? Colors.white12 : Colors.white,
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFE6E9F0)),
+                    border: Border.all(
+                      color: isDark ? Colors.white24 : const Color(0xFFE6E9F0),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -358,13 +374,17 @@ class _TrendCard extends StatelessWidget {
                       Icon(
                         Icons.calendar_month_outlined,
                         size: 14,
-                        color: isDark ? Colors.white70 : const Color(0xFF9AA0AF),
+                        color: isDark
+                            ? Colors.white70
+                            : const Color(0xFF9AA0AF),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         "Oct 1 - Oct 31",
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: isDark ? Colors.white70 : const Color(0xFF9AA0AF),
+                          color: isDark
+                              ? Colors.white70
+                              : const Color(0xFF9AA0AF),
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -407,8 +427,12 @@ class _TrendCard extends StatelessWidget {
                                 "W${i + 1}",
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: isActive
-                                      ? (isDark ? Colors.white : const Color(0xFF1D2330))
-                                      : (isDark ? Colors.white54 : const Color(0xFF9AA0AF)),
+                                      ? (isDark
+                                            ? Colors.white
+                                            : const Color(0xFF1D2330))
+                                      : (isDark
+                                            ? Colors.white54
+                                            : const Color(0xFF9AA0AF)),
                                   fontWeight: isActive
                                       ? FontWeight.w800
                                       : FontWeight.w700,
@@ -465,7 +489,13 @@ class _TxnTile extends StatelessWidget {
         asset = "assets/expanse_fuel.png";
       }
 
-      return Image.asset(asset, width: 15, height: 15, fit: BoxFit.contain);
+      return Image.asset(
+        asset,
+        width: 15,
+        height: 15,
+        fit: BoxFit.contain,
+        color: theme.iconTheme.color,
+      );
     }
 
     final amountColor = positive
@@ -480,7 +510,9 @@ class _TxnTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFEDEFF5)),
+        border: Border.all(
+          color: isDark ? Colors.white24 : const Color(0xFFEDEFF5),
+        ),
       ),
       child: Row(
         children: [
@@ -519,7 +551,10 @@ class _TxnTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Icon(Icons.chevron_right_rounded, color: isDark ? Colors.white54 : const Color(0xFF9AA0AF)),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: isDark ? Colors.white54 : const Color(0xFF9AA0AF),
+          ),
         ],
       ),
     );

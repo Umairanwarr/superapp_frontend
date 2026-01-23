@@ -133,7 +133,9 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                               Text(
                                 "Occupancy Trends",
                                 style: theme.textTheme.titleSmall?.copyWith(
-                                  color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : const Color(0xFF1D2330),
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -151,7 +153,9 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                             child: Text(
                               "Daily occupancy rate over selected period",
                               style: theme.textTheme.labelSmall?.copyWith(
-                                color: Get.isDarkMode ? Colors.white54 : const Color(0xFF9AA0AF),
+                                color: Get.isDarkMode
+                                    ? Colors.white54
+                                    : const Color(0xFF9AA0AF),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -193,7 +197,9 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                                 Text(
                                   "Financial Breakdown",
                                   style: theme.textTheme.titleSmall?.copyWith(
-                                    color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF1D2330),
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -222,7 +228,9 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                                 Text(
                                   "\$${controller.netIncome.value.toStringAsFixed(0)}",
                                   style: theme.textTheme.titleLarge?.copyWith(
-                                    color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF1D2330),
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
@@ -230,7 +238,9 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                                 Text(
                                   "Net income",
                                   style: theme.textTheme.labelMedium?.copyWith(
-                                    color: Get.isDarkMode ? Colors.white54 : const Color(0xFF9AA0AF),
+                                    color: Get.isDarkMode
+                                        ? Colors.white54
+                                        : const Color(0xFF9AA0AF),
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -277,7 +287,11 @@ class PropertyAnalyticsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      icon: const Icon(Icons.download_rounded, size: 18),
+                      icon: Icon(
+                        Icons.download_rounded,
+                        size: 18,
+                        color: theme.iconTheme.color,
+                      ),
                       label: Text(
                         "Export Full Report",
                         style: theme.textTheme.titleSmall?.copyWith(
@@ -318,7 +332,9 @@ class _RangeTabs extends StatelessWidget {
             height: 30,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isSel ? theme.colorScheme.primary : (isDark ? theme.cardColor : Colors.white),
+              color: isSel
+                  ? theme.colorScheme.primary
+                  : (isDark ? theme.cardColor : Colors.white),
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
                 color: isSel
@@ -330,7 +346,9 @@ class _RangeTabs extends StatelessWidget {
             child: Text(
               text,
               style: theme.textTheme.labelMedium?.copyWith(
-                color: isSel ? Colors.white : (isDark ? Colors.white : const Color(0xFF1D2330)),
+                color: isSel
+                    ? Colors.white
+                    : (isDark ? Colors.white : const Color(0xFF1D2330)),
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -389,7 +407,9 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFEDEFF5)),
+        border: Border.all(
+          color: isDark ? Colors.white24 : const Color(0xFFEDEFF5),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,7 +524,9 @@ class _Card extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? Theme.of(context).cardColor : Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFEDEFF5)),
+          border: Border.all(
+            color: isDark ? Colors.white24 : const Color(0xFFEDEFF5),
+          ),
         ),
         child: child,
       ),

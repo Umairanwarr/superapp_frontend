@@ -24,12 +24,6 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final titleStyle = theme.textTheme.headlineSmall?.copyWith(
-      fontWeight: FontWeight.w800,
-      letterSpacing: -0.2,
-      color: const Color(0xFF111111),
-    );
-
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +32,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text('Chats', style: titleStyle),
+            child: Text(
+              'Chats',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.2,
+                // color: const Color(0xFF111111),
+              ),
+            ),
           ),
 
           const SizedBox(height: 10),
@@ -133,7 +134,7 @@ class _ChatTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF111111),
+                      // color: const Color(0xFF111111),
                     ),
                   ),
                   const SizedBox(height: 6),

@@ -13,7 +13,7 @@ class ChatDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(120),
@@ -134,7 +134,7 @@ class _PropertyCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.background,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: accent.withOpacity(0.55), width: 1),
         ),
@@ -163,7 +163,7 @@ class _PropertyCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1D2330),
+
                       fontSize: 14,
                     ),
                   ),
@@ -214,7 +214,7 @@ class _PropertyCard extends StatelessWidget {
                             Text(
                               rating,
                               style: theme.textTheme.labelLarge?.copyWith(
-                                color: const Color(0xFF1D2330),
+                                // color: const Color(0xFF1D2330),
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -250,8 +250,10 @@ class _ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final bubbleColor = fromMe ? accent : const Color(0xFFEAEAEA);
-    final textColor = fromMe ? Colors.white : const Color(0xFF1D2330);
+    final bubbleColor = fromMe ? accent : theme.colorScheme.background;
+    final textColor = fromMe
+        ? theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)
+        : const Color(0xFF1D2330);
     final timeColor = fromMe
         ? Colors.white.withOpacity(0.85)
         : const Color(0xFF9AA0AF);
@@ -274,7 +276,11 @@ class _ChatBubble extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(maxWidth: 320),
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-          decoration: BoxDecoration(color: bubbleColor, borderRadius: radius),
+          decoration: BoxDecoration(
+            color: bubbleColor,
+            borderRadius: radius,
+            border: Border.all(color: theme.colorScheme.primary),
+          ),
           child: Column(
             crossAxisAlignment: fromMe
                 ? CrossAxisAlignment.end
@@ -283,7 +289,7 @@ class _ChatBubble extends StatelessWidget {
               Text(
                 text,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: textColor,
+                  //  color: textColor,
                   height: 1.25,
                   fontWeight: FontWeight.w500,
                   fontSize: 13.5,
@@ -328,8 +334,8 @@ class _ComposerBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey, width: 0.5),
+        color: theme.colorScheme.background,
+        border: Border(top: BorderSide(color: theme.dividerColor)),
       ),
       child: Row(
         children: [

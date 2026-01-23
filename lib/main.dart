@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:superapp/controllers/profile_controller.dart';
 
 import 'screens/splash_screen.dart';
 import 'utils/size_config.dart';
@@ -22,116 +23,122 @@ class MyApp extends StatelessWidget {
       Theme.of(context).textTheme,
     ).apply(fontFamilyFallback: ['Noto Sans']);
 
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: kPrimaryColor,
-          brightness: Brightness.light,
-        ).copyWith(primary: kPrimaryColor, background: kBackgroundColor),
-        scaffoldBackgroundColor: kBackgroundColor,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: kBackgroundColor,
-          foregroundColor: kPrimaryColor,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-        textTheme: baseTextTheme,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
+    final profileController = Get.put(ProfileController());
+
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        themeMode: profileController.isDark.value
+            ? ThemeMode.dark
+            : ThemeMode.light,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: kPrimaryColor,
+            brightness: Brightness.light,
+          ).copyWith(primary: kPrimaryColor, background: kBackgroundColor),
+          scaffoldBackgroundColor: kBackgroundColor,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: kBackgroundColor,
+            foregroundColor: kPrimaryColor,
+            elevation: 0,
+            scrolledUnderElevation: 0,
           ),
-          hintStyle: baseTextTheme.bodyLarge?.copyWith(
-            color: const Color(0xFFB6BAC5),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFFD6DAE3), width: 1),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: kPrimaryColor,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+          textTheme: baseTextTheme,
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
             ),
-            textStyle: baseTextTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+            hintStyle: baseTextTheme.bodyLarge?.copyWith(
+              color: const Color(0xFFB6BAC5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFD6DAE3), width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
             ),
           ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPrimaryColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: baseTextTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
+        darkTheme: ThemeData(
+          colorScheme:
+              ColorScheme.fromSeed(
+                seedColor: kPrimaryColor,
+                brightness: Brightness.dark,
+              ).copyWith(
+                primary: kPrimaryColor,
+                background: Colors.black,
+                surface: const Color(0xFF1C1C1E),
+              ),
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.black,
+            foregroundColor: kPrimaryColor,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          ),
+          textTheme: baseTextTheme.apply(
+            bodyColor: Colors.white,
+            displayColor: Colors.white,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: const Color(0xFF1C1C1E),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
+            hintStyle: baseTextTheme.bodyLarge?.copyWith(
+              color: const Color(0xFF6C6C6C),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF2C2C2E), width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPrimaryColor,
+              foregroundColor: Colors.black, // Or white depending on contrast
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: baseTextTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          cardColor: const Color(0xFF1C1C1E),
+          useMaterial3: true,
+        ),
+        builder: (context, child) {
+          SizeConfig.init(context);
+          return child ?? const SizedBox.shrink();
+        },
+        home: const SplashScreen(),
       ),
-      darkTheme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(
-              seedColor: kPrimaryColor,
-              brightness: Brightness.dark,
-            ).copyWith(
-              primary: kPrimaryColor,
-              background: Colors.black,
-              surface: const Color(0xFF1C1C1E),
-            ),
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black,
-          foregroundColor: kPrimaryColor,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-        textTheme: baseTextTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFF1C1C1E),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
-          ),
-          hintStyle: baseTextTheme.bodyLarge?.copyWith(
-            color: const Color(0xFF6C6C6C),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF2C2C2E), width: 1),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: kPrimaryColor,
-            foregroundColor: Colors.black, // Or white depending on contrast
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-            textStyle: baseTextTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        cardColor: const Color(0xFF1C1C1E),
-        useMaterial3: true,
-      ),
-      builder: (context, child) {
-        SizeConfig.init(context);
-        return child ?? const SizedBox.shrink();
-      },
-      home: const SplashScreen(),
     );
   }
 }
