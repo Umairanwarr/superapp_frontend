@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/all_review_controller.dart';
-
 import 'package:superapp/modal/all_review_modal.dart';
 
 class AllReviewsScreen extends StatelessWidget {
@@ -17,7 +16,7 @@ class AllReviewsScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: Row(
@@ -29,12 +28,16 @@ class AllReviewsScreen extends StatelessWidget {
                       height: 32,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 0.5),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withOpacity(0.7),
+                          width: 1,
+                        ),
+                        color: theme.colorScheme.surface,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back,
                         size: 20,
-                        color: Colors.black,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -70,7 +73,6 @@ class AllReviewsScreen extends StatelessWidget {
                         ),
                         child: _FilterChip(
                           selected: isSelected,
-                          primary: theme.colorScheme.primary,
                           label: f.label,
                           onTap: () => controller.onFilterTap(i),
                         ),
@@ -105,19 +107,22 @@ class AllReviewsScreen extends StatelessWidget {
 class _FilterChip extends StatelessWidget {
   const _FilterChip({
     required this.selected,
-    required this.primary,
     required this.label,
     required this.onTap,
   });
 
   final bool selected;
-  final Color primary;
   final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final bg = selected ? theme.colorScheme.primary : theme.colorScheme.surface;
+    final fg = selected
+        ? theme.colorScheme.onPrimary
+        : theme.colorScheme.primary;
 
     return InkWell(
       onTap: onTap,
@@ -127,26 +132,24 @@ class _FilterChip extends StatelessWidget {
         height: 30,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: selected ? primary : Colors.white,
+          color: bg,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: selected ? primary : primary.withOpacity(0.35),
+            color: selected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outlineVariant.withOpacity(0.8),
             width: 1,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.star_rounded,
-              size: 16,
-              color: selected ? Colors.white : primary,
-            ),
+            Icon(Icons.star_rounded, size: 16, color: fg),
             const SizedBox(width: 4),
             Text(
               label,
               style: theme.textTheme.labelLarge?.copyWith(
-                color: selected ? Colors.white : primary,
+                color: fg,
                 fontWeight: FontWeight.w700,
                 fontSize: 12,
               ),
@@ -168,32 +171,38 @@ class _ReviewCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      padding: EdgeInsets.all(14),
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.black, width: 0.5),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withOpacity(0.9),
+          width: 1,
+        ),
       ),
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 10, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
             Row(
               children: [
+                // Avatar
                 Container(
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEAF4F4),
+                    color: theme.colorScheme.primaryContainer.withOpacity(0.55),
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFD6E7E7)),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant.withOpacity(0.8),
+                    ),
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     item.initials,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF1D2330),
+                      color: theme.colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -209,7 +218,7 @@ class _ReviewCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodyLarge?.copyWith(
-                          color: const Color(0xFF1D2330),
+                          color: theme.colorScheme.onSurface,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -217,7 +226,7 @@ class _ReviewCard extends StatelessWidget {
                       Text(
                         item.role,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF9AA0AF),
+                          color: theme.colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -225,14 +234,15 @@ class _ReviewCard extends StatelessWidget {
                   ),
                 ),
 
+                // Rating pill
                 Container(
                   height: 28,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(999),
                     border: Border.all(
-                      color: theme.colorScheme.primary.withOpacity(0.35),
+                      color: theme.colorScheme.outlineVariant.withOpacity(0.8),
                       width: 1,
                     ),
                   ),
@@ -258,7 +268,7 @@ class _ReviewCard extends StatelessWidget {
             ),
 
             const SizedBox(height: 10),
-            Divider(color: Colors.grey),
+            Divider(color: theme.colorScheme.outlineVariant.withOpacity(0.8)),
             const SizedBox(height: 10),
 
             Align(
@@ -266,7 +276,7 @@ class _ReviewCard extends StatelessWidget {
               child: Text(
                 item.text,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xFF1D2330),
+                  color: theme.colorScheme.onSurface,
                   height: 1.35,
                   fontWeight: FontWeight.w500,
                 ),
