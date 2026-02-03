@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:superapp/screens/admin/admin_dashboard_screen.dart';
 import 'package:superapp/screens/bottomNavScreen/edit_profile_screen.dart';
 import 'package:superapp/screens/job_assignment_screen.dart';
 import 'package:superapp/screens/my_wallet_screen.dart';
@@ -79,4 +80,5 @@ class ProfileController extends GetxController {
   void onTermPolicy() => Get.snackbar('Support', 'Term & Policy');
   void onHelpCenter() => Get.to(JobAssignmentScreen());
   void onLogout() => Get.snackbar('Auth', 'Logout');
+  void onAdminDashboard() => Get.to(() => const AdminDashboardScreen());
 }

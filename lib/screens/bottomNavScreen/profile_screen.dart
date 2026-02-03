@@ -243,6 +243,19 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
 
+                const SizedBox(height: 14),
+                _SectionTitle(title: 'Admin', theme: theme),
+                const SizedBox(height: 14),
+                _CardGroup(
+                  children: [
+                    _MenuTile(
+                      icon: Icons.dashboard_rounded,
+                      title: 'Admin Dashboard',
+                      onTap: controller.onAdminDashboard,
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: 16),
 
                 _CardGroup(
