@@ -17,47 +17,40 @@ class PhotoDetailsScreen extends StatelessWidget {
 
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(150),
-        child: Container(
-          color: const Color(0xFF27B9B6),
-          child: SafeArea(
-            bottom: false,
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          backgroundColor: theme.colorScheme.primary,
+          flexibleSpace: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 14),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
-
-                  SizedBox(
-                    height: 44,
-                    child: Stack(
-                      alignment: Alignment.center,
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(top: 40),
+                    child: Row(
                       children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            onPressed: Get.back,
-                            icon: const Icon(Icons.arrow_back),
-                            color: Colors.white,
-                            splashRadius: 22,
+                        IconButton(
+                          onPressed: () => Get.back(),
+                          icon: Icon(Icons.arrow_back),
+                          color: Colors.white,
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'Photo Detail',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
-
-                        Text(
-                          'Photo Details',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.more_vert),
-                            color: Colors.white,
-                            splashRadius: 22,
-                          ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.more_vert),
+                          color: Colors.white,
                         ),
                       ],
                     ),
@@ -68,11 +61,11 @@ class PhotoDetailsScreen extends StatelessWidget {
           ),
         ),
       ),
-
       body: SafeArea(
         top: false,
         child: Column(
           children: [
+            SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsetsGeometry.symmetric(
@@ -114,24 +107,14 @@ class PhotoDetailsScreen extends StatelessWidget {
                                 controller.stage.value == JobStage.completed;
                             return Row(
                               children: [
-                                Expanded(
-                                  child: _Pill(
-                                    text: 'Completed',
-                                    active: isCompleted,
-                                  ),
-                                ),
+                                _Pill(text: 'Completed', active: isCompleted),
                                 const SizedBox(width: 10),
-                                Expanded(
-                                  child: _Pill(
-                                    text: 'Planning',
-                                    active: !isCompleted,
-                                  ),
-                                ),
+                                _Pill(text: 'Planning', active: !isCompleted),
                               ],
                             );
                           }),
 
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 15),
                           Obx(
                             () => Text(
                               'Assigned Tech: ${controller.assignedTech.value}',
@@ -197,12 +180,12 @@ class PhotoDetailsScreen extends StatelessWidget {
                             i,
                           ) {
                             final item = controller.timeline[i];
-                            final isLast = i == controller.timeline.length - 1;
                             return _TimelineRow(
                               title: item.title,
                               timeAgo: item.timeAgo,
                               active: item.isActive,
-                              showDivider: !isLast,
+                              isFirst: i == 0,
+                              isLast: i == controller.timeline.length - 1,
                             );
                           }),
                         ),
@@ -214,7 +197,7 @@ class PhotoDetailsScreen extends StatelessWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: Row(
                 children: [
                   Expanded(
@@ -353,6 +336,7 @@ class _Pill extends StatelessWidget {
         : (isDark ? Colors.white70 : const Color(0xFF7A7F8C));
 
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       height: 30,
       decoration: BoxDecoration(
         color: bg,
@@ -385,7 +369,7 @@ class _PhotoBox extends StatelessWidget {
     final bg = isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF3F5F6);
 
     return Container(
-      height: 120,
+      height: 90,
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(14),
@@ -438,64 +422,91 @@ class _TimelineRow extends StatelessWidget {
     required this.title,
     required this.timeAgo,
     required this.active,
-    required this.showDivider,
+    required this.isFirst,
+    required this.isLast,
   });
 
   final String title;
   final String timeAgo;
   final bool active;
-  final bool showDivider;
+  final bool isFirst;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
-    final dotColor = active ? const Color(0xFF2BB673) : const Color(0xFFB6BAC5);
-    final titleColor = isDark ? Colors.white : const Color(0xFF2A2F3A);
-    final timeColor = isDark ? Colors.white70 : const Color(0xFF7A7F8C);
+    final dotColor = active ? const Color(0xFF22C55E) : const Color(0xFFB6BAC5);
+    final lineColor = isDark ? Colors.white12 : cs.primary.withOpacity(0.22);
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: dotColor,
-                  shape: BoxShape.circle,
-                ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: 18,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: 2,
+                      color: isFirst ? Colors.transparent : lineColor,
+                    ),
+                  ),
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: dotColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: 2,
+                      color: isLast ? Colors.transparent : lineColor,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 10),
-              Expanded(
+            ),
+            const SizedBox(width: 10),
+
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
                   title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: titleColor,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
+                    height: 1.15,
                   ),
                 ),
               ),
-              Text(
+            ),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
                 timeAgo,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: timeColor,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface.withOpacity(0.55),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        if (showDivider)
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: isDark ? Colors.white10 : const Color(0xFFE6ECEC),
-          ),
-      ],
+      ),
     );
   }
 }

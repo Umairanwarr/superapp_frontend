@@ -67,7 +67,7 @@ class CommunityScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             Padding(
-              padding: EdgeInsetsGeometry.only(left: 20),
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
               child: Align(
                 alignment: AlignmentGeometry.centerLeft,
                 child: Text(
@@ -80,7 +80,7 @@ class CommunityScreen extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Padding(
-              padding: EdgeInsetsGeometry.only(left: 20),
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -94,7 +94,7 @@ class CommunityScreen extends StatelessWidget {
             SizedBox(height: 20),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 35),
               child: Obx(
                 () => _TabsCard(
                   value: controller.tabIndex.value,
@@ -148,54 +148,52 @@ class _TabsCard extends StatelessWidget {
     final cs = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: isDark
-            ? null
-            : const [
-                BoxShadow(
-                  color: Color(0x14000000),
-                  blurRadius: 18,
-                  offset: Offset(0, 8),
-                ),
-              ],
-        border: Border.all(
-          color: isDark ? Colors.white10 : const Color(0xFFF2F2F2),
-        ),
-      ),
-      child: Row(
-        children: List.generate(items.length, (i) {
-          final selected = i == value;
-          return Expanded(
+    return Row(
+      children: List.generate(items.length, (i) {
+        final selected = i == value;
+
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: i == items.length - 1 ? 0 : 10),
             child: InkWell(
               onTap: () => onChanged(i),
               borderRadius: BorderRadius.circular(14),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 180),
                 curve: Curves.easeOut,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: selected ? cs.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                height: 38, // compact like screenshot
                 alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: selected ? cs.primary : theme.cardColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: selected
+                        ? cs.primary
+                        : (isDark ? Colors.white12 : const Color(0xFFE9EEF0)),
+                  ),
+                  boxShadow: isDark
+                      ? null
+                      : const [
+                          BoxShadow(
+                            color: Color(0x12000000),
+                            blurRadius: 12,
+                            offset: Offset(0, 6),
+                          ),
+                        ],
+                ),
                 child: Text(
                   items[i],
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: selected ? Colors.white : cs.onSurface,
+                    fontSize: 12.5,
                     fontWeight: FontWeight.w800,
-                    fontSize: 13,
+                    color: selected ? Colors.white : const Color(0xFF6B757C),
                   ),
                 ),
               ),
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }
@@ -219,182 +217,182 @@ class _CommunityPostCard extends StatelessWidget {
 
     final roleStyle = _roleChipStyle(post.role, cs);
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: isDark
-            ? null
-            : const [
-                BoxShadow(
-                  color: Color(0x0F000000),
-                  blurRadius: 16,
-                  offset: Offset(0, 8),
-                ),
-              ],
-        border: Border.all(
-          color: isDark ? Colors.white10 : const Color(0xFFF2F2F2),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: post.avatarColor,
-                child: Text(
-                  post.initial,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            post.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: roleStyle.bg,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            post.role,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: roleStyle.fg,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      post.timeAgo,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: cs.onSurface.withOpacity(0.45),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          Text(
-            post.message,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              height: 1.35,
-              color: cs.onSurface.withOpacity(0.78),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          if (post.linkText != null) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: cs.primary.withOpacity(isDark ? 0.20 : 0.10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: cs.primary.withOpacity(0.25)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.link_rounded, size: 18, color: cs.primary),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      post.linkText!,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: cs.primary,
-                      ),
-                    ),
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isDark
+              ? null
+              : const [
+                  BoxShadow(
+                    color: Color(0x0F000000),
+                    blurRadius: 16,
+                    offset: Offset(0, 8),
                   ),
                 ],
-              ),
-            ),
-          ],
-
-          const SizedBox(height: 12),
-
-          Row(
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: onLike,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 4,
+          border: Border.all(
+            color: isDark ? Colors.white10 : const Color(0xFFF2F2F2),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  backgroundColor: post.avatarColor,
+                  child: Text(
+                    post.initial,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
-                  child: Row(
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        isLiked
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 18,
-                        color: isLiked
-                            ? cs.primary
-                            : cs.onSurface.withOpacity(0.55),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              post.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: roleStyle.bg,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              post.role,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: roleStyle.fg,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(height: 2),
                       Text(
-                        '${post.likes}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: cs.onSurface.withOpacity(0.55),
+                        post.timeAgo,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: cs.onSurface.withOpacity(0.45),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            Text(
+              post.message,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                height: 1.35,
+                color: cs.onSurface.withOpacity(0.78),
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(width: 14),
-              _IconCount(
-                icon: Icons.mode_comment_outlined,
-                count: post.replies,
-                label: 'replies',
-              ),
-              const Spacer(),
-              Icon(
-                Icons.ios_share_rounded,
-                size: 20,
-                color: cs.onSurface.withOpacity(0.55),
+            ),
+
+            if (post.linkText != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: cs.primary.withOpacity(isDark ? 0.20 : 0.10),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: cs.primary.withOpacity(0.25)),
+                ),
+                child: Flexible(
+                  child: Text(
+                    '🔗 ${post.linkText!}',
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: cs.primary,
+                    ),
+                  ),
+                ),
               ),
             ],
-          ),
-        ],
+
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: onLike,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        // iOS-style red (screenshot jaisa)
+                        Icon(
+                          isLiked
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          size: 18,
+                          color: isLiked
+                              ? Color(0xFFFF3B30)
+                              : Color(0xFFA7B0B6), // dono states me red
+                        ),
+
+                        const SizedBox(width: 6),
+                        Text(
+                          '${post.likes}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: cs.onSurface.withOpacity(0.55),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                _IconCount(
+                  icon: Icons.mode_comment_outlined,
+                  count: post.replies,
+                  label: 'replies',
+                ),
+                SizedBox(width: 30),
+                InkWell(
+                  onTap: () {},
+                  child: Image.asset('assets/share.png', height: 15, width: 15),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

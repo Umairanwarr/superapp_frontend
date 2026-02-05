@@ -21,40 +21,40 @@ class PhotoReviewScreen extends StatelessWidget {
           elevation: 0,
           backgroundColor: theme.colorScheme.primary,
           flexibleSpace: SafeArea(
-            bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 6, 8, 10),
-              child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        onPressed: () => Get.back(),
-                        icon: const Icon(Icons.arrow_back),
-                        color: Colors.white,
-                      ),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(top: 40),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Get.back(),
+                          icon: Icon(Icons.arrow_back),
+                          color: Colors.white,
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'Photo Review',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Obx(() {
+                          final pending = controller.pendingCount;
+                          if (pending <= 0) return const SizedBox(width: 44);
+                          return _PendingBadge(text: '$pending pending');
+                        }),
+                      ],
                     ),
-
-                    Text(
-                      'Photo Review',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Obx(() {
-                        final pending = controller.pendingCount;
-                        if (pending <= 0) return const SizedBox(width: 44);
-                        return _PendingBadge(text: '$pending pending');
-                      }),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -64,29 +64,47 @@ class PhotoReviewScreen extends StatelessWidget {
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
+          padding: const EdgeInsetsGeometry.symmetric(
+            horizontal: 30,
+            vertical: 10,
+          ),
           child: Column(
             children: [
-              SizedBox(height: 20),
-              Obx(() {
-                final list = controller.items;
+              const SizedBox(height: 10),
 
-                return Column(
-                  children: List.generate(list.length, (i) {
-                    final item = list[i];
-                    final isLast = i == list.length - 1;
+              Flexible(
+                fit: FlexFit.loose,
+                child: Obx(() {
+                  final list = controller.items;
 
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
-                      child: _ReviewTile(
-                        item: item,
-                        onTap: () => controller.openItem(item),
+                  if (list.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No pending photo reviews',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface.withOpacity(0.45),
+                        ),
                       ),
                     );
-                  }),
-                );
-              }),
-              SizedBox(height: 10),
+                  }
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 6),
+                    itemCount: list.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, i) {
+                      final item = list[i];
+                      return _ReviewTile(
+                        item: item,
+                        onTap: () => controller.openItem(item),
+                      );
+                    },
+                  );
+                }),
+              ),
+              SizedBox(height: 20),
 
               Text(
                 'Tap to review & approve photos',
@@ -120,7 +138,7 @@ class _PendingBadge extends StatelessWidget {
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w800,
-          fontSize: 10.5,
+          fontSize: 12,
         ),
       ),
     );
@@ -137,15 +155,10 @@ class _ReviewTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final isLight = theme.brightness == Brightness.light;
+    final isDark = theme.brightness == Brightness.dark;
 
-    final header = item.status.trim().isEmpty
-        ? item.title
-        : '${item.title}\n${item.status}';
-
-    final tileBg = isLight
-        ? const Color(0xFFF3F5F6)
-        : cs.onSurface.withOpacity(0.08);
+    final borderColor = isDark ? Colors.white12 : const Color(0xFFE9EEF0);
+    final cardColor = isDark ? theme.cardColor : Colors.white;
 
     return Material(
       color: Colors.transparent,
@@ -153,104 +166,133 @@ class _ReviewTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          height: 110,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           decoration: BoxDecoration(
-            color: tileBg,
+            color: cardColor,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: cs.onSurface.withOpacity(isLight ? 0.05 : 0.10),
-            ),
+            border: Border.all(color: borderColor, width: 1),
+            boxShadow: isDark
+                ? null
+                : const [
+                    BoxShadow(
+                      color: Color(0x12000000),
+                      blurRadius: 18,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  color: cs.onSurface.withOpacity(0.06),
+                  color: isDark ? Colors.white10 : const Color(0xFFF1F4F6),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark ? Colors.white12 : const Color(0xFFE4EAEE),
+                  ),
                 ),
                 child: Icon(
                   Icons.photo_camera_outlined,
                   size: 18,
-                  color: cs.onSurface.withOpacity(0.45),
+                  color: cs.onSurface.withOpacity(0.55),
                 ),
               ),
               const SizedBox(width: 12),
 
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      header,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        height: 1.15,
-                        color: cs.onSurface,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          height: 1.1,
+                          color: cs.onSurface,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
+                      SizedBox(height: 5),
 
-                    Row(
-                      children: [
-                        if (item.albumLine.isNotEmpty)
-                          Flexible(
-                            child: Text(
-                              item.albumLine,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontSize: 10.5,
-                                color: cs.onSurface.withOpacity(0.55),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        if (item.albumLine.isNotEmpty)
-                          Text(
-                            '  •  ',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontSize: 10.5,
-                              color: cs.onSurface.withOpacity(0.35),
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                      if (item.status.trim().isNotEmpty) ...[
+                        const SizedBox(height: 2),
                         Text(
-                          '${item.photos} photos',
+                          item.status,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: 10.5,
-                            color: cs.onSurface.withOpacity(0.55),
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w900,
+                            height: 1.1,
                           ),
                         ),
                       ],
-                    ),
 
-                    const SizedBox(height: 6),
+                      const SizedBox(height: 6),
 
-                    Text(
-                      item.metaLine,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontSize: 10.5,
-                        color: cs.onSurface.withOpacity(0.45),
-                        fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          if (item.albumLine.isNotEmpty)
+                            Flexible(
+                              child: Text(
+                                item.albumLine,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 10.5,
+                                  color: cs.onSurface.withOpacity(0.55),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          if (item.albumLine.isNotEmpty)
+                            Text(
+                              '  •  ',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10.5,
+                                color: cs.onSurface.withOpacity(0.35),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          Text(
+                            '${item.photos} photos',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 10.5,
+                              color: cs.onSurface.withOpacity(0.55),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        item.metaLine,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 10.5,
+                          color: cs.onSurface.withOpacity(0.45),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Icon(
                 Icons.chevron_right_rounded,
                 size: 22,
-                color: cs.onSurface.withOpacity(0.35),
+                color: cs.onSurface.withOpacity(0.30),
               ),
             ],
           ),

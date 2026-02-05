@@ -20,7 +20,7 @@ class PhotoReviewController extends GetxController {
     items.assignAll(const [
       PhotoReviewItem(
         id: '1',
-        title: 'Unit 4B  -  Leak fixed',
+        title: 'Unit 4B  -  Leak',
         status: 'Fixed',
         albumLine: 'Before & After',
         photos: 2,
@@ -29,21 +29,21 @@ class PhotoReviewController extends GetxController {
       ),
       PhotoReviewItem(
         id: '2',
-        title: 'Unit 12A  -  HVAC install',
-        status: 'Completion',
-        albumLine: '',
+        title: 'Unit 12A  -  HVAC',
+        status: 'install',
+        albumLine: 'Completion',
         photos: 3,
         metaLine: 'Site: Sarah S  •  3h ago',
         pending: true,
       ),
       PhotoReviewItem(
         id: '3',
-        title: 'Unit 7C  -  Move-in inspection',
+        title: 'Unit 7C  -  Move-in',
         status: 'Inspection',
         albumLine: '',
         photos: 8,
-        metaLine: 'Site: John K  •  1d ago',
-        pending: false,
+        metaLine: 'Agent: Tom K  •  1d ago',
+        pending: true,
       ),
     ]);
   }
