@@ -173,7 +173,10 @@ class PhotoDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     _CardShell(
-                      padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: 20,
+                      ),
                       child: Obx(
                         () => Column(
                           children: List.generate(controller.timeline.length, (
@@ -254,7 +257,7 @@ class PhotoDetailsScreen extends StatelessWidget {
                             : const Icon(Icons.check),
                         label: const Text('Approve'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: kPrimaryColor,
+                          backgroundColor: const Color(0xFF10B981),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
@@ -435,77 +438,69 @@ class _TimelineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
-    final dotColor = active ? const Color(0xFF22C55E) : const Color(0xFFB6BAC5);
-    final lineColor = isDark ? Colors.white12 : cs.primary.withOpacity(0.22);
+    final dotColor = active ? const Color(0xFF10B981) : const Color(0xFFD1D5DB);
+    final lineColor = isDark ? Colors.white10 : const Color(0xFFE5E7EB);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              width: 18,
-              child: Column(
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 24,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 1.5,
+                    color: isFirst ? Colors.transparent : lineColor,
+                  ),
+                ),
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    width: 1.5,
+                    color: isLast ? Colors.transparent : lineColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      width: 2,
-                      color: isFirst ? Colors.transparent : lineColor,
+                    child: Text(
+                      title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.white : const Color(0xFF4B5563),
+                      ),
                     ),
                   ),
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: dotColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      color: isLast ? Colors.transparent : lineColor,
+                  Text(
+                    timeAgo,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: isDark ? Colors.white38 : const Color(0xFF9CA3AF),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: cs.onSurface,
-                    height: 1.15,
-                  ),
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                timeAgo,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurface.withOpacity(0.55),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
