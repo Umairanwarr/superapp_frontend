@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:superapp/screens/admin/job_assignment_screen.dart';
+import 'package:superapp/screens/admin/community_screen.dart';
+import 'package:superapp/screens/admin/photo_review_screen.dart';
 import 'package:superapp/widgets/admin_bottom_bar.dart';
 
 import 'package:superapp/screens/admin/qc_screen.dart';
@@ -19,8 +22,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: isDark
+          ? theme.scaffoldBackgroundColor
+          : const Color(0xFFF5F7FA),
       body: _currentIndex == 0
           ? _AdminDashboardBody()
           : _currentIndex == 1
@@ -29,6 +37,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ? const JobsQueueScreen()
           : _currentIndex == 3
           ? const PaymentInsightsScreen()
+          : _currentIndex == 4
+          ? CommunityScreen()
+          : _currentIndex == 5
+          ? const PhotoReviewScreen()
           : _AdminDashboardBody(), // Placeholder for other tabs
       bottomNavigationBar: AdminBottomBar(
         currentIndex: _currentIndex,
@@ -45,6 +57,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 class _AdminDashboardBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       children: [
         // Teal Header with solid bottom
@@ -58,32 +73,37 @@ class _AdminDashboardBody extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 // Location Dropdown
-                _buildLocationDropdown(),
+                _buildLocationDropdown(context, isDark),
                 const SizedBox(height: 16),
                 // Search Bar
-                _buildSearchBar(),
+                _buildSearchBar(context, isDark),
                 const SizedBox(height: 20),
                 // Stats Grid
-                _buildStatsGrid(),
+                _buildStatsGrid(context, isDark),
                 const SizedBox(height: 16),
                 // Action Cards
-                _buildActionCards(),
+                _buildActionCards(context),
                 const SizedBox(height: 30),
                 // Today's Tasks
-                _buildSectionTitle('Today\'s Tasks', showSeeAll: true),
+                _buildSectionTitle(
+                  context,
+                  'Today\'s Tasks',
+                  isDark,
+                  showSeeAll: true,
+                ),
                 const SizedBox(height: 16),
-                _buildTodaysTasks(),
+                _buildTodaysTasks(context, isDark),
                 const SizedBox(height: 24),
                 // IoT Diagnostic
-                _buildIoTDiagnosticCard(context),
+                _buildIoTDiagnosticCard(context, isDark),
                 const SizedBox(height: 16),
                 // Job Assignment White Card
-                _buildJobAssignmentWhiteCard(),
+                _buildJobAssignmentWhiteCard(context, isDark),
                 const SizedBox(height: 30),
                 // Today's Overview
-                _buildSectionTitle('Today\'s Overview'),
+                _buildSectionTitle(context, 'Today\'s Overview', isDark),
                 const SizedBox(height: 16),
-                _buildTodaysOverview(),
+                _buildTodaysOverview(context, isDark),
                 const SizedBox(height: 50), // Extra padding for bottom
               ],
             ),
@@ -93,14 +113,19 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title, {bool showSeeAll = false}) {
+  Widget _buildSectionTitle(
+    BuildContext context,
+    String title,
+    bool isDark, {
+    bool showSeeAll = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: Color(0xFF1F2937),
+          style: TextStyle(
+            color: isDark ? Colors.white : const Color(0xFF1F2937),
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -126,7 +151,8 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildTodaysTasks() {
+  Widget _buildTodaysTasks(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         _TaskCard(
@@ -137,6 +163,8 @@ class _AdminDashboardBody extends StatelessWidget {
           tagColor: const Color(0xFFFEF3C7),
           tagTextColor: const Color(0xFFD97706),
           statusColor: const Color(0xFFEC4899),
+          isDark: isDark,
+          cardBgColor: isDark ? theme.cardColor : Colors.white,
         ),
         const SizedBox(height: 12),
         _TaskCard(
@@ -147,6 +175,8 @@ class _AdminDashboardBody extends StatelessWidget {
           tagColor: const Color(0xFFFEF3C7),
           tagTextColor: const Color(0xFFD97706),
           statusColor: const Color(0xFFEC4899),
+          isDark: isDark,
+          cardBgColor: isDark ? theme.cardColor : Colors.white,
         ),
         const SizedBox(height: 12),
         _TaskCard(
@@ -157,12 +187,15 @@ class _AdminDashboardBody extends StatelessWidget {
           tagColor: const Color(0xFFFEF3C7),
           tagTextColor: const Color(0xFFD97706),
           statusColor: const Color(0xFFEC4899),
+          isDark: isDark,
+          cardBgColor: isDark ? theme.cardColor : Colors.white,
         ),
       ],
     );
   }
 
-  Widget _buildIoTDiagnosticCard(BuildContext context) {
+  Widget _buildIoTDiagnosticCard(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -173,7 +206,7 @@ class _AdminDashboardBody extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? theme.cardColor : Colors.white,
           borderRadius: BorderRadius.circular(24),
           boxShadow: const [
             BoxShadow(
@@ -202,10 +235,10 @@ class _AdminDashboardBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'IoT Diagnostic',
                     style: TextStyle(
-                      color: Color(0xFF1F2937),
+                      color: isDark ? Colors.white : const Color(0xFF1F2937),
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -214,7 +247,9 @@ class _AdminDashboardBody extends StatelessWidget {
                   Text(
                     'Monitor\nconnected devices',
                     style: TextStyle(
-                      color: const Color(0xFF6B7280).withOpacity(0.8),
+                      color: isDark
+                          ? Colors.white70
+                          : const Color(0xFF6B7280).withOpacity(0.8),
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                     ),
@@ -262,78 +297,90 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildJobAssignmentWhiteCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x05000000),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFDBEAFE),
-              borderRadius: BorderRadius.circular(16),
+  Widget _buildJobAssignmentWhiteCard(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const JobAssignmentScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? theme.cardColor : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x05000000),
+              blurRadius: 10,
+              offset: Offset(0, 2),
             ),
-            child: SvgPicture.asset(
-              'assets/Ai.svg',
-              width: 28,
-              height: 28,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFF2563EB),
-                BlendMode.srcIn,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFDBEAFE),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: SvgPicture.asset(
+                'assets/Ai.svg',
+                width: 28,
+                height: 28,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFF2563EB),
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Job Assignment',
-                  style: TextStyle(
-                    color: Color(0xFF1F2937),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Job Assignment',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Ai & Manual Assign',
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280).withOpacity(0.8),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
+                  const SizedBox(height: 4),
+                  Text(
+                    'Ai & Manual Assign',
+                    style: TextStyle(
+                      color: isDark
+                          ? Colors.white70
+                          : const Color(0xFF6B7280).withOpacity(0.8),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: Color(0xFF9CA3AF),
-            size: 16,
-          ),
-        ],
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Color(0xFF9CA3AF),
+              size: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTodaysOverview() {
+  Widget _buildTodaysOverview(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: const [
           BoxShadow(
@@ -345,18 +392,26 @@ class _AdminDashboardBody extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _OverviewRow(label: 'Jobs Created', value: '8'),
-          const Divider(height: 32, color: Color(0xFFF3F4F6)),
+          _OverviewRow(label: 'Jobs Created', value: '8', isDark: isDark),
+          Divider(
+            height: 32,
+            color: isDark ? Colors.white12 : const Color(0xFFF3F4F6),
+          ),
           _OverviewRow(
             label: 'Jobs Closed',
             value: '12',
             valueColor: const Color(0xFF10B981),
+            isDark: isDark,
           ),
-          const Divider(height: 32, color: Color(0xFFF3F4F6)),
+          Divider(
+            height: 32,
+            color: isDark ? Colors.white12 : const Color(0xFFF3F4F6),
+          ),
           _OverviewRow(
             label: 'Avg. Resolution',
             value: '4.2 hrs',
-            valueColor: const Color(0xFF1F2937),
+            valueColor: isDark ? Colors.white : const Color(0xFF1F2937),
+            isDark: isDark,
           ),
         ],
       ),
@@ -451,13 +506,17 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildLocationDropdown() {
+  Widget _buildLocationDropdown(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        border: Border.all(
+          color: isDark ? Colors.white12 : const Color(0xFFE5E7EB),
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -472,18 +531,18 @@ class _AdminDashboardBody extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Text(
+          Text(
             'Croatia',
             style: TextStyle(
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(width: 6),
-          const Icon(
+          Icon(
             Icons.keyboard_arrow_down,
-            color: Color(0xFF6B7280),
+            color: isDark ? Colors.white70 : const Color(0xFF6B7280),
             size: 20,
           ),
         ],
@@ -491,13 +550,16 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF3F4F6)),
+        border: Border.all(
+          color: isDark ? Colors.white12 : const Color(0xFFF3F4F6),
+        ),
         boxShadow: const [
           BoxShadow(
             color: Color(0x08000000),
@@ -530,10 +592,10 @@ class _AdminDashboardBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Ask anything...',
                   style: TextStyle(
-                    color: Color(0xFF1F2937),
+                    color: isDark ? Colors.white : const Color(0xFF1F2937),
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -542,7 +604,7 @@ class _AdminDashboardBody extends StatelessWidget {
                 Text(
                   'Search tasks, staff, properties',
                   style: TextStyle(
-                    color: const Color(0xFF9CA3AF),
+                    color: isDark ? Colors.white70 : const Color(0xFF9CA3AF),
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
@@ -553,7 +615,9 @@ class _AdminDashboardBody extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFFE0F2FE),
+              color: isDark
+                  ? const Color(0xFF38CAC7).withOpacity(0.2)
+                  : const Color(0xFFE0F2FE),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text(
@@ -570,7 +634,8 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsGrid() {
+  Widget _buildStatsGrid(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         // First Row
@@ -584,8 +649,9 @@ class _AdminDashboardBody extends StatelessWidget {
                 iconAsset: 'assets/jobs-admin.svg',
                 iconBgColor: const Color(0xFFDBEAFE),
                 iconColor: const Color(0xFF2563EB),
-                valueColor: const Color(0xFF111827),
-                cardBgColor: Colors.white,
+                valueColor: isDark ? Colors.white : const Color(0xFF111827),
+                cardBgColor: isDark ? theme.cardColor : Colors.white,
+                isDark: isDark,
               ),
             ),
             const SizedBox(width: 16),
@@ -596,8 +662,9 @@ class _AdminDashboardBody extends StatelessWidget {
                 icon: Icons.access_time_rounded,
                 iconBgColor: const Color(0xFFFEF3C7),
                 iconColor: const Color(0xFFD97706),
-                valueColor: const Color(0xFF111827),
-                cardBgColor: Colors.white,
+                valueColor: isDark ? Colors.white : const Color(0xFF111827),
+                cardBgColor: isDark ? theme.cardColor : Colors.white,
+                isDark: isDark,
               ),
             ),
           ],
@@ -615,7 +682,8 @@ class _AdminDashboardBody extends StatelessWidget {
                 iconBgColor: const Color(0xFFD1FAE5),
                 iconColor: const Color(0xFF059669),
                 valueColor: const Color(0xFF059669),
-                cardBgColor: Colors.white,
+                cardBgColor: isDark ? theme.cardColor : Colors.white,
+                isDark: isDark,
               ),
             ),
             const SizedBox(width: 16),
@@ -628,9 +696,10 @@ class _AdminDashboardBody extends StatelessWidget {
                 iconBgColor: const Color(0xFFFFEDD5),
                 iconColor: const Color(0xFFEA580C),
                 valueColor: const Color(0xFFEA580C),
-                cardBgColor: const Color(0xFFFFF7ED),
+                cardBgColor: isDark ? theme.cardColor : const Color(0xFFFFF7ED),
                 badgeText: 'Needs Attention',
                 badgeColor: const Color(0xFFF97316),
+                isDark: isDark,
               ),
             ),
           ],
@@ -639,18 +708,28 @@ class _AdminDashboardBody extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCards() {
+  Widget _buildActionCards(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: _ActionCard(
-            title: 'Job\nAssignment',
-            subtitle: 'AI & Manual assign',
-            badgeText: '3 unassigned',
-            gradient: const [Color(0xFF3B82F6), Color(0xFF2563EB)],
-            icon: Icons.auto_awesome, // Fallback
-            iconAsset: 'assets/Ai.svg',
-            badgeBgColor: const Color(0xFF60A5FA),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const JobAssignmentScreen(),
+                ),
+              );
+            },
+            child: _ActionCard(
+              title: 'Job\nAssignment',
+              subtitle: 'AI & Manual assign',
+              badgeText: '3 unassigned',
+              gradient: const [Color(0xFF3B82F6), Color(0xFF2563EB)],
+              icon: Icons.auto_awesome, // Fallback
+              iconAsset: 'assets/Ai.svg',
+              badgeBgColor: const Color(0xFF60A5FA),
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -678,6 +757,7 @@ class _StatCard extends StatelessWidget {
   final Color iconColor;
   final Color valueColor;
   final Color cardBgColor;
+  final bool isDark;
 
   final String? iconAsset;
 
@@ -690,6 +770,7 @@ class _StatCard extends StatelessWidget {
     required this.iconColor,
     required this.valueColor,
     required this.cardBgColor,
+    this.isDark = false,
   });
 
   @override
@@ -742,8 +823,8 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(
-              color: Color(0xFF6B7280),
+            style: TextStyle(
+              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -764,6 +845,7 @@ class _StatCardWithBadge extends StatelessWidget {
   final Color cardBgColor;
   final String badgeText;
   final Color badgeColor;
+  final bool isDark;
 
   final String? iconAsset;
 
@@ -778,6 +860,7 @@ class _StatCardWithBadge extends StatelessWidget {
     required this.cardBgColor,
     required this.badgeText,
     required this.badgeColor,
+    this.isDark = false,
   });
 
   @override
@@ -830,8 +913,8 @@ class _StatCardWithBadge extends StatelessWidget {
           const SizedBox(height: 6), // Reduced spacing
           Text(
             label,
-            style: const TextStyle(
-              color: Color(0xFF6B7280),
+            style: TextStyle(
+              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -971,6 +1054,8 @@ class _TaskCard extends StatelessWidget {
   final Color tagColor;
   final Color tagTextColor;
   final Color statusColor;
+  final bool isDark;
+  final Color cardBgColor;
 
   const _TaskCard({
     required this.title,
@@ -980,6 +1065,8 @@ class _TaskCard extends StatelessWidget {
     required this.tagColor,
     required this.tagTextColor,
     required this.statusColor,
+    this.isDark = false,
+    this.cardBgColor = Colors.white,
   });
 
   @override
@@ -989,7 +1076,7 @@ class _TaskCard extends StatelessWidget {
       height: 110,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBgColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -1007,8 +1094,8 @@ class _TaskCard extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: Color(0xFF1F2937),
+                style: TextStyle(
+                  color: isDark ? Colors.white : const Color(0xFF1F2937),
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -1017,7 +1104,9 @@ class _TaskCard extends StatelessWidget {
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: const Color(0xFF6B7280).withOpacity(0.9),
+                  color: isDark
+                      ? Colors.white70
+                      : const Color(0xFF6B7280).withOpacity(0.9),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
@@ -1025,16 +1114,16 @@ class _TaskCard extends StatelessWidget {
               const Spacer(),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.access_time_rounded,
-                    color: Color(0xFF9CA3AF),
+                    color: isDark ? Colors.white54 : const Color(0xFF9CA3AF),
                     size: 16,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     time,
-                    style: const TextStyle(
-                      color: Color(0xFF6B7280),
+                    style: TextStyle(
+                      color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1086,11 +1175,13 @@ class _OverviewRow extends StatelessWidget {
   final String label;
   final String value;
   final Color? valueColor;
+  final bool isDark;
 
   const _OverviewRow({
     required this.label,
     required this.value,
     this.valueColor,
+    this.isDark = false,
   });
 
   @override
@@ -1101,7 +1192,9 @@ class _OverviewRow extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: const Color(0xFF6B7280).withOpacity(0.9),
+            color: isDark
+                ? Colors.white70
+                : const Color(0xFF6B7280).withOpacity(0.9),
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -1109,7 +1202,8 @@ class _OverviewRow extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: valueColor ?? const Color(0xFF1F2937),
+            color:
+                valueColor ?? (isDark ? Colors.white : const Color(0xFF1F2937)),
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),

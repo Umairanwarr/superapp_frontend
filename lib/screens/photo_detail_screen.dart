@@ -14,43 +14,218 @@ class PhotoDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: theme.colorScheme.primary,
-          flexibleSpace: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+      body: Column(
+        children: [
+          _buildHeader(context, theme),
+          Expanded(
+            child: SafeArea(
+              top: false,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsetsGeometry.symmetric(
+                        horizontal: 30,
+                        vertical: 10,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _CardShell(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(
+                                  () => Text(
+                                    controller.jobTitle.value,
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.15,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Obx(
+                                  () => Text(
+                                    controller.community.value,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.onSurface.withOpacity(
+                                        0.55,
+                                      ),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+
+                                Obx(() {
+                                  final isCompleted =
+                                      controller.stage.value == JobStage.completed;
+                                  return Row(
+                                    children: [
+                                      _Pill(text: 'Completed', active: isCompleted),
+                                      const SizedBox(width: 10),
+                                      _Pill(text: 'Planning', active: !isCompleted),
+                                    ],
+                                  );
+                                }),
+
+                                const SizedBox(height: 15),
+                                Obx(
+                                  () => Text(
+                                    'Assigned Tech: ${controller.assignedTech.value}',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.onSurface.withOpacity(
+                                        0.55,
+                                      ),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Text(
+                            'Photos for Review',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Obx(
+                                  () => _PhotoBox(
+                                    label: 'Before',
+                                    url: controller.beforePhotoUrl.value,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Obx(
+                                  () => _PhotoBox(
+                                    label: 'After',
+                                    url: controller.afterPhotoUrl.value,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Text(
+                            'Timeline',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          _CardShell(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 24,
+                              horizontal: 20,
+                            ),
+                            child: Obx(
+                              () => Column(
+                                children: List.generate(controller.timeline.length, (
+                                  i,
+                                ) {
+                                  final item = controller.timeline[i];
+                                  return _TimelineRow(
+                                    title: item.title,
+                                    timeAgo: item.timeAgo,
+                                    active: item.isActive,
+                                    isFirst: i == 0,
+                                    isLast: i == controller.timeline.length - 1,
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   Padding(
-                    padding: EdgeInsetsGeometry.only(top: 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     child: Row(
                       children: [
-                        IconButton(
-                          onPressed: () => Get.back(),
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
-                        ),
                         Expanded(
-                          child: Center(
-                            child: Text(
-                              'Photo Detail',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                          child: Obx(
+                            () => OutlinedButton.icon(
+                              onPressed: controller.isRejecting.value
+                                  ? null
+                                  : controller.reject,
+                              icon: controller.isRejecting.value
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.close),
+                              label: const Text('Reject'),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                side: BorderSide(
+                                  color: isDark
+                                      ? Colors.white12
+                                      : const Color(0xFFE1E8E8),
+                                ),
+                                backgroundColor: theme.cardColor,
+                                foregroundColor:
+                                    theme.textTheme.bodyLarge?.color ?? Colors.black,
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.more_vert),
-                          color: Colors.white,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Obx(
+                            () => ElevatedButton.icon(
+                              onPressed: controller.isApproving.value
+                                  ? null
+                                  : controller.approve,
+                              icon: controller.isApproving.value
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.check),
+                              label: const Text('Approve'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF10B981),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -59,222 +234,46 @@ class PhotoDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 15,
+        bottom: 70,
+        left: 20,
+        right: 20,
+      ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF38CAC7), Color(0xFF2DD4BF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsetsGeometry.symmetric(
-                  horizontal: 30,
-                  vertical: 10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _CardShell(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(
-                            () => Text(
-                              controller.jobTitle.value,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                height: 1.15,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Obx(
-                            () => Text(
-                              controller.community.value,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.55,
-                                ),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          Obx(() {
-                            final isCompleted =
-                                controller.stage.value == JobStage.completed;
-                            return Row(
-                              children: [
-                                _Pill(text: 'Completed', active: isCompleted),
-                                const SizedBox(width: 10),
-                                _Pill(text: 'Planning', active: !isCompleted),
-                              ],
-                            );
-                          }),
-
-                          const SizedBox(height: 15),
-                          Obx(
-                            () => Text(
-                              'Assigned Tech: ${controller.assignedTech.value}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.55,
-                                ),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Text(
-                      'Photos for Review',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Obx(
-                            () => _PhotoBox(
-                              label: 'Before',
-                              url: controller.beforePhotoUrl.value,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Obx(
-                            () => _PhotoBox(
-                              label: 'After',
-                              url: controller.afterPhotoUrl.value,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Text(
-                      'Timeline',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    _CardShell(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 24,
-                        horizontal: 20,
-                      ),
-                      child: Obx(
-                        () => Column(
-                          children: List.generate(controller.timeline.length, (
-                            i,
-                          ) {
-                            final item = controller.timeline[i];
-                            return _TimelineRow(
-                              title: item.title,
-                              timeAgo: item.timeAgo,
-                              active: item.isActive,
-                              isFirst: i == 0,
-                              isLast: i == controller.timeline.length - 1,
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
-                  ],
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                'Photo Detail',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
               ),
             ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Obx(
-                      () => OutlinedButton.icon(
-                        onPressed: controller.isRejecting.value
-                            ? null
-                            : controller.reject,
-                        icon: controller.isRejecting.value
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.close),
-                        label: const Text('Reject'),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          side: BorderSide(
-                            color: isDark
-                                ? Colors.white12
-                                : const Color(0xFFE1E8E8),
-                          ),
-                          backgroundColor: theme.cardColor,
-                          foregroundColor:
-                              theme.textTheme.bodyLarge?.color ?? Colors.black,
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Obx(
-                      () => ElevatedButton.icon(
-                        onPressed: controller.isApproving.value
-                            ? null
-                            : controller.approve,
-                        icon: controller.isApproving.value
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.check),
-                        label: const Text('Approve'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF10B981),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 24),
+        ],
       ),
     );
   }

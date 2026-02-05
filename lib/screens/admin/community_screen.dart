@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/modal/community_post_modal.dart';
-import '../controllers/community_controller.dart';
+import 'package:superapp/controllers/community_controller.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -13,119 +13,119 @@ class CommunityScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: theme.colorScheme.primary,
-          flexibleSpace: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+      body: Column(
+        children: [
+          _buildHeader(context, theme),
+          Expanded(
+            child: SafeArea(
+              top: false,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 10),
                   Padding(
-                    padding: EdgeInsetsGeometry.only(top: 40),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Get.back(),
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Community',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              'Community',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.more_vert),
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     ),
+                  ),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Connect with owners & staff',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                    child: Obx(
+                      () => _TabsCard(
+                        value: controller.tabIndex.value,
+                        items: controller.tabs,
+                        onChanged: controller.setTab,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: Obx(() {
+                      final list = controller.visiblePosts;
+                      return ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
+                        itemCount: list.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final post = list[index];
+                          return _CommunityPostCard(
+                            post: post,
+                            isLiked: controller.isLiked(post.id),
+                            onLike: () => controller.toggleLike(post.id),
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 15,
+        bottom: 70,
+        left: 20,
+        right: 20,
+      ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF38CAC7), Color(0xFF2DD4BF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-
-      body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-              child: Align(
-                alignment: AlignmentGeometry.centerLeft,
-                child: Text(
-                  'Community',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                'Community',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
               ),
             ),
-            const SizedBox(height: 6),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Connect with owners & staff',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35),
-              child: Obx(
-                () => _TabsCard(
-                  value: controller.tabIndex.value,
-                  items: controller.tabs,
-                  onChanged: controller.setTab,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            Expanded(
-              child: Obx(() {
-                final list = controller.visiblePosts;
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-                  itemCount: list.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final post = list[index];
-                    return _CommunityPostCard(
-                      post: post,
-                      isLiked: controller.isLiked(post.id),
-                      onLike: () => controller.toggleLike(post.id),
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
-        ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.more_vert, color: Colors.white, size: 24),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+        ],
       ),
     );
   }

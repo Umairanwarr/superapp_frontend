@@ -6,8 +6,13 @@ class IoTDiagnosticScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: isDark
+          ? theme.scaffoldBackgroundColor
+          : const Color(0xFFF9FAFB),
       body: Column(
         children: [
           _buildHeader(context),
@@ -18,73 +23,97 @@ class IoTDiagnosticScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  const Text(
+                  Text(
                     '5 Devices',
                     style: TextStyle(
-                      color: Color(0xFF94A3B8),
+                      color: isDark ? Colors.white60 : const Color(0xFF94A3B8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 20),
                   _buildDeviceCard(
+                    context: context,
                     iconAsset: 'assets/fire.svg',
                     iconColor: const Color(0xFFEF4444),
-                    iconBg: const Color(0xFFFEF2F2),
+                    iconBg: isDark
+                        ? const Color(0xFFEF4444).withOpacity(0.1)
+                        : const Color(0xFFFEF2F2),
                     title: 'Thermostat\nUnit - 4B',
                     location: 'Maple Heights',
                     time: '2h ago',
                     tag: 'Urgent',
-                    tagBg: const Color(0xFFFEE2E2),
+                    tagBg: isDark
+                        ? const Color(0xFFEF4444).withOpacity(0.2)
+                        : const Color(0xFFFEE2E2),
                     tagColor: const Color(0xFFEF4444),
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 16),
                   _buildDeviceCard(
+                    context: context,
                     icon: Icons.air_rounded,
-                    iconColor: const Color(0xFF64748B),
-                    iconBg: const Color(0xFFF1F5F9),
+                    iconColor: isDark
+                        ? Colors.white70
+                        : const Color(0xFF64748B),
+                    iconBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
                     title: 'Smart Lock\nUnit - 4B',
                     location: 'Oak Plaza',
                     time: '5h ago',
                     tag: 'Normal',
-                    tagBg: const Color(0xFFF1F5F9),
-                    tagColor: const Color(0xFF64748B),
+                    tagBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
+                    tagColor: isDark ? Colors.white70 : const Color(0xFF64748B),
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 16),
                   _buildDeviceCard(
+                    context: context,
                     iconAsset: 'assets/lock.svg',
-                    iconColor: const Color(0xFF64748B),
-                    iconBg: const Color(0xFFF1F5F9),
+                    iconColor: isDark
+                        ? Colors.white70
+                        : const Color(0xFF64748B),
+                    iconBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
                     title: 'Unit 7C  - Lock\nReplacement',
                     location: 'Pine Court',
                     time: '1d ago',
                     tag: 'Normal',
-                    tagBg: const Color(0xFFF1F5F9),
-                    tagColor: const Color(0xFF64748B),
+                    tagBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
+                    tagColor: isDark ? Colors.white70 : const Color(0xFF64748B),
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 16),
                   _buildDeviceCard(
+                    context: context,
                     iconAsset: 'assets/fix.svg',
                     iconColor: const Color(0xFFEF4444),
-                    iconBg: const Color(0xFFFEF2F2),
+                    iconBg: isDark
+                        ? const Color(0xFFEF4444).withOpacity(0.1)
+                        : const Color(0xFFFEF2F2),
                     title: 'Unit 3A  - Plumbing\nFix',
                     location: 'Cedar Towers',
                     time: '1d ago',
                     tag: 'Urgent',
-                    tagBg: const Color(0xFFFEE2E2),
+                    tagBg: isDark
+                        ? const Color(0xFFEF4444).withOpacity(0.2)
+                        : const Color(0xFFFEE2E2),
                     tagColor: const Color(0xFFEF4444),
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 16),
                   _buildDeviceCard(
+                    context: context,
                     icon: Icons.air_rounded,
-                    iconColor: const Color(0xFF64748B),
-                    iconBg: const Color(0xFFF1F5F9),
+                    iconColor: isDark
+                        ? Colors.white70
+                        : const Color(0xFF64748B),
+                    iconBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
                     title: 'Unit 9B  - AC\nRepair',
                     location: 'Maple Heights',
                     time: '2d ago',
                     tag: 'Normal',
-                    tagBg: const Color(0xFFF1F5F9),
-                    tagColor: const Color(0xFF64748B),
+                    tagBg: isDark ? Colors.white10 : const Color(0xFFF1F5F9),
+                    tagColor: isDark ? Colors.white70 : const Color(0xFF64748B),
+                    isDark: isDark,
                   ),
                   const SizedBox(height: 30),
                 ],
@@ -138,6 +167,7 @@ class IoTDiagnosticScreen extends StatelessWidget {
   }
 
   Widget _buildDeviceCard({
+    required BuildContext context,
     IconData? icon,
     String? iconAsset,
     required Color iconColor,
@@ -148,11 +178,12 @@ class IoTDiagnosticScreen extends StatelessWidget {
     required String tag,
     required Color tagBg,
     required Color tagColor,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -191,8 +222,8 @@ class IoTDiagnosticScreen extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        color: Color(0xFF1E293B),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : const Color(0xFF1E293B),
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         height: 1.3,
@@ -223,23 +254,31 @@ class IoTDiagnosticScreen extends StatelessWidget {
                   children: [
                     Text(
                       location,
-                      style: const TextStyle(
-                        color: Color(0xFF94A3B8),
+                      style: TextStyle(
+                        color: isDark
+                            ? Colors.white60
+                            : const Color(0xFF94A3B8),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: Text(
                         '•',
-                        style: TextStyle(color: Color(0xFF94A3B8)),
+                        style: TextStyle(
+                          color: isDark
+                              ? Colors.white60
+                              : const Color(0xFF94A3B8),
+                        ),
                       ),
                     ),
                     Text(
                       time,
-                      style: const TextStyle(
-                        color: Color(0xFF94A3B8),
+                      style: TextStyle(
+                        color: isDark
+                            ? Colors.white60
+                            : const Color(0xFF94A3B8),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),

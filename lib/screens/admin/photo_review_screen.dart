@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/modal/photo_review_modal.dart';
-import '../controllers/photo_review_controller.dart';
+import 'package:superapp/controllers/photo_review_controller.dart';
+import 'package:superapp/screens/photo_detail_screen.dart';
 
 class PhotoReviewScreen extends StatelessWidget {
   const PhotoReviewScreen({super.key});
@@ -13,109 +14,113 @@ class PhotoReviewScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
+      body: Column(
+        children: [
+          _buildHeader(context, theme, controller),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 10,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Obx(() {
+                        final list = controller.items;
 
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: theme.colorScheme.primary,
-          flexibleSpace: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsGeometry.only(top: 40),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Get.back(),
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
-                        ),
-                        Expanded(
-                          child: Center(
+                        if (list.isEmpty) {
+                          return Center(
                             child: Text(
-                              'Photo Review',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
+                              'No pending photo reviews',
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurface.withOpacity(0.45),
                               ),
                             ),
-                          ),
-                        ),
-                        Obx(() {
-                          final pending = controller.pendingCount;
-                          if (pending <= 0) return const SizedBox(width: 44);
-                          return _PendingBadge(text: '$pending pending');
-                        }),
-                      ],
+                          );
+                        }
+
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 6),
+                          itemCount: list.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          itemBuilder: (context, i) {
+                            final item = list[i];
+                            return _ReviewTile(
+                              item: item,
+                              onTap: () => controller.openItem(item),
+                            );
+                          },
+                        );
+                      }),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () => Get.to(() => const PhotoDetailsScreen()),
+                      child: Text(
+                        'Tap to review & approve photos',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface.withOpacity(0.40),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+      BuildContext context, ThemeData theme, PhotoReviewController controller) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 15,
+        bottom: 70,
+        left: 20,
+        right: 20,
+      ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF38CAC7), Color(0xFF2DD4BF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsetsGeometry.symmetric(
-            horizontal: 30,
-            vertical: 10,
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-
-              Flexible(
-                fit: FlexFit.loose,
-                child: Obx(() {
-                  final list = controller.items;
-
-                  if (list.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No pending photo reviews',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onSurface.withOpacity(0.45),
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 6),
-                    itemCount: list.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, i) {
-                      final item = list[i];
-                      return _ReviewTile(
-                        item: item,
-                        onTap: () => controller.openItem(item),
-                      );
-                    },
-                  );
-                }),
-              ),
-              SizedBox(height: 20),
-
-              Text(
-                'Tap to review & approve photos',
-                style: theme.textTheme.bodySmall?.copyWith(
+          Expanded(
+            child: Center(
+              child: Text(
+                'Photo Review',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface.withOpacity(0.40),
+                  fontSize: 18,
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Obx(() {
+            final pending = controller.pendingCount;
+            if (pending <= 0) return const SizedBox(width: 24);
+            return _PendingBadge(text: '$pending pending');
+          }),
+        ],
       ),
     );
   }

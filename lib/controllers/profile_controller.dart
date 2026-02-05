@@ -3,12 +3,9 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:superapp/screens/admin/admin_dashboard_screen.dart';
 import 'package:superapp/screens/bottomNavScreen/edit_profile_screen.dart';
-import 'package:superapp/screens/community_screen.dart';
-import 'package:superapp/screens/job_assignment_screen.dart';
 import 'package:superapp/screens/my_wallet_screen.dart';
 import 'package:superapp/screens/notification_setting_screen.dart';
 import 'package:superapp/screens/photo_detail_screen.dart';
-import 'package:superapp/screens/photo_review_screen.dart';
 import 'package:superapp/screens/security_setting_screen.dart';
 
 class ProfileController extends GetxController {
@@ -71,8 +68,8 @@ class ProfileController extends GetxController {
     }
   }
 
-  void onIdentity() => Get.to(CommunityScreen());
-  void onPreferences() => Get.to(PhotoReviewScreen());
+  void onIdentity() => Get.snackbar('Support', 'Community');
+  void onPreferences() => Get.snackbar('Support', 'Photo Review');
 
   void onMyWallet() => Get.to(() => MyWalletScreen());
   void onPaymentMethods() => Get.to(PhotoDetailsScreen());
@@ -81,7 +78,7 @@ class ProfileController extends GetxController {
   void onSecurity() => Get.to(() => const SecuritySettingsScreen());
 
   void onTermPolicy() => Get.snackbar('Support', 'Term & Policy');
-  void onHelpCenter() => Get.to(JobAssignmentScreen());
+  void onHelpCenter() => Get.snackbar('Support', 'Help Center');
   void onLogout() => Get.snackbar('Auth', 'Logout');
   void onAdminDashboard() => Get.to(() => const AdminDashboardScreen());
 }

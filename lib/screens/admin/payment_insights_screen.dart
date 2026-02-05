@@ -6,8 +6,13 @@ class PaymentInsightsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: isDark
+          ? theme.scaffoldBackgroundColor
+          : const Color(0xFFF9FAFB),
       body: Column(
         children: [
           _buildHeader(context),
@@ -18,33 +23,33 @@ class PaymentInsightsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  _buildLocationDropdown(),
+                  _buildLocationDropdown(context, isDark),
                   const SizedBox(height: 24),
-                  const Text(
+                  Text(
                     'Performance',
                     style: TextStyle(
-                      color: Color(0xFF1E293B),
+                      color: isDark ? Colors.white : const Color(0xFF1E293B),
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Analytics & payment insights',
                     style: TextStyle(
-                      color: Color(0xFF94A3B8),
+                      color: isDark ? Colors.white70 : const Color(0xFF94A3B8),
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildRevenueCard(),
+                  _buildRevenueCard(context, isDark),
                   const SizedBox(height: 16),
-                  _buildStatsRow(),
+                  _buildStatsRow(context, isDark),
                   const SizedBox(height: 28),
-                  _buildStaffPerformanceSection(),
+                  _buildStaffPerformanceSection(context, isDark),
                   const SizedBox(height: 28),
-                  _buildTopPropertiesSection(),
+                  _buildTopPropertiesSection(context, isDark),
                   const SizedBox(height: 40),
                 ],
               ),
@@ -91,13 +96,15 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLocationDropdown() {
+  Widget _buildLocationDropdown(BuildContext context, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(100),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(
+          color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -112,10 +119,10 @@ class PaymentInsightsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Text(
+          Text(
             'Croatia',
             style: TextStyle(
-              color: Color(0xFF1E293B),
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -123,7 +130,7 @@ class PaymentInsightsScreen extends StatelessWidget {
           const SizedBox(width: 8),
           Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: Color(0xFF64748B),
+            color: isDark ? Colors.white70 : const Color(0xFF64748B),
             size: 20,
           ),
         ],
@@ -131,11 +138,11 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRevenueCard() {
+  Widget _buildRevenueCard(BuildContext context, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -151,17 +158,21 @@ class PaymentInsightsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Monthly Revenue',
                 style: TextStyle(
-                  color: Color(0xFF64748B),
+                  color: isDark ? Colors.white70 : const Color(0xFF64748B),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Row(
                 children: [
-                  Icon(Icons.north_east, color: Color(0xFF10B981), size: 16),
+                  const Icon(
+                    Icons.north_east,
+                    color: Color(0xFF10B981),
+                    size: 16,
+                  ),
                   const SizedBox(width: 4),
                   const Text(
                     '+12%',
@@ -176,10 +187,10 @@ class PaymentInsightsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             '€24,580',
             style: TextStyle(
-              color: Color(0xFF1E293B),
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
               fontSize: 32,
               fontWeight: FontWeight.w700,
             ),
@@ -189,26 +200,41 @@ class PaymentInsightsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Feb',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(
+                  color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                  fontSize: 12,
+                ),
               ),
               Text(
                 'Mar',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(
+                  color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                  fontSize: 12,
+                ),
               ),
               Text(
                 'Apr',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(
+                  color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                  fontSize: 12,
+                ),
               ),
               Text(
                 'May',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(
+                  color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                  fontSize: 12,
+                ),
               ),
               Text(
                 'Jun',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(
+                  color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
@@ -227,28 +253,32 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow() {
+  Widget _buildStatsRow(BuildContext context, bool isDark) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
+            context: context,
             icon: Icons.star_outline_rounded,
             iconColor: const Color(0xFFEAB308),
             label: 'Avg Rating',
             value: '4.8',
             change: '+0.3 this month',
             changeColor: const Color(0xFF10B981),
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCardWithSvg(
+            context: context,
             iconAsset: 'assets/tick.svg',
             iconColor: const Color(0xFF10B981),
             label: 'Jobs Done',
             value: '142',
             change: '+18 this week',
             changeColor: const Color(0xFF10B981),
+            isDark: isDark,
           ),
         ),
       ],
@@ -256,17 +286,19 @@ class PaymentInsightsScreen extends StatelessWidget {
   }
 
   Widget _buildStatCardWithSvg({
+    required BuildContext context,
     required String iconAsset,
     required Color iconColor,
     required String label,
     required String value,
     required String change,
     required Color changeColor,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -290,8 +322,8 @@ class PaymentInsightsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFF64748B),
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : const Color(0xFF64748B),
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -301,8 +333,8 @@ class PaymentInsightsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: const TextStyle(
-              color: Color(0xFF1E293B),
+            style: TextStyle(
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
               fontSize: 28,
               fontWeight: FontWeight.w700,
             ),
@@ -328,17 +360,19 @@ class PaymentInsightsScreen extends StatelessWidget {
   }
 
   Widget _buildStatCard({
+    required BuildContext context,
     required IconData icon,
     required Color iconColor,
     required String label,
     required String value,
     required String change,
     required Color changeColor,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -357,8 +391,8 @@ class PaymentInsightsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFF64748B),
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : const Color(0xFF64748B),
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -368,8 +402,8 @@ class PaymentInsightsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: const TextStyle(
-              color: Color(0xFF1E293B),
+            style: TextStyle(
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
               fontSize: 28,
               fontWeight: FontWeight.w700,
             ),
@@ -394,17 +428,17 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStaffPerformanceSection() {
+  Widget _buildStaffPerformanceSection(BuildContext context, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Staff Performance',
               style: TextStyle(
-                color: Color(0xFF1E293B),
+                color: isDark ? Colors.white : const Color(0xFF1E293B),
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -412,7 +446,7 @@ class PaymentInsightsScreen extends StatelessWidget {
             Text(
               'View all',
               style: TextStyle(
-                color: Color(0xFF38CAC7),
+                color: const Color(0xFF38CAC7),
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -421,56 +455,66 @@ class PaymentInsightsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _buildStaffItem(
+          context,
           'A',
           const Color(0xFF38CAC7),
           'Ana M.',
           'Senior Cleaner',
           '98 %',
           '42 jobs',
+          isDark,
         ),
         const SizedBox(height: 12),
         _buildStaffItem(
+          context,
           'M',
           const Color(0xFF8B5CF6),
           'Marko K.',
           'Cleaner',
           '94 %',
           '38 jobs',
+          isDark,
         ),
         const SizedBox(height: 12),
         _buildStaffItem(
+          context,
           'I',
           const Color(0xFF10B981),
           'Ivana S.',
           'Cleaner',
           '91 %',
           '35 jobs',
+          isDark,
         ),
         const SizedBox(height: 12),
         _buildStaffItem(
+          context,
           'L',
           const Color(0xFFEC4899),
           'Luka P.',
           'Junior Cleaner',
           '89 %',
           '27 jobs',
+          isDark,
         ),
       ],
     );
   }
 
   Widget _buildStaffItem(
+    BuildContext context,
     String initial,
     Color avatarColor,
     String name,
     String role,
     String percentage,
     String jobs,
+    bool isDark,
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
@@ -507,8 +551,8 @@ class PaymentInsightsScreen extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
-                    color: Color(0xFF1E293B),
+                  style: TextStyle(
+                    color: isDark ? Colors.white : const Color(0xFF1E293B),
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -516,8 +560,8 @@ class PaymentInsightsScreen extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   role,
-                  style: const TextStyle(
-                    color: Color(0xFF94A3B8),
+                  style: TextStyle(
+                    color: isDark ? Colors.white60 : const Color(0xFF94A3B8),
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                   ),
@@ -539,8 +583,8 @@ class PaymentInsightsScreen extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 jobs,
-                style: const TextStyle(
-                  color: Color(0xFF94A3B8),
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : const Color(0xFF94A3B8),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
@@ -552,14 +596,14 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTopPropertiesSection() {
+  Widget _buildTopPropertiesSection(BuildContext context, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Top Properties',
           style: TextStyle(
-            color: Color(0xFF1E293B),
+            color: isDark ? Colors.white : const Color(0xFF1E293B),
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -568,7 +612,7 @@ class PaymentInsightsScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? Theme.of(context).cardColor : Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: const [
               BoxShadow(
@@ -580,36 +624,51 @@ class PaymentInsightsScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildPropertyBar('Ana', 0.95),
+              _buildPropertyBar('Ana', 0.95, isDark),
               const SizedBox(height: 14),
-              _buildPropertyBar('Marko', 0.82),
+              _buildPropertyBar('Marko', 0.82, isDark),
               const SizedBox(height: 14),
-              _buildPropertyBar('Ivana', 0.75),
+              _buildPropertyBar('Ivana', 0.75, isDark),
               const SizedBox(height: 14),
-              _buildPropertyBar('Luka', 0.68),
+              _buildPropertyBar('Luka', 0.68, isDark),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                     '0',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
                   ),
                   Text(
                     '25',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
                   ),
                   Text(
                     '50',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
                   ),
                   Text(
                     '75',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
                   ),
                   Text(
                     '100',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -620,15 +679,15 @@ class PaymentInsightsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPropertyBar(String name, double progress) {
+  Widget _buildPropertyBar(String name, double progress, bool isDark) {
     return Row(
       children: [
         SizedBox(
           width: 50,
           child: Text(
             name,
-            style: const TextStyle(
-              color: Color(0xFF64748B),
+            style: TextStyle(
+              color: isDark ? Colors.white60 : const Color(0xFF64748B),
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -640,7 +699,7 @@ class PaymentInsightsScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: Container(
               height: 16,
-              color: const Color(0xFFF1F5F9),
+              color: isDark ? Colors.white12 : const Color(0xFFF1F5F9),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: progress,

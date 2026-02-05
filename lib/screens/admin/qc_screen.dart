@@ -6,8 +6,13 @@ class QCScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB), // Light grey background
+      backgroundColor: isDark
+          ? theme.scaffoldBackgroundColor
+          : const Color(0xFFF9FAFB),
       body: Column(
         children: [
           _buildHeader(context),
@@ -17,12 +22,12 @@ class QCScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Quality Control',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -30,17 +35,19 @@ class QCScreen extends StatelessWidget {
                     'Review and approve completed jobs',
                     style: TextStyle(
                       fontSize: 14,
-                      color: const Color(0xFF6B7280).withOpacity(0.8),
+                      color: isDark
+                          ? Colors.white70
+                          : const Color(0xFF6B7280).withOpacity(0.8),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildTabs(),
+                  _buildTabs(isDark),
                   const SizedBox(height: 20),
-                  _buildReviewCard(),
+                  _buildReviewCard(context, isDark),
                   const SizedBox(height: 16),
-                  _buildProgressCard(),
+                  _buildProgressCard(context, isDark),
                   const SizedBox(height: 16),
-                  _buildStandardCard(),
+                  _buildStandardCard(context, isDark),
                 ],
               ),
             ),
@@ -92,29 +99,37 @@ class QCScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildTabs(bool isDark) {
     return Row(
       children: [
-        _buildTabItem('Pending (5)', isActive: true),
+        _buildTabItem('Pending (5)', isActive: true, isDark: isDark),
         const SizedBox(width: 12),
-        _buildTabItem('Reviewed', isActive: false),
+        _buildTabItem('Reviewed', isActive: false, isDark: isDark),
         const SizedBox(width: 12),
-        _buildTabItem('Flagged', isActive: false),
+        _buildTabItem('Flagged', isActive: false, isDark: isDark),
       ],
     );
   }
 
-  Widget _buildTabItem(String label, {required bool isActive}) {
+  Widget _buildTabItem(
+    String label, {
+    required bool isActive,
+    required bool isDark,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF38CAC7) : const Color(0xFFF3F4F6),
+        color: isActive
+            ? const Color(0xFF38CAC7)
+            : (isDark ? Colors.white12 : const Color(0xFFF3F4F6)),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: isActive ? Colors.white : const Color(0xFF6B7280),
+          color: isActive
+              ? Colors.white
+              : (isDark ? Colors.white60 : const Color(0xFF6B7280)),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -122,10 +137,11 @@ class QCScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewCard() {
+  Widget _buildReviewCard(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: const Color(0xFFFCD34D),
@@ -153,15 +169,19 @@ class QCScreen extends StatelessWidget {
             iconAsset: 'assets/qc-card.svg',
             title: 'Villa Sunset',
             subtitle: 'Checkout clean',
-            statusBg: const Color(0xFFFEF3C7),
+            statusBg: isDark
+                ? const Color(0xFFFEF3C7).withOpacity(0.2)
+                : const Color(0xFFFEF3C7),
             statusText: 'Awaiting Review',
             statusTextColor: const Color(0xFFD97706),
+            isDark: isDark,
           ),
           const SizedBox(height: 16),
           _buildStaffInfo(
             avatarColor: const Color(0xFFEC4899),
             name: 'Ana M.',
             time: 'Completed 35 min ago',
+            isDark: isDark,
           ),
           const SizedBox(height: 16),
           Row(
@@ -173,7 +193,7 @@ class QCScreen extends StatelessWidget {
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: isDark ? Colors.grey[800] : Colors.grey[200],
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -185,15 +205,19 @@ class QCScreen extends StatelessWidget {
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? Colors.grey[800] : Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]!),
+                      border: Border.all(
+                        color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         '+3',
                         style: TextStyle(
-                          color: Color(0xFF6B7280),
+                          color: isDark
+                              ? Colors.white60
+                              : const Color(0xFF6B7280),
                           fontSize: 13,
                         ),
                       ),
@@ -231,17 +255,19 @@ class QCScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE5E7EB),
+                    backgroundColor: isDark
+                        ? Colors.white12
+                        : const Color(0xFFE5E7EB),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Request Redo',
                     style: TextStyle(
-                      color: Color(0xFF374151),
+                      color: isDark ? Colors.white : const Color(0xFF374151),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -254,10 +280,10 @@ class QCScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressCard() {
+  Widget _buildProgressCard(BuildContext context, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -280,9 +306,12 @@ class QCScreen extends StatelessWidget {
             iconAsset: 'assets/qc-card.svg',
             title: 'Apartment 204',
             subtitle: 'Deep clean',
-            statusBg: const Color(0xFFDBEAFE),
+            statusBg: isDark
+                ? const Color(0xFFDBEAFE).withOpacity(0.2)
+                : const Color(0xFFDBEAFE),
             statusText: 'In Progress',
             statusTextColor: const Color(0xFF2563EB),
+            isDark: isDark,
           ),
           const SizedBox(height: 16),
           _buildStaffInfo(
@@ -293,27 +322,33 @@ class QCScreen extends StatelessWidget {
             ),
             name: 'Marko K.',
             time: 'Started 1 hr ago',
+            isDark: isDark,
           ),
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF9FAFB),
+              color: isDark ? Colors.white12 : const Color(0xFFF9FAFB),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Progress',
-                      style: TextStyle(color: Color(0xFF6B7280), fontSize: 13),
+                      style: TextStyle(
+                        color: isDark
+                            ? Colors.white60
+                            : const Color(0xFF6B7280),
+                        fontSize: 13,
+                      ),
                     ),
                     Text(
                       '65%',
                       style: TextStyle(
-                        color: Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
@@ -326,7 +361,7 @@ class QCScreen extends StatelessWidget {
                   child: Container(
                     height: 8,
                     width: double.infinity,
-                    color: Colors.grey[200],
+                    color: isDark ? Colors.grey[700] : Colors.grey[200],
                     child: FractionallySizedBox(
                       alignment: Alignment.centerLeft,
                       widthFactor: 0.65,
@@ -351,10 +386,10 @@ class QCScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStandardCard() {
+  Widget _buildStandardCard(BuildContext context, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -377,15 +412,19 @@ class QCScreen extends StatelessWidget {
             iconAsset: 'assets/qc-card.svg',
             title: 'Seaside Villa',
             subtitle: 'Standard turnover',
-            statusBg: const Color(0xFFFEF3C7),
+            statusBg: isDark
+                ? const Color(0xFFFEF3C7).withOpacity(0.2)
+                : const Color(0xFFFEF3C7),
             statusText: 'Awaiting Review',
             statusTextColor: const Color(0xFFD97706),
+            isDark: isDark,
           ),
           const SizedBox(height: 16),
           _buildStaffInfo(
             avatarColor: const Color(0xFFA855F7),
             name: 'Ivana S.',
             time: 'Completed 2 hrs ago',
+            isDark: isDark,
           ),
         ],
       ),
@@ -401,6 +440,7 @@ class QCScreen extends StatelessWidget {
     required Color statusBg,
     required String statusText,
     required Color statusTextColor,
+    required bool isDark,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,10 +481,10 @@ class QCScreen extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                   ),
                   Container(
@@ -470,7 +510,10 @@ class QCScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+                ),
               ),
             ],
           ),
@@ -484,6 +527,7 @@ class QCScreen extends StatelessWidget {
     Gradient? avatarGradient,
     required String name,
     required String time,
+    required bool isDark,
   }) {
     return Row(
       children: [
@@ -499,22 +543,25 @@ class QCScreen extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Color(0xFF374151),
+            color: isDark ? Colors.white : const Color(0xFF374151),
           ),
         ),
         const SizedBox(width: 16),
-        const Icon(
+        Icon(
           Icons.access_time_rounded,
           size: 16,
-          color: Color(0xFF9CA3AF),
+          color: isDark ? Colors.white54 : const Color(0xFF9CA3AF),
         ),
         const SizedBox(width: 6),
         Text(
           time,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+          style: TextStyle(
+            fontSize: 13,
+            color: isDark ? Colors.white60 : const Color(0xFF6B7280),
+          ),
         ),
       ],
     );

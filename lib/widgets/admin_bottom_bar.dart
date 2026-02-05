@@ -22,10 +22,18 @@ class AdminBottomBar extends StatelessWidget {
       (label: 'Photos', asset: 'assets/photo.svg'),
     ];
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFF3F4F6), width: 1)),
+      decoration: BoxDecoration(
+        color: isDark ? theme.cardColor : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? Colors.white12 : const Color(0xFFF3F4F6),
+            width: 1,
+          ),
+        ),
       ),
       child: SafeArea(
         child: SizedBox(
@@ -36,10 +44,11 @@ class AdminBottomBar extends StatelessWidget {
               final item = items[index];
               final isSelected = index == currentIndex;
 
-              // Colors based on image: Active is dark (Slate 900), Inactive is grey (Slate 400)
+              // Colors: In light mode, Active is dark slate, Inactive is grey.
+              // In dark mode, Active is white, Inactive is grey.
               final color = isSelected
-                  ? const Color(0xFF1F2937)
-                  : const Color(0xFF9CA3AF);
+                  ? (isDark ? Colors.white : const Color(0xFF1F2937))
+                  : (isDark ? Colors.white54 : const Color(0xFF9CA3AF));
 
               return Expanded(
                 child: InkWell(
