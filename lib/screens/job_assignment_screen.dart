@@ -45,7 +45,7 @@ class JobAssignmentScreen extends StatelessWidget {
                                 'Job Assignment',
                                 style: theme.textTheme.titleLarge?.copyWith(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -80,7 +80,7 @@ class JobAssignmentScreen extends StatelessWidget {
                                 child: _TabChip(
                                   selected: selected == 0,
                                   label: 'AI Assign',
-                                  icon: Icons.auto_awesome_rounded,
+                                  image: 'assets/ai_assign.png',
                                   onTap: () => controller.onTabTap(0),
                                 ),
                               ),
@@ -89,7 +89,7 @@ class JobAssignmentScreen extends StatelessWidget {
                                 child: _TabChip(
                                   selected: selected == 1,
                                   label: 'Manual',
-                                  icon: Icons.person_outline_rounded,
+                                  image: 'assets/person_add.png',
                                   onTap: () => controller.onTabTap(1),
                                 ),
                               ),
@@ -154,13 +154,13 @@ class _TabChip extends StatelessWidget {
   const _TabChip({
     required this.selected,
     required this.label,
-    required this.icon,
+    required this.image,
     required this.onTap,
   });
 
   final bool selected;
   final String label;
-  final IconData icon;
+  final String image;
   final VoidCallback onTap;
 
   @override
@@ -184,7 +184,7 @@ class _TabChip extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: fg),
+            Image.asset(image, height: 15, width: 15),
             const SizedBox(width: 8),
             Text(
               label,
@@ -247,9 +247,10 @@ class _JobCard extends StatelessWidget {
 
               Row(
                 children: [
-                  Icon(
-                    Icons.auto_awesome_rounded,
-                    size: 16,
+                  Image.asset(
+                    'assets/ai_assign.png',
+                    height: 15,
+                    width: 15,
                     color: theme.colorScheme.primary,
                   ),
                   const SizedBox(width: 6),
@@ -284,26 +285,28 @@ class _JobHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Unit ${item.unit}  -  ${item.title}',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w900,
-            height: 1.15,
+    return InkWell(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Unit ${item.unit}  -  ${item.title}',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w500,
+              height: 1.15,
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          '${item.location}  •  ${item.timeAgo}',
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
+          const SizedBox(height: 6),
+          Text(
+            '${item.location}  •  ${item.timeAgo}',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -340,7 +343,7 @@ class _PriorityChip extends StatelessWidget {
           isUrgent ? 'Urgent' : 'Normal',
           style: theme.textTheme.labelSmall?.copyWith(
             color: fg,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -381,7 +384,7 @@ class _RecommendationBox extends StatelessWidget {
                   recommendation.name,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurface,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -389,7 +392,7 @@ class _RecommendationBox extends StatelessWidget {
                   recommendation.details,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     height: 1.2,
                   ),
                 ),
