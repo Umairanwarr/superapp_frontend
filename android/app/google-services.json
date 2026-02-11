@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "634639795131",
+    "project_id": "super-app-ditto",
+    "storage_bucket": "super-app-ditto.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634639795131:android:4dfd87255718ce4278fa9e",
+        "android_client_info": {
+          "package_name": "com.superapp.www"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634639795131-p34f7md6053eishafk0h8v4fv22r1e2s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.superapp.www",
+            "certificate_hash": "4b871bb5f3a8d07cd610644b8bf014f9030ff278"
+          }
+        },
+        {
+          "client_id": "634639795131-0uth2jlnhp540gn8ksvl6rfvtoblpofg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhoSgtC9hn_Izinb1ToeB79Ix3_8DxBSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634639795131-0uth2jlnhp540gn8ksvl6rfvtoblpofg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
