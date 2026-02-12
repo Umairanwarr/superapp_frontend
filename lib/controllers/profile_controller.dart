@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:superapp/screens/admin/admin_dashboard_screen.dart';
@@ -8,6 +9,7 @@ import 'package:superapp/screens/notification_setting_screen.dart';
 import 'package:superapp/screens/photo_detail_screen.dart';
 import 'package:superapp/screens/security_setting_screen.dart';
 import 'package:superapp/screens/auth/wellcome_screen.dart';
+import 'package:superapp/services/auth_service.dart';
 
 class ProfileController extends GetxController {
   final bookings = 12.obs;
@@ -51,6 +53,23 @@ class ProfileController extends GetxController {
     firstName.value = prefs.getString(_firstNameKey) ?? '';
     userId = prefs.getInt(_userIdKey) ?? 0;
     token = prefs.getString(_tokenKey) ?? '';
+
+    await _syncFcmToken();
+  }
+
+  Future<void> _syncFcmToken() async {
+    if (token.trim().isEmpty) return;
+
+    try {
+      await FirebaseMessaging.instance.requestPermission();
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null || fcmToken.trim().isEmpty) return;
+
+      final service = AuthService();
+      await service.updateMyFcmToken(token: token, fcmToken: fcmToken);
+    } catch (_) {
+      // Ignore token sync failures
+    }
   }
 
   Future<void> saveUserData({

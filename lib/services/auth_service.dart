@@ -12,10 +12,40 @@ class AuthService {
   }
 
   // Helper to get headers with token
-  Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    // 'Authorization': 'Bearer $token', // Add when token management is implemented
-  };
+  Map<String, String> _headers({String? token}) {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+    final t = (token ?? '').trim();
+    if (t.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $t';
+    }
+    return headers;
+  }
+
+  Future<List<Map<String, dynamic>>> getUsers({String? query}) async {
+    final base = _usersBaseUrl;
+    final q = (query ?? '').trim();
+    final url = Uri.parse(q.isEmpty ? base : '$base?q=${Uri.encodeComponent(q)}');
+
+    try {
+      final response = await http.get(url, headers: _headers());
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return decoded
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+        throw Exception('Invalid response');
+      }
+
+      throw Exception('Failed to load users: ${response.body}');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
+    }
+  }
 
   Future<Map<String, dynamic>> socialLogin({
     required String idToken,
@@ -25,7 +55,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({
           'idToken': idToken,
           'provider': provider,
@@ -48,7 +78,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({
           'firstName': firstName,
           'lastName': lastName,
@@ -72,7 +102,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({'email': email, 'otp': otp}),
       );
 
@@ -90,7 +120,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({'email': email, 'password': password}),
       );
 
@@ -105,7 +135,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({'email': email}),
       );
 
@@ -124,7 +154,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({
           'email': email,
           'otp': otp,
@@ -146,7 +176,7 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode({'email': email, 'otp': otp}),
       );
 
@@ -227,7 +257,7 @@ class AuthService {
     try {
       final response = await http.patch(
         url,
-        headers: _headers,
+        headers: _headers(),
         body: jsonEncode(body),
       );
 
@@ -249,6 +279,112 @@ class AuthService {
       } catch (_) {
         throw Exception('Failed to $action: ${response.body}');
       }
+    }
+  }
+
+  Future<Map<String, dynamic>> markAsRead({
+    required String token,
+    required int senderId,
+  }) async {
+    final url = Uri.parse('$_messagesBaseUrl/mark-read/$senderId');
+
+    try {
+      final response = await http.post(url, headers: _headers(token: token));
+      return _handleResponse(response, 'mark as read');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
+    }
+  }
+
+  static String get _messagesBaseUrl {
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:3000/messages';
+    }
+    return 'http://localhost:3000/messages';
+  }
+
+  Future<List<Map<String, dynamic>>> getThreads({required String token}) async {
+    final url = Uri.parse('$_messagesBaseUrl/threads');
+
+    try {
+      final response = await http.get(url, headers: _headers(token: token));
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return decoded
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+        throw Exception('Invalid response');
+      }
+      throw Exception('Failed to load threads: ${response.body}');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getMessagesWithUser({
+    required String token,
+    required int otherUserId,
+  }) async {
+    final url = Uri.parse('$_messagesBaseUrl/with/$otherUserId');
+
+    try {
+      final response = await http.get(url, headers: _headers(token: token));
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return decoded
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+        throw Exception('Invalid response');
+      }
+      throw Exception('Failed to load messages: ${response.body}');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> sendDirectMessage({
+    required String token,
+    required int receiverId,
+    required String content,
+  }) async {
+    final url = Uri.parse('$_messagesBaseUrl/send');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: _headers(token: token),
+        body: jsonEncode({
+          'receiverId': receiverId,
+          'content': content,
+        }),
+      );
+      return _handleResponse(response, 'send message');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateMyFcmToken({
+    required String token,
+    required String fcmToken,
+  }) async {
+    final url = Uri.parse('$_usersBaseUrl/me/fcm-token');
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: _headers(token: token),
+        body: jsonEncode({'fcmToken': fcmToken}),
+      );
+      return _handleResponse(response, 'update fcm token');
+    } catch (e) {
+      throw Exception('Error connecting to server: $e');
     }
   }
 }

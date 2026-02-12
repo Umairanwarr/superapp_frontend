@@ -1,6 +1,7 @@
 enum MessageStatus { none, sent, delivered, read }
 
 class ChatItem {
+  final int peerUserId;
   final String name;
   final String message;
   final String date;
@@ -11,6 +12,7 @@ class ChatItem {
   final bool isVoice;
 
   const ChatItem({
+    required this.peerUserId,
     required this.name,
     required this.message,
     required this.date,

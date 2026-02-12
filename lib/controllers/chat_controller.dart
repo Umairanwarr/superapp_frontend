@@ -1,81 +1,84 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
+import 'package:superapp/controllers/profile_controller.dart';
 import 'package:superapp/modal/chat_item_modal.dart';
 import 'package:superapp/screens/chat_detail_screen.dart';
+import 'package:superapp/services/auth_service.dart';
 
 class ChatsController extends GetxController {
-  final RxList<ChatItem> allChats = <ChatItem>[
-    const ChatItem(
-      name: 'Martin Randolph',
-      message: 'Yes, 2pm is awesome',
-      date: '11/19/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=12',
-      status: MessageStatus.read,
-      unreadCount: 0,
-    ),
-    const ChatItem(
-      name: 'Andrew Parker',
-      message: 'What kind of strategy is better?',
-      date: '11/16/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=13',
-      status: MessageStatus.read,
-      unreadCount: 0,
-    ),
-    const ChatItem(
-      name: 'Karen Castillo',
-      message: '0:14',
-      date: '11/15/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=5',
-      status: MessageStatus.none,
-      unreadCount: 14,
-      isVoice: true,
-    ),
-    const ChatItem(
-      name: 'Maximillian Jacobson',
-      message: 'Bro, I have a good idea!',
-      date: '10/30/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=15',
-      status: MessageStatus.read,
-      unreadCount: 0,
-    ),
-    const ChatItem(
-      name: 'Martha Craig',
-      message: 'Photo',
-      date: '10/28/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=21',
-      status: MessageStatus.sent,
-      unreadCount: 0,
-      isPhoto: true,
-    ),
-    const ChatItem(
-      name: 'Tabitha Potter',
-      message:
-          "Actually I wanted to check with you about your online business plan on our...",
-      date: '8/25/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=32',
-      status: MessageStatus.none,
-      unreadCount: 0,
-    ),
-    const ChatItem(
-      name: 'Maisy Humphrey',
-      message: "Welcome, to make design process faster, look at Pixsellz",
-      date: '8/20/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=44',
-      status: MessageStatus.none,
-      unreadCount: 2,
-    ),
-    const ChatItem(
-      name: 'Kieron Dotson',
-      message: 'Ok, have a good trip!',
-      date: '7/29/19',
-      avatarUrl: 'https://i.pravatar.cc/150?img=49',
-      status: MessageStatus.read,
-      unreadCount: 0,
-    ),
-  ].obs;
+  final _authService = AuthService();
+
+  final RxList<ChatItem> allChats = <ChatItem>[].obs;
 
   final RxString query = ''.obs;
 
-  void onSearchChanged(String val) => query.value = val;
+  final isLoading = false.obs;
+  Timer? _debounce;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchThreads();
+  }
+
+  void onSearchChanged(String val) {
+    query.value = val;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 150), () {});
+  }
+
+  Future<void> fetchThreads() async {
+    isLoading.value = true;
+    try {
+      final profile = Get.find<ProfileController>();
+      final token = profile.token;
+      if (token.trim().isEmpty) {
+        allChats.assignAll([]);
+        return;
+      }
+
+      final threads = await _authService.getThreads(token: token);
+      final mapped = threads.map((t) {
+        final peer = (t['peer'] as Map?) ?? {};
+        final peerId = (peer['id'] as num?)?.toInt() ?? 0;
+
+        final fullName = (peer['fullName'] as String?) ?? '';
+        final firstName = (peer['firstName'] as String?) ?? '';
+        final lastName = (peer['lastName'] as String?) ?? '';
+        final name = fullName.isNotEmpty
+            ? fullName
+            : '${firstName.trim()} ${lastName.trim()}'.trim();
+        final email = (peer['email'] as String?) ?? '';
+
+        final avatar = (peer['avatar'] as String?) ?? '';
+        final avatarUrl = avatar.isNotEmpty
+            ? avatar
+            : 'https://i.pravatar.cc/150?u=${Uri.encodeComponent(email.isNotEmpty ? email : name)}';
+
+        final lastMessage = (t['lastMessage'] as Map?) ?? {};
+        final content = (lastMessage['content'] as String?) ?? '';
+
+        final unreadCount = (t['unreadCount'] as num?)?.toInt() ?? 0;
+
+        return ChatItem(
+          peerUserId: peerId,
+          name: name.isNotEmpty ? name : (email.isNotEmpty ? email : 'User'),
+          message: content,
+          date: '',
+          avatarUrl: avatarUrl,
+          status: MessageStatus.none,
+          unreadCount: unreadCount,
+        );
+      }).where((c) => c.peerUserId > 0).toList();
+
+      allChats.assignAll(mapped);
+    } catch (e) {
+      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   List<ChatItem> get filteredChats {
     final q = query.value.trim().toLowerCase();
@@ -91,5 +94,11 @@ class ChatsController extends GetxController {
 
   void onChatTap(ChatItem chat) {
     Get.to(() => ChatDetailScreen(), arguments: chat);
+  }
+
+  @override
+  void onClose() {
+    _debounce?.cancel();
+    super.onClose();
   }
 }

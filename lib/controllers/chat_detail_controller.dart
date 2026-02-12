@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:superapp/controllers/chat_controller.dart';
+import 'package:superapp/controllers/profile_controller.dart';
 import 'package:superapp/modal/chat_item_modal.dart';
 import 'package:superapp/screens/all_review_screen.dart';
+import 'package:superapp/services/auth_service.dart';
 
 class ChatDetailController extends GetxController {
   ChatDetailController({required this.chat});
@@ -13,38 +16,60 @@ class ChatDetailController extends GetxController {
 
   final RxList<ChatMessage> messages = <ChatMessage>[].obs;
 
+  final _authService = AuthService();
+  String _token = '';
+
   @override
   void onInit() {
     super.onInit();
 
-    messages.assignAll([
-      const ChatMessage(
-        fromMe: true,
-        text:
-            "Hi I hope you are well this property is really great whats the asking price for it I am here to purchase it. Can you please share more details",
-        time: "10:10",
-      ),
-      const ChatMessage(
-        fromMe: false,
-        text:
-            "Hi I hope you are well this property is really great whats the asking price for it I am here to purchase it. Can you please share more details",
-        time: "10:10",
-      ),
-      const ChatMessage(
-        fromMe: false,
-        text:
-            "Hi I hope you are well this property is really great whats the asking price for it I am here to purchase it. Can you please share more details",
-        time: "10:10",
-      ),
-      const ChatMessage(
-        fromMe: true,
-        text:
-            "Hi I hope you are well this property is really great whats the asking price for it I am here to purchase it. Can you please share more details",
-        time: "10:10",
-      ),
-    ]);
+    final profile = Get.find<ProfileController>();
+    _token = profile.token;
+    fetchMessages();
+  }
 
-    Future.delayed(const Duration(milliseconds: 50), _scrollToBottom);
+  Future<void> fetchMessages() async {
+    if (_token.trim().isEmpty) return;
+    if (chat.peerUserId <= 0) return;
+
+    try {
+      final msgs = await _authService.getMessagesWithUser(
+        token: _token,
+        otherUserId: chat.peerUserId,
+      );
+
+      final myUserId = Get.find<ProfileController>().userId;
+      final mapped = msgs.map((m) {
+        final senderId = (m['senderId'] as num?)?.toInt() ?? 0;
+        final content = (m['content'] as String?) ?? '';
+        final createdAt = (m['createdAt'] as String?) ?? '';
+        return ChatMessage(
+          fromMe: senderId == myUserId,
+          text: content,
+          time: _formatTime(createdAt),
+        );
+      }).toList();
+
+      messages.assignAll(mapped);
+      Future.delayed(const Duration(milliseconds: 50), _scrollToBottom);
+
+      await _markAsRead();
+    } catch (e) {
+      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<void> _markAsRead() async {
+    if (_token.trim().isEmpty || chat.peerUserId <= 0) return;
+
+    try {
+      await _authService.markAsRead(token: _token, senderId: chat.peerUserId);
+
+      final chatsController = Get.find<ChatsController>();
+      chatsController.fetchThreads();
+    } catch (_) {
+      // Ignore errors for mark-as-read, UI still works
+    }
   }
 
   void back() => Get.back();
@@ -53,10 +78,27 @@ class ChatDetailController extends GetxController {
     final text = messageCtrl.text.trim();
     if (text.isEmpty) return;
 
-    messages.add(ChatMessage(fromMe: true, text: text, time: _nowTime()));
-    messageCtrl.clear();
+    if (_token.trim().isEmpty || chat.peerUserId <= 0) return;
 
+    final optimistic = ChatMessage(fromMe: true, text: text, time: _nowTime());
+    messages.add(optimistic);
+    messageCtrl.clear();
     Future.delayed(const Duration(milliseconds: 50), _scrollToBottom);
+
+    _authService
+        .sendDirectMessage(
+          token: _token,
+          receiverId: chat.peerUserId,
+          content: text,
+        )
+        .then((_) {
+          final chatsController = Get.find<ChatsController>();
+          chatsController.fetchThreads();
+        })
+        .catchError((e) {
+      Get.snackbar('Error', e.toString().replaceFirst('Exception: ', ''));
+      return null;
+    });
   }
 
   void goTOReview() {
@@ -89,6 +131,18 @@ class ChatDetailController extends GetxController {
     final h = t.hour.toString().padLeft(2, '0');
     final m = t.minute.toString().padLeft(2, '0');
     return '$h:$m';
+  }
+
+  String _formatTime(String iso) {
+    if (iso.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(iso).toLocal();
+      final h = dt.hour.toString().padLeft(2, '0');
+      final m = dt.minute.toString().padLeft(2, '0');
+      return '$h:$m';
+    } catch (_) {
+      return '';
+    }
   }
 
   @override
