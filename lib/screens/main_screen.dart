@@ -30,11 +30,9 @@ class MainScreen extends StatelessWidget {
           case 1:
             return const ExploreScreen();
           case 2:
-            return isProperty
-                ? const DashboardScreen()
-                : const BookingScreen();
+            return isProperty ? const DashboardScreen() : const BookingScreen();
           case 3:
-            return isProperty ? const ChatScreen() : const AiAssistantScreen();
+            return isProperty ? const ChatScreen() : AiAssistantScreen();
 
           case 4:
             return const ProfileScreen();
