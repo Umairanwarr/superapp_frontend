@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:superapp/controllers/profile_controller.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 import 'screens/splash_screen.dart';
 import 'utils/size_config.dart';
@@ -13,6 +17,15 @@ const Color kBackgroundColor = Color(0xFFF4F8F8);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if (Platform.isAndroid) {
+    final mapsImplementation = GoogleMapsFlutterPlatform.instance;
+    if (mapsImplementation is GoogleMapsFlutterAndroid) {
+      mapsImplementation.useAndroidViewSurface = true;
+      await mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
+    }
+  }
+
   runApp(const MyApp());
 }
 

@@ -11,6 +11,7 @@ class ExploreHotelCard extends StatelessWidget {
   final String? imageUrl;
   final double rating;
   final String price;
+  final bool showPerNight;
   final VoidCallback? onTap;
 
   const ExploreHotelCard({
@@ -21,6 +22,7 @@ class ExploreHotelCard extends StatelessWidget {
     this.imageUrl,
     required this.rating,
     required this.price,
+    this.showPerNight = false,
     this.onTap,
   });
 
@@ -165,14 +167,15 @@ class ExploreHotelCard extends StatelessWidget {
                                 color: Color(0xFF2FC1BE),
                               ),
                             ),
-                            const TextSpan(
-                              text: '/night',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF9AA0AF),
-                                fontWeight: FontWeight.w500,
+                            if (showPerNight)
+                              const TextSpan(
+                                text: '/night',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF9AA0AF),
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -188,16 +191,9 @@ class ExploreHotelCard extends StatelessWidget {
   }
 
   String _formatPrice(String price) {
-    final priceValue = double.tryParse(price) ?? 0;
-    if (priceValue == 0) return '\$0';
-
-    // Get user's selected currency
-    final profileController = Get.find<ProfileController>();
-    final userCurrency = profileController.userCurrency.value;
-
-    // Convert from USD to user's currency
-    final convertedPrice = CurrencyService.convertFromUSD(priceValue, userCurrency);
-
-    return CurrencyService.formatAmount(convertedPrice, userCurrency, decimals: 0);
+    // Price is already formatted (e.g., "$121", "$1K")
+    // Just return it directly, don't try to parse
+    if (price.isEmpty || price == '\$0') return '\$0';
+    return price;
   }
 }

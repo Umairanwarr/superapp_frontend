@@ -53,6 +53,7 @@ class ListingService {
     required double price,
     required double latitude,
     required double longitude,
+    String? listingType,
     double? area,
     int? rooms,
     int? bathrooms,
@@ -71,6 +72,7 @@ class ListingService {
     request.fields['price'] = price.toString();
     request.fields['latitude'] = latitude.toString();
     request.fields['longitude'] = longitude.toString();
+    if (listingType != null) request.fields['listingType'] = listingType;
     if (area != null) request.fields['area'] = area.toString();
     if (rooms != null) request.fields['rooms'] = rooms.toString();
     if (bathrooms != null) request.fields['bathrooms'] = bathrooms.toString();
@@ -126,6 +128,7 @@ class ListingService {
     double? latitude,
     double? longitude,
     double? price,
+    String? listingType,
     double? area,
     int? rooms,
     int? bathrooms,
@@ -143,6 +146,7 @@ class ListingService {
     if (latitude != null) request.fields['latitude'] = latitude.toString();
     if (longitude != null) request.fields['longitude'] = longitude.toString();
     if (price != null) request.fields['price'] = price.toString();
+    if (listingType != null) request.fields['listingType'] = listingType;
     if (area != null) request.fields['area'] = area.toString();
     if (rooms != null) request.fields['rooms'] = rooms.toString();
     if (bathrooms != null) request.fields['bathrooms'] = bathrooms.toString();

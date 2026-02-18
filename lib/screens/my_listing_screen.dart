@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:superapp/controllers/my_listing_controller.dart';
 import 'package:superapp/screens/add_property_screen.dart';
 import 'package:superapp/screens/add_hotel_screen.dart';
+import 'hotel_detail_screen.dart';
+import 'property_detail_screen.dart';
 
 enum ListingCategory { property, hotel }
 
@@ -62,15 +64,6 @@ class _MyListingScreenState extends State<MyListingScreen> {
         titleSpacing: 0,
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.tune_rounded,
-              color: isDark ? Colors.white70 : const Color(0xFF5A6375),
-            ),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -314,7 +307,9 @@ class _MyListingScreenState extends State<MyListingScreen> {
                   : null,
               isActive: isActive,
               showActivateButton: isInactiveTab,
-              onViewDetails: () {},
+              onViewDetails: () => Get.to(
+                () => HotelDetailScreen(hotelData: hotel),
+              ),
             );
           },
         ),
@@ -485,7 +480,9 @@ class _MyListingScreenState extends State<MyListingScreen> {
                   : null,
               isActive: isActive,
               showActivateButton: isInactiveTab,
-              onViewDetails: () {},
+              onViewDetails: () => Get.to(
+                () => PropertyDetailScreen(propertyData: property),
+              ),
             );
           },
         ),

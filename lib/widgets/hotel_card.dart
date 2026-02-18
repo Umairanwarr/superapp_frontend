@@ -51,17 +51,29 @@ class HotelCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      imagePath,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 200,
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.hotel),
-                      ),
-                    ),
+                    child: imagePath.startsWith('http')
+                        ? Image.network(
+                            imagePath,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              height: 200,
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.hotel),
+                            ),
+                          )
+                        : Image.asset(
+                            imagePath,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              height: 200,
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.hotel),
+                            ),
+                          ),
                   ),
                 ),
                 // Rating Badge

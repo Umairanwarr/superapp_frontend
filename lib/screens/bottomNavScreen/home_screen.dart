@@ -47,7 +47,13 @@ class HomeScreen extends StatelessWidget {
                           ? 'Featured Properties'
                           : 'Featured Hotels',
                       actionText: 'See All',
-                      onActionTap: () {},
+                      onActionTap: () {
+                        if (controller.categoryIndex.value == 1) {
+                          Get.to(() => const PropertySearchScreen());
+                        } else {
+                          Get.to(() => const HotelSearchScreen());
+                        }
+                      },
                     );
                   }),
                   const SizedBox(height: 10),
@@ -400,9 +406,9 @@ class _SearchBar extends StatelessWidget {
               () => TextField(
                 onSubmitted: (value) {
                   if (controller.categoryIndex.value == 1) {
-                    Get.to(() => const PropertySearchScreen());
+                    Get.to(() => PropertySearchScreen(searchQuery: value));
                   } else {
-                    Get.to(() => const HotelSearchScreen());
+                    Get.to(() => HotelSearchScreen(searchQuery: value));
                   }
                 },
                 cursorColor: theme.colorScheme.primary,
@@ -427,13 +433,7 @@ class _SearchBar extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
-              if (controller.categoryIndex.value == 1) {
-                Get.to(() => const PropertySearchScreen());
-              } else {
-                Get.to(() => const HotelSearchScreen());
-              }
-            },
+            onTap: () {},
             child: Container(
               width: 40,
               height: 40,

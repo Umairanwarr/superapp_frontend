@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FilterBottomSheet extends StatefulWidget {
-  const FilterBottomSheet({super.key});
+  final Function(Map<String, dynamic>)? onApply;
+
+  const FilterBottomSheet({super.key, this.onApply});
 
   @override
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
@@ -291,7 +293,17 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () => Get.back(),
+                      onPressed: () {
+                        if (widget.onApply != null) {
+                          widget.onApply!({
+                            'adults': adults,
+                            'children': children,
+                            'priceRange': priceRange,
+                            'selectedAmenities': selectedAmenities,
+                          });
+                        }
+                        Get.back();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2FC1BE),
                         shape: RoundedRectangleBorder(

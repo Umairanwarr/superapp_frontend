@@ -3,7 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class PropertyFilterBottomSheet extends StatefulWidget {
-  const PropertyFilterBottomSheet({super.key});
+  final Function(Map<String, dynamic>)? onApply;
+
+  const PropertyFilterBottomSheet({super.key, this.onApply});
 
   @override
   State<PropertyFilterBottomSheet> createState() => _PropertyFilterBottomSheetState();
@@ -395,7 +397,19 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () => Get.back(),
+              onPressed: () {
+                if (widget.onApply != null) {
+                  widget.onApply!({
+                    'propertyTypeIndex': selectedPropertyTypeIndex,
+                    'priceRange': priceRange,
+                    'bedroomsIndex': selectedBedroomsIndex,
+                    'bathroomsIndex': selectedBathroomsIndex,
+                    'minArea': minAreaController.text.isNotEmpty ? double.tryParse(minAreaController.text) : null,
+                    'maxArea': maxAreaController.text.isNotEmpty ? double.tryParse(maxAreaController.text) : null,
+                  });
+                }
+                Get.back();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2FC1BE),
                 shape: RoundedRectangleBorder(

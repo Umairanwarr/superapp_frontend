@@ -75,11 +75,26 @@ class MainScreenController extends GetxController {
 
   /// Get cheapest room price for display
   String getMinPrice(Map<String, dynamic> hotel) {
-    final rooms = hotel['rooms'] as List<dynamic>?;
-    if (rooms == null || rooms.isEmpty) return '';
+    final roomsData = hotel['rooms'];
+    if (roomsData == null) return '';
+    
+    List<dynamic> rooms;
+    if (roomsData is List) {
+      rooms = roomsData;
+    } else if (roomsData is Map) {
+      // If it's a single room object, wrap it in a list
+      rooms = [roomsData];
+    } else {
+      return '';
+    }
+    
+    if (rooms.isEmpty) return '';
     double minPrice = double.infinity;
     for (final room in rooms) {
-      final price = double.tryParse(room['price'].toString()) ?? 0;
+      if (room is! Map) continue;
+      final priceValue = room['price'];
+      if (priceValue == null) continue;
+      final price = double.tryParse(priceValue.toString()) ?? 0;
       if (price > 0 && price < minPrice) minPrice = price;
     }
     if (minPrice == double.infinity) return '';

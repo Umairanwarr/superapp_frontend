@@ -1,12 +1,171 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../widgets/main_bottom_bar.dart';
 import '../../controllers/main_screen_controller.dart';
 import 'booking_screen.dart';
 
-class DirectionsScreen extends StatelessWidget {
-  const DirectionsScreen({super.key});
+class DirectionsScreen extends StatefulWidget {
+  const DirectionsScreen({
+    super.key,
+    required this.destinationLatitude,
+    required this.destinationLongitude,
+    required this.destinationTitle,
+  });
+
+  final double destinationLatitude;
+  final double destinationLongitude;
+  final String destinationTitle;
+
+  @override
+  State<DirectionsScreen> createState() => _DirectionsScreenState();
+}
+
+class _DirectionsScreenState extends State<DirectionsScreen> {
+  static const String _googleApiKey = 'AIzaSyCllvLEMmJTFyydQ7VKmgxtBAUrJyPLf5c';
+
+  GoogleMapController? _mapController;
+  bool _loading = true;
+  LatLng? _origin;
+  late final LatLng _destination = LatLng(widget.destinationLatitude, widget.destinationLongitude);
+  Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _initDirections();
+  }
+
+  Future<void> _initDirections() async {
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      final origin = LatLng(position.latitude, position.longitude);
+
+      final routePoints = await _fetchRoutePolyline(origin, _destination);
+
+      final markers = <Marker>{
+        Marker(
+          markerId: const MarkerId('origin'),
+          position: origin,
+          infoWindow: const InfoWindow(title: 'Your Location'),
+        ),
+        Marker(
+          markerId: const MarkerId('destination'),
+          position: _destination,
+          icon: BitmapDescriptor.defaultMarkerWithHue(170.0),
+          infoWindow: InfoWindow(title: widget.destinationTitle),
+        ),
+      };
+
+      final polylines = <Polyline>{
+        if (routePoints.isNotEmpty)
+          Polyline(
+            polylineId: const PolylineId('route'),
+            points: routePoints,
+            width: 6,
+            color: const Color(0xFF2FC1BE),
+          ),
+      };
+
+      setState(() {
+        _origin = origin;
+        _markers = markers;
+        _polylines = polylines;
+        _loading = false;
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _fitBounds(origin, _destination);
+      });
+    } catch (_) {
+      setState(() {
+        _loading = false;
+      });
+      Get.snackbar('Error', 'Could not load directions');
+    }
+  }
+
+  Future<List<LatLng>> _fetchRoutePolyline(LatLng origin, LatLng destination) async {
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=driving&key=$_googleApiKey',
+    );
+    final res = await http.get(url);
+    final data = json.decode(res.body);
+    if (data['status'] != 'OK') {
+      return [];
+    }
+    final routes = data['routes'] as List<dynamic>;
+    if (routes.isEmpty) return [];
+    final polyline = routes[0]['overview_polyline']?['points']?.toString();
+    if (polyline == null || polyline.isEmpty) return [];
+    return _decodePolyline(polyline);
+  }
+
+  List<LatLng> _decodePolyline(String encoded) {
+    final points = <LatLng>[];
+    int index = 0;
+    int lat = 0;
+    int lng = 0;
+
+    while (index < encoded.length) {
+      int shift = 0;
+      int result = 0;
+      int b;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      final dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      final dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lng += dlng;
+
+      points.add(LatLng(lat / 1e5, lng / 1e5));
+    }
+    return points;
+  }
+
+  void _fitBounds(LatLng a, LatLng b) {
+    final controller = _mapController;
+    if (controller == null) return;
+
+    final southWest = LatLng(
+      a.latitude < b.latitude ? a.latitude : b.latitude,
+      a.longitude < b.longitude ? a.longitude : b.longitude,
+    );
+    final northEast = LatLng(
+      a.latitude > b.latitude ? a.latitude : b.latitude,
+      a.longitude > b.longitude ? a.longitude : b.longitude,
+    );
+
+    controller.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(southwest: southWest, northeast: northEast),
+        60,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +283,7 @@ class DirectionsScreen extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            'Heden golf Hotel',
+                            widget.destinationTitle,
                             style: TextStyle(
                               color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF555555),
                               fontSize: 16,
@@ -143,12 +302,26 @@ class DirectionsScreen extends StatelessWidget {
             Expanded(
               child: Stack(
                 children: [
-                  Image.asset(
-                    'assets/direction.png',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
+                  if (_loading)
+                    const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF2FC1BE),
+                      ),
+                    )
+                  else
+                    GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: _origin ?? _destination,
+                        zoom: 14,
+                      ),
+                      markers: _markers,
+                      polylines: _polylines,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      mapToolbarEnabled: false,
+                      onMapCreated: (c) => _mapController = c,
+                    ),
                   // Gradient overlay at top to blend map with white background
                   Positioned(
                     top: 0,

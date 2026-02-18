@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:superapp/screens/map_location_picker_screen.dart';
 import '../controllers/profile_controller.dart';
 import '../services/listing_service.dart';
 
@@ -21,6 +22,10 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
   final List<String> _selectedAmenities = ['Wifi', 'Breakfast', 'Pool'];
   final List<XFile> _selectedImages = [];
   bool _isLoading = false;
+  
+  // Location state
+  double _latitude = 0;
+  double _longitude = 0;
 
   bool get _isEditMode => widget.editHotelData != null;
   int? get _editHotelId => widget.editHotelData?['id'] as int?;
@@ -209,6 +214,8 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
           title: _titleController.text,
           description: _descriptionController.text,
           address: _locationController.text,
+          latitude: _latitude,
+          longitude: _longitude,
           amenities: _selectedAmenities,
           newImages: _selectedImages.isNotEmpty ? _selectedImages : null,
           rooms: roomsData,
@@ -221,6 +228,8 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
           description: _descriptionController.text,
           images: _selectedImages,
           address: _locationController.text,
+          latitude: _latitude,
+          longitude: _longitude,
           amenities: _selectedAmenities,
           rooms: roomsData,
           roomImages: roomImagesForUpload,
@@ -881,6 +890,28 @@ class _AddHotelScreenState extends State<AddHotelScreen> {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Color(0xFF2FC1BE), width: 1.5),
+      ),
+      suffixIcon: IconButton(
+        icon: const Icon(Icons.location_on, color: Color(0xFF2FC1BE)),
+        onPressed: () async {
+          print('Opening MapLocationPickerScreen from AddHotelScreen');
+          final result = await Get.to(
+            () => MapLocationPickerScreen(
+              initialLatitude: _latitude,
+              initialLongitude: _longitude,
+              initialAddress: controller.text,
+            ),
+          );
+          print('Returned from MapLocationPickerScreen with result: $result');
+          if (result != null) {
+            print('Setting address: ${result['address']}, lat: ${result['latitude']}, lng: ${result['longitude']}');
+            controller.text = result['address'] ?? '';
+            setState(() {
+              _latitude = result['latitude'] ?? 0;
+              _longitude = result['longitude'] ?? 0;
+            });
+          }
+        },
       ),
     );
 

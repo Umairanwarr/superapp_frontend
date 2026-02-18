@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:superapp/screens/map_location_picker_screen.dart';
 import '../controllers/profile_controller.dart';
 import '../services/listing_service.dart';
 
@@ -25,6 +26,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   final List<String> _selectedInsights = [];
   final List<XFile> _selectedImages = [];
   bool _isLoading = false;
+  
+  // Location state
+  double _latitude = 0;
+  double _longitude = 0;
 
   bool get _isEditMode => widget.editPropertyData != null;
   int? get _editPropertyId => widget.editPropertyData?['id'] as int?;
@@ -105,6 +110,13 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     _bedroomsController.text = (data['rooms'] ?? '').toString();
     _bathroomsController.text = (data['bathrooms'] ?? '').toString();
     _sqftController.text = (data['area'] ?? '').toString();
+
+    final listingTypeEnum = data['listingType'] as String?;
+    if (listingTypeEnum == 'FOR_RENT') {
+      _listingType = 'For Rent';
+    } else if (listingTypeEnum == 'FOR_SALE') {
+      _listingType = 'For Sale';
+    }
 
     // Property type
     final typeEnum = data['type'] as String?;
@@ -202,6 +214,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
     try {
       final bool isEdit = _isEditMode;
+      final listingTypeEnum =
+          _listingType == 'For Rent' ? 'FOR_RENT' : 'FOR_SALE';
       if (isEdit) {
         await _listingService.updateProperty(
           token: token,
@@ -210,7 +224,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           description: _descriptionController.text,
           newImages: _selectedImages.isNotEmpty ? _selectedImages : null,
           address: _locationController.text,
+          latitude: _latitude,
+          longitude: _longitude,
           price: double.tryParse(_priceController.text),
+          listingType: listingTypeEnum,
           area: double.tryParse(_sqftController.text),
           rooms: int.tryParse(_bedroomsController.text),
           bathrooms: int.tryParse(_bathroomsController.text),
@@ -233,8 +250,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           images: _selectedImages,
           address: _locationController.text,
           price: double.parse(_priceController.text),
-          latitude: 0.0,
-          longitude: 0.0,
+          latitude: _latitude,
+          longitude: _longitude,
+          listingType: listingTypeEnum,
           area: double.tryParse(_sqftController.text),
           rooms: int.tryParse(_bedroomsController.text),
           bathrooms: int.tryParse(_bathroomsController.text),
@@ -942,6 +960,28 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Color(0xFF2FC1BE), width: 1.5),
+      ),
+      suffixIcon: IconButton(
+        icon: const Icon(Icons.location_on, color: Color(0xFF2FC1BE)),
+        onPressed: () async {
+          print('Opening MapLocationPickerScreen from AddPropertyScreen');
+          final result = await Get.to(
+            () => MapLocationPickerScreen(
+              initialLatitude: _latitude,
+              initialLongitude: _longitude,
+              initialAddress: controller.text,
+            ),
+          );
+          print('Returned from MapLocationPickerScreen with result: $result');
+          if (result != null) {
+            print('Setting address: ${result['address']}, lat: ${result['latitude']}, lng: ${result['longitude']}');
+            controller.text = result['address'] ?? '';
+            setState(() {
+              _latitude = result['latitude'] ?? 0;
+              _longitude = result['longitude'] ?? 0;
+            });
+          }
+        },
       ),
     );
 
