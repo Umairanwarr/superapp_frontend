@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../screens/hotel_detail_screen.dart';
+import '../services/currency_service.dart';
+import '../controllers/profile_controller.dart';
 
 class ExploreHotelCard extends StatelessWidget {
   final String title;
   final String location;
   final String imagePath;
+  final String? imageUrl;
   final double rating;
-  final int price;
+  final String price;
   final VoidCallback? onTap;
 
   const ExploreHotelCard({
@@ -16,6 +18,7 @@ class ExploreHotelCard extends StatelessWidget {
     required this.title,
     required this.location,
     required this.imagePath,
+    this.imageUrl,
     required this.rating,
     required this.price,
     this.onTap,
@@ -40,18 +43,49 @@ class ExploreHotelCard extends StatelessWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-                  child: Image.asset(
-                    imagePath,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: 200,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.hotel),
-                    ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(22),
                   ),
+                  child: imageUrl != null
+                      ? Image.network(
+                          imageUrl!,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 200,
+                              color: Colors.grey[200],
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF2FC1BE),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 200,
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.home,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : Image.asset(
+                          imagePath,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                height: 200,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.hotel),
+                              ),
+                        ),
                 ),
               ],
             ),
@@ -74,15 +108,20 @@ class ExploreHotelCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined,
-                          size: 16, color: Color(0xFF9AA0AF)),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 16,
+                        color: Color(0xFF9AA0AF),
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           location,
                           style: TextStyle(
                             fontSize: 14,
-                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF747477),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.grey[400]
+                                : const Color(0xFF747477),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -97,8 +136,11 @@ class ExploreHotelCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded,
-                              color: Color(0xFFFFC107), size: 20),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Color(0xFFFFC107),
+                            size: 20,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             rating.toStringAsFixed(1),
@@ -116,7 +158,7 @@ class ExploreHotelCard extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '\$$price',
+                              text: _formatPrice(price),
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w800,
@@ -143,5 +185,19 @@ class ExploreHotelCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatPrice(String price) {
+    final priceValue = double.tryParse(price) ?? 0;
+    if (priceValue == 0) return '\$0';
+
+    // Get user's selected currency
+    final profileController = Get.find<ProfileController>();
+    final userCurrency = profileController.userCurrency.value;
+
+    // Convert from USD to user's currency
+    final convertedPrice = CurrencyService.convertFromUSD(priceValue, userCurrency);
+
+    return CurrencyService.formatAmount(convertedPrice, userCurrency, decimals: 0);
   }
 }

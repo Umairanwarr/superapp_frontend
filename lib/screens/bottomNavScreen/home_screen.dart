@@ -10,13 +10,13 @@ import '../property_detail_screen.dart';
 import '../wishlist_screen.dart';
 import '../property_search_screen.dart';
 import '../my_listing_screen.dart';
+import '../../services/listing_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final controller = Get.find<MainScreenController>();
 
     return SafeArea(
@@ -24,9 +24,18 @@ class HomeScreen extends StatelessWidget {
         children: [
           const _MainHeader(),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
-              child: Column(
+            child: RefreshIndicator(
+              color: const Color(0xFF2FC1BE),
+              onRefresh: () async {
+                final controller = Get.find<MainScreenController>();
+                await Future.wait([
+                  controller.fetchFeaturedHotels(),
+                  controller.fetchFeaturedProperties(),
+                ]);
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const _RecommendationCard(),
@@ -52,12 +61,23 @@ class HomeScreen extends StatelessWidget {
                         ],
                       );
                     }
+
+                    if (controller.categoryIndex.value == 0) {
+                      return Column(
+                        children: const [
+                          SizedBox(height: 18),
+                          _HotelQuickActions(),
+                        ],
+                      );
+                    }
+
                     return const SizedBox.shrink();
                   }),
                   const SizedBox(height: 18),
                   const _AnnouncementCard(),
                 ],
               ),
+            ),
             ),
           ),
         ],
@@ -167,10 +187,6 @@ class _MainHeader extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _HeaderImageIconButton(
-                    imagePath: 'assets/heart.png',
-                    onTap: () {},
-                  ),
                   const SizedBox(width: 10),
                   Stack(
                     children: [
@@ -584,35 +600,130 @@ class _FeaturedHotelsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MainScreenController>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
       height: 270,
       child: Obx(() {
         final isProperty = controller.categoryIndex.value == 1;
-        final list = isProperty
-            ? controller.featuredProperties
-            : controller.featuredHotels;
+
+        if (isProperty) {
+          // Still loading
+          if (controller.isFetchingProperties.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF2FC1BE)),
+            );
+          }
+
+          // Loaded but empty
+          final properties = controller.featuredPropertiesData;
+          if (properties.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.home_outlined,
+                    size: 48,
+                    color: isDark ? Colors.white38 : Colors.grey[400],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'No featured properties yet',
+                    style: TextStyle(
+                      color: isDark ? Colors.white54 : Colors.grey[500],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: properties.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final property = properties[index];
+              final title = property['title'] ?? 'Untitled';
+              final address = property['address'] ?? '';
+              final rating = controller.getRating(property);
+              final propertyId = property['id'] as int;
+              final images = property['images'] as List<dynamic>?;
+              final imageUrl = (images != null && images.isNotEmpty)
+                  ? ListingService.propertyImageUrl(propertyId, 0)
+                  : null;
+              final price = controller.getPropertyPrice(property);
+              final tag = controller.getPropertyTag(property);
+
+              return _FeaturedHotelCard(
+                title: title,
+                location: address,
+                rating: rating,
+                price: price.isNotEmpty ? price : null,
+                tag: tag.isNotEmpty ? tag : null,
+                imageUrl: imageUrl,
+                onTap: () =>
+                    Get.to(() => PropertyDetailScreen(propertyData: property)),
+              );
+            },
+          );
+        }
+
+        // Still loading hotels
+        if (controller.isFetchingHotels.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: Color(0xFF2FC1BE)),
+          );
+        }
+
+        // Loaded but empty
+        final hotels = controller.featuredHotelsData;
+        if (hotels.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.hotel_outlined,
+                  size: 48,
+                  color: isDark ? Colors.white38 : Colors.grey[400],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'No featured hotels yet',
+                  style: TextStyle(
+                    color: isDark ? Colors.white54 : Colors.grey[500],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
 
         return ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemCount: list.length,
+          itemCount: hotels.length,
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (context, index) {
-            final item = list[index];
+            final hotel = hotels[index];
+            final title = hotel['title'] ?? 'Untitled';
+            final address = hotel['address'] ?? '';
+            final rating = controller.getRating(hotel);
+            final hotelId = hotel['id'] as int;
+            final images = hotel['images'] as List<dynamic>?;
+            final imageUrl = (images != null && images.isNotEmpty)
+                ? ListingService.hotelImageUrl(hotelId, 0)
+                : null;
+
             return _FeaturedHotelCard(
-              title: item.name,
-              location: item.location,
-              rating: item.rating,
-              price: isProperty ? item.price : null,
-              tag: isProperty ? item.tag : null,
-              imageAssetPath: index == 0
-                  ? 'assets/hotel1.png'
-                  : 'assets/hotel2.png',
-              onTap: () => Get.to(
-                () => isProperty
-                    ? const PropertyDetailScreen()
-                    : const HotelDetailScreen(),
-              ),
+              title: title,
+              location: address,
+              rating: rating,
+              imageUrl: imageUrl,
+              onTap: () => Get.to(() => HotelDetailScreen(hotelData: hotel)),
             );
           },
         );
@@ -625,7 +736,7 @@ class _FeaturedHotelCard extends StatelessWidget {
   final String title;
   final String location;
   final double rating;
-  final String imageAssetPath;
+  final String? imageUrl;
   final VoidCallback onTap;
   final String? price;
   final String? tag;
@@ -634,7 +745,7 @@ class _FeaturedHotelCard extends StatelessWidget {
     required this.title,
     required this.location,
     required this.rating,
-    required this.imageAssetPath,
+    this.imageUrl,
     required this.onTap,
     this.price,
     this.tag,
@@ -672,12 +783,29 @@ class _FeaturedHotelCard extends StatelessWidget {
                     Container(
                       color: const Color(0xFF0F6CCF),
                       alignment: Alignment.center,
-                      child: Image.asset(
-                        imageAssetPath,
-                        fit: BoxFit.cover,
-                        height: double.infinity,
-                        width: double.infinity,
-                      ),
+                      child: imageUrl != null
+                          ? Image.network(
+                              imageUrl!,
+                              fit: BoxFit.cover,
+                              height: double.infinity,
+                              width: double.infinity,
+                              errorBuilder: (_, __, ___) => Container(
+                                color: Colors.grey[300],
+                                child: const Icon(
+                                  Icons.image,
+                                  size: 40,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              color: Colors.grey[300],
+                              child: const Icon(
+                                Icons.image,
+                                size: 40,
+                                color: Colors.grey,
+                              ),
+                            ),
                     ),
                     Positioned(
                       left: 14,
@@ -862,7 +990,40 @@ class _PropertyQuickActions extends StatelessWidget {
             title: 'Wishlist',
             subtitle: 'Saved properties',
             color: const Color(0xFF2FC1BE),
-            onTap: () => Get.to(() => const WishlistScreen()),
+            onTap: () => Get.to(() => const WishlistScreen(initialTab: 1)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HotelQuickActions extends StatelessWidget {
+  const _HotelQuickActions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _QuickActionCard(
+            icon: Icons.hotel_outlined,
+            title: 'My Hotels',
+            subtitle: 'Manage Listings',
+            color: const Color(0xFF2FC1BE),
+            onTap: () => Get.to(
+              () => const MyListingScreen(category: ListingCategory.hotel),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _QuickActionCard(
+            icon: Icons.favorite_border_rounded,
+            title: 'Wishlist',
+            subtitle: 'Saved hotels',
+            color: const Color(0xFF2FC1BE),
+            onTap: () => Get.to(() => const WishlistScreen(initialTab: 0)),
           ),
         ),
       ],

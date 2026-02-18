@@ -6,6 +6,7 @@ class PropertyCard extends StatelessWidget {
   final String title;
   final String location;
   final String imagePath;
+  final String? imageUrl;
   final double rating;
   final String price;
   final String? tag;
@@ -17,6 +18,7 @@ class PropertyCard extends StatelessWidget {
     required this.title,
     required this.location,
     required this.imagePath,
+    this.imageUrl,
     required this.rating,
     required this.price,
     this.tag,
@@ -52,17 +54,46 @@ class PropertyCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      imagePath,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 200,
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.home),
-                      ),
-                    ),
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 200,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF2FC1BE),
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 200,
+                              color: Colors.grey[300],
+                              child: const Icon(
+                                Icons.home,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          )
+                        : Image.asset(
+                            imagePath,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  height: 200,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.home),
+                                ),
+                          ),
                   ),
                 ),
                 // Favorite Button

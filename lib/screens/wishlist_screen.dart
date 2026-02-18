@@ -1,120 +1,196 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import '../controllers/wishlist_controller.dart';
+import '../services/listing_service.dart';
 import '../widgets/wishlist_card.dart';
+import 'hotel_detail_screen.dart';
+import 'property_detail_screen.dart';
 
 class WishlistScreen extends StatefulWidget {
-  const WishlistScreen({super.key});
+  final int initialTab;
+
+  const WishlistScreen({super.key, this.initialTab = 1});
 
   @override
   State<WishlistScreen> createState() => _WishlistScreenState();
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  int _selectedTab = 1; // 0 for Hotels, 1 for Properties (default as per image)
+  late int _selectedTab;
+  final WishlistController _wishlistController = Get.put(WishlistController());
+  final TextEditingController _searchController = TextEditingController();
+  var searchQuery = ''.obs;
 
-  final List<Map<String, dynamic>> _wishlistItems = [
-    {
-      'title': 'Luxury Villa',
-      'location': 'Dubai Marina',
-      'price': '\$1.306 M',
-      'rating': 4.8,
-      'imagePath': 'assets/hotel1.png',
-      'savedTime': 'saved 1 week ago',
-      'tag': 'Price Dropped',
-      'isLiked': true,
-    },
-    {
-      'title': 'Conthey Apartment',
-      'location': 'Conthey, Switzerland',
-      'price': '\$980K',
-      'rating': 4.1,
-      'imagePath': 'assets/hotel2.png',
-      'isLiked': true,
-    },
-    {
-      'title': 'Family Room',
-      'location': 'San Francisco',
-      'price': '\$2.1M',
-      'rating': 4.4,
-      'imagePath': 'assets/hotel1.png',
-      'isLiked': true,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _selectedTab = widget.initialTab;
+    _wishlistController.fetchWishlist();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           _buildHeader(),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              itemCount: _wishlistItems.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final item = _wishlistItems[index];
-                return Dismissible(
-                  key: Key(item['title']),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFE5E5),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20),
-                    child: SvgPicture.asset(
-                      'assets/bin.svg',
-                      width: 28,
-                      height: 28,
-                    ),
-                  ),
-                  onDismissed: (direction) {
-                    setState(() {
-                      _wishlistItems.removeAt(index);
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${item['title']} removed from wishlist'),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {
-                            setState(() {
-                              _wishlistItems.insert(index, item);
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  child: WishlistCard(
-                    title: item['title'],
-                    location: item['location'],
-                    price: item['price'],
-                    rating: item['rating'],
-                    imagePath: item['imagePath'],
-                    savedTime: item['savedTime'],
-                    tag: item['tag'],
-                    isLiked: item['isLiked'] ?? true,
+            child: RefreshIndicator(
+              color: const Color(0xFF2FC1BE),
+              onRefresh: () async {
+                await _wishlistController.fetchWishlist();
+              },
+              child: Obx(() {
+              if (_wishlistController.isLoading.value) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF2FC1BE),
                   ),
                 );
-              },
+              }
+
+              final items = _selectedTab == 0
+                  ? _wishlistController.hotels
+                  : _wishlistController.properties;
+
+              // Filter items based on search query
+              final filteredItems = items.where((item) {
+                if (searchQuery.value.isEmpty) return true;
+                final title = (item['title'] ?? '').toString().toLowerCase();
+                final address = (item['address'] ?? '').toString().toLowerCase();
+                final query = searchQuery.value.toLowerCase();
+                return title.contains(query) || address.contains(query);
+              }).toList();
+
+              if (filteredItems.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        size: 80,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        searchQuery.value.isEmpty
+                            ? 'No items in wishlist'
+                            : 'No results found',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                itemCount: filteredItems.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                itemBuilder: (context, index) {
+                  final item = filteredItems[index];
+                  return Dismissible(
+                    key: Key('${_selectedTab}_${item['id']}'),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFE5E5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      child: SvgPicture.asset(
+                        'assets/bin.svg',
+                        width: 28,
+                        height: 28,
+                      ),
+                    ),
+                    onDismissed: (direction) {
+                      if (_selectedTab == 0) {
+                        _wishlistController.toggleHotelWishlist(item['id'] as int);
+                      } else {
+                        _wishlistController.togglePropertyWishlist(item['id'] as int);
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_selectedTab == 0) {
+                          Get.to(() => HotelDetailScreen(hotelData: item));
+                        } else {
+                          Get.to(() => PropertyDetailScreen(propertyData: item));
+                        }
+                      },
+                      child: WishlistCard(
+                        title: item['title'] ?? 'Untitled',
+                        location: item['address'] ?? 'Unknown location',
+                        price: _formatPrice(item, _selectedTab),
+                        rating: 4.5,
+                        imageUrl: _getImageUrl(item, _selectedTab),
+                        isLiked: true,
+                        onDelete: () {
+                          if (_selectedTab == 0) {
+                            _wishlistController.toggleHotelWishlist(item['id'] as int);
+                          } else {
+                            _wishlistController.togglePropertyWishlist(item['id'] as int);
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomBar(),
     );
+  }
+
+  String _formatPrice(dynamic item, int tab) {
+    if (tab == 0) {
+      // For hotels, use controller method
+      return _wishlistController.getHotelPrice(item);
+    } else {
+      // For properties, use controller method
+      return _wishlistController.getPropertyPrice(item);
+    }
+  }
+
+  String? _getImageUrl(Map<String, dynamic> item, int tab) {
+    final images = item['images'] as List<dynamic>?;
+    if (images == null || images.isEmpty) {
+      return null;
+    }
+
+    final id = item['id'] as int?;
+    if (id == null) return null;
+
+    if (tab == 0) {
+      return ListingService.hotelImageUrl(id, 0);
+    } else {
+      return ListingService.propertyImageUrl(id, 0);
+    }
   }
 
   Widget _buildHeader() {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 60, 16, 20),
       decoration: const BoxDecoration(
@@ -147,28 +223,33 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 ),
               ),
               const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'My Wishlist',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
+              Obx(() {
+                final count = _selectedTab == 0
+                    ? _wishlistController.hotels.length
+                    : _wishlistController.properties.length;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'My Wishlist',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${_wishlistItems.length} Saved Properties',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white.withOpacity(0.9),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$count Saved ${_selectedTab == 0 ? 'Hotels' : 'Properties'}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
             ],
           ),
           const SizedBox(height: 24),
@@ -219,20 +300,29 @@ class _WishlistScreenState extends State<WishlistScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.search_rounded, color: Color(0xFF9E9E9F), size: 24),
+                const Icon(
+                  Icons.search_rounded,
+                  color: Color(0xFF9E9E9F),
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      searchQuery.value = value;
+                    },
                     cursorColor: theme.colorScheme.primary,
                     selectionControls: materialTextSelectionControls,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                       hintText: 'Search Saved Properties...',
                       hintStyle: TextStyle(
-                          color: theme.brightness == Brightness.dark
-                              ? Colors.white54
-                              : const Color(0xFF9AA0AF),
-                          fontSize: 18),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white54
+                            : const Color(0xFF9AA0AF),
+                        fontSize: 18,
+                      ),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -242,22 +332,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       contentPadding: EdgeInsets.zero,
                       isCollapsed: true,
                     ),
-                    style: TextStyle(
-                      color: theme.textTheme.bodyLarge?.color,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF2FC1BE),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.tune_rounded,
-                    color: Colors.white,
-                    size: 20,
+                    style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                   ),
                 ),
               ],
@@ -265,75 +340,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    final theme = Theme.of(context);
-    // Reusing the style from the image, but this might need to be the actual MainBottomBar if we want navigation to work.
-    // For now, I'll just create a placeholder row to match the image visually if needed, 
-    // or better, use the MainBottomBar if possible.
-    // The user said "create this screen", implying it might be a standalone screen or part of the main flow.
-    // Since it's navigated to, showing the bottom bar might be tricky if it's pushed on top of the stack.
-    // But usually, sub-screens don't have the main bottom bar unless it's a tab.
-    // However, the image shows a bottom bar.
-    // I'll stick to a simple placeholder for now or omit it if it's a pushed screen.
-    // Wait, the image shows the bottom bar. I should probably include it.
-    
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(theme.brightness == Brightness.dark ? 0.2 : 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildBottomNavItem(Icons.home_filled, 'Home', true),
-          _buildBottomNavItem(Icons.explore_outlined, 'Explore', false),
-          _buildBottomNavItem(Icons.grid_view, 'Dashboard', false),
-          _buildBottomNavItem(Icons.chat_bubble_outline, 'Chat', false),
-          _buildBottomNavItem(Icons.person_outline, 'Profile', false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavItem(IconData icon, String label, bool isSelected) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF2FC1BE) : Colors.transparent,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            icon,
-            color: isSelected ? Colors.white : (isDark ? Colors.white54 : Colors.grey[400]),
-            size: 24,
-          ),
-        ),
-        if (isSelected)
-          Text(
-            label,
-            style: const TextStyle(
-              color: Color(0xFF2FC1BE),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-      ],
     );
   }
 }

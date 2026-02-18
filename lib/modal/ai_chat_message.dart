@@ -7,6 +7,8 @@ class AiHotel {
   final double price;
   final String image;
   final String match;
+  final String type; // 'Hotel' or 'Property'
+  final Map<String, dynamic>? hotelData;
 
   AiHotel({
     required this.id,
@@ -15,16 +17,23 @@ class AiHotel {
     required this.price,
     required this.image,
     required this.match,
+    required this.type,
+    this.hotelData,
   });
 
   factory AiHotel.fromJson(Map<String, dynamic> json) {
+    // If the JSON contains full hotel data (has 'title', 'address', etc.), use it as hotelData
+    final hasFullData = json.containsKey('title') || json.containsKey('address');
+
     return AiHotel(
       id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      location: json['location'] ?? '',
+      name: json['name'] ?? json['title'] ?? '',
+      location: json['location'] ?? json['address'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
       image: json['image'] ?? '',
       match: json['match'] ?? '',
+      type: json['type'] ?? 'Hotel',
+      hotelData: hasFullData ? json : json['hotelData'] as Map<String, dynamic>?,
     );
   }
 }

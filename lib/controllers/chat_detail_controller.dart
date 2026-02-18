@@ -36,6 +36,7 @@ class ChatDetailController extends GetxController {
       final msgs = await _authService.getMessagesWithUser(
         token: _token,
         otherUserId: chat.peerUserId,
+        propertyId: chat.propertyId,
       );
 
       final myUserId = Get.find<ProfileController>().userId;
@@ -63,7 +64,11 @@ class ChatDetailController extends GetxController {
     if (_token.trim().isEmpty || chat.peerUserId <= 0) return;
 
     try {
-      await _authService.markAsRead(token: _token, senderId: chat.peerUserId);
+      await _authService.markAsRead(
+        token: _token,
+        senderId: chat.peerUserId,
+        propertyId: chat.propertyId,
+      );
 
       final chatsController = Get.find<ChatsController>();
       chatsController.fetchThreads();
@@ -90,6 +95,7 @@ class ChatDetailController extends GetxController {
           token: _token,
           receiverId: chat.peerUserId,
           content: text,
+          propertyId: chat.propertyId,
         )
         .then((_) {
           final chatsController = Get.find<ChatsController>();

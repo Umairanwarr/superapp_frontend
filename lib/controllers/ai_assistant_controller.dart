@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:superapp/modal/ai_chat_message.dart';
 
@@ -10,8 +13,11 @@ class AiAssistantController extends GetxController {
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
+  final AudioRecorder _recorder = AudioRecorder();
+
   final RxList<AiChatMessage> messages = <AiChatMessage>[].obs;
   final RxBool isLoading = false.obs;
+  final RxBool isRecording = false.obs;
 
   @override
   void onInit() {
@@ -25,6 +31,126 @@ class AiAssistantController extends GetxController {
         isUser: false,
       ),
     );
+  }
+
+  Future<void> toggleRecording() async {
+    if (isRecording.value) {
+      await _stopAndTranscribe();
+    } else {
+      await _startRecording();
+    }
+  }
+
+  Future<void> _startRecording() async {
+    final micStatus = await Permission.microphone.request();
+    if (!micStatus.isGranted) {
+      Get.snackbar('Permission', 'Microphone permission is required');
+      return;
+    }
+
+    final hasPerm = await _recorder.hasPermission();
+    if (!hasPerm) {
+      Get.snackbar('Permission', 'Microphone permission is required');
+      return;
+    }
+
+    final dir = await getTemporaryDirectory();
+    final path = '${dir.path}/ai_voice_${DateTime.now().millisecondsSinceEpoch}.wav';
+
+    await _recorder.start(
+      const RecordConfig(
+        encoder: AudioEncoder.wav,
+        sampleRate: 16000,
+        numChannels: 1,
+      ),
+      path: path,
+    );
+    isRecording.value = true;
+  }
+
+  Future<void> _stopAndTranscribe() async {
+    // Enforce minimum recording time (1 second)
+    await Future.delayed(const Duration(seconds: 1));
+    
+    String? path;
+    try {
+      path = await _recorder.stop();
+    } catch (e) {
+      isRecording.value = false;
+      Get.snackbar('Error', 'Failed to stop recording: $e');
+      return;
+    }
+
+    isRecording.value = false;
+
+    if (path == null || path.isEmpty) {
+      Get.snackbar('Error', 'No audio recorded');
+      return;
+    }
+
+    // Check file size - warn if too small (likely silence)
+    final file = File(path);
+    final fileSize = await file.length();
+    print('DEBUG: Recorded audio file size: $fileSize bytes');
+    
+    if (fileSize < 1000) {
+      Get.snackbar('Speech', 'Recording too short or no audio detected. Try speaking louder or check microphone permissions.');
+      return;
+    }
+
+    isLoading.value = true;
+    _scrollToBottom();
+
+    try {
+      final transcript = await _uploadAndTranscribe(File(path));
+      if (transcript.trim().isEmpty) {
+        Get.snackbar('Speech', 'Could not recognize any speech');
+        return;
+      }
+
+      messageController.text = transcript;
+      await sendMessage();
+    } catch (e) {
+      Get.snackbar('Error', 'Speech-to-text failed: $e');
+    } finally {
+      isLoading.value = false;
+      _scrollToBottom();
+    }
+  }
+
+  Future<String> _uploadAndTranscribe(File audioFile) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('user_token');
+
+    final baseUrl = Platform.isAndroid
+        ? 'http://10.0.2.2:3000'
+        : 'http://localhost:3000';
+
+    final uri = Uri.parse('$baseUrl/ai-assistant/transcribe');
+    final request = http.MultipartRequest('POST', uri);
+
+    if (token != null && token.isNotEmpty) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+
+    final bytes = await audioFile.readAsBytes();
+    final multipartFile = http.MultipartFile.fromBytes(
+      'audio',
+      bytes,
+      filename: audioFile.uri.pathSegments.last,
+    );
+    request.files.add(multipartFile);
+
+    final streamed = await request.send();
+    final bodyBytes = await streamed.stream.toBytes();
+    final body = utf8.decode(bodyBytes);
+
+    if (streamed.statusCode != 200 && streamed.statusCode != 201) {
+      throw 'Transcribe failed: ${streamed.statusCode} $body';
+    }
+
+    final data = jsonDecode(body) as Map<String, dynamic>;
+    return (data['text'] ?? '').toString();
   }
 
   Future<void> sendMessage() async {
@@ -81,8 +207,12 @@ class AiAssistantController extends GetxController {
               ),
             );
           } else if (msg['type'] == 'hotel_list') {
+            print('DEBUG: Received hotel_list data: ${msg['data']}');
             final hotels = (msg['data'] as List)
-                .map((h) => AiHotel.fromJson(h))
+                .map((h) {
+                  print('DEBUG: Individual hotel JSON: $h');
+                  return AiHotel.fromJson(h);
+                })
                 .toList();
             messages.add(
               AiChatMessage(
@@ -123,5 +253,13 @@ class AiAssistantController extends GetxController {
         );
       }
     });
+  }
+
+  @override
+  void onClose() {
+    messageController.dispose();
+    scrollController.dispose();
+    _recorder.dispose();
+    super.onClose();
   }
 }

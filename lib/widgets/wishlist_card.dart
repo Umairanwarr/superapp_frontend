@@ -6,11 +6,13 @@ class WishlistCard extends StatelessWidget {
   final String location;
   final String price;
   final double rating;
-  final String imagePath;
+  final String? imagePath;
+  final String? imageUrl;
   final String? savedTime;
   final String? tag;
   final bool isLiked;
   final VoidCallback? onTap;
+  final VoidCallback? onDelete;
 
   const WishlistCard({
     super.key,
@@ -18,11 +20,13 @@ class WishlistCard extends StatelessWidget {
     required this.location,
     required this.price,
     required this.rating,
-    required this.imagePath,
+    this.imagePath,
+    this.imageUrl,
     this.savedTime,
     this.tag,
     this.isLiked = true,
     this.onTap,
+    this.onDelete,
   });
 
   @override
@@ -50,12 +54,52 @@ class WishlistCard extends StatelessWidget {
                   topLeft: Radius.circular(19),
                   bottomLeft: Radius.circular(19),
                 ),
-                child: Image.asset(
-                  imagePath,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
+                child: imageUrl != null
+                    ? Image.network(
+                        imageUrl!,
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            width: 120,
+                            height: 120,
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF2FC1BE),
+                              ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 120,
+                          height: 120,
+                          color: Colors.grey[300],
+                          child: const Icon(
+                            Icons.hotel,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      )
+                    : Image.asset(
+                        imagePath ?? 'assets/hotel1.png',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 120,
+                          height: 120,
+                          color: Colors.grey[300],
+                          child: const Icon(
+                            Icons.hotel,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
               ),
               Positioned(
                 top: 8,
@@ -75,7 +119,7 @@ class WishlistCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           // Content Section
           Expanded(
             child: Padding(
@@ -102,7 +146,10 @@ class WishlistCard extends StatelessWidget {
                       ),
                       if (tag != null)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(12),
@@ -118,7 +165,7 @@ class WishlistCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  
+
                   // Location
                   Row(
                     children: [
@@ -141,7 +188,7 @@ class WishlistCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   // Price and Rating/Trash
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,10 +232,13 @@ class WishlistCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 20),
-                          SvgPicture.asset(
-                            'assets/bin.svg',
-                            width: 16,
-                            height: 16,
+                          GestureDetector(
+                            onTap: onDelete,
+                            child: SvgPicture.asset(
+                              'assets/bin.svg',
+                              width: 16,
+                              height: 16,
+                            ),
                           ),
                         ],
                       ),

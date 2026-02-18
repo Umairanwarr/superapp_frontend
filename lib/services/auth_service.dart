@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class AuthService {
   // Use 10.0.2.2 for Android Emulator, localhost for iOS simulator
@@ -212,7 +213,7 @@ class AuthService {
                 gender, // Ensure backend expects UPPERCASE if using enum, or handle mapping
           if (currency != null) 'currency': currency,
           if (language != null)
-            'lang': language
+            'language': language
                 .toUpperCase(), // Map 'English' -> 'ENGLISH' in controller or here
           if (isProfileComplete != null) 'isProfileComplete': isProfileComplete,
         }),
@@ -267,6 +268,42 @@ class AuthService {
     }
   }
 
+  /// Upload avatar image for user
+  Future<Map<String, dynamic>> uploadAvatar({
+    required int userId,
+    required File imageFile,
+  }) async {
+    final url = Uri.parse('$_usersBaseUrl/$userId/avatar');
+
+    try {
+      final request = http.MultipartRequest('PATCH', url);
+
+      final stream = http.ByteStream(imageFile.openRead());
+      final length = await imageFile.length();
+
+      final multipartFile = http.MultipartFile(
+        'avatar',
+        stream,
+        length,
+        filename: 'avatar_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      );
+
+      request.files.add(multipartFile);
+
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return jsonDecode(responseBody);
+      } else {
+        throw Exception('Failed to upload avatar: $responseBody');
+      }
+    } catch (e) {
+      throw Exception('Error uploading avatar: $e');
+    }
+  }
+
   Map<String, dynamic> _handleResponse(http.Response response, String action) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return jsonDecode(response.body);
@@ -285,8 +322,10 @@ class AuthService {
   Future<Map<String, dynamic>> markAsRead({
     required String token,
     required int senderId,
+    int? propertyId,
   }) async {
-    final url = Uri.parse('$_messagesBaseUrl/mark-read/$senderId');
+    final queryParams = propertyId != null ? '?propertyId=$propertyId' : '';
+    final url = Uri.parse('$_messagesBaseUrl/mark-read/$senderId$queryParams');
 
     try {
       final response = await http.post(url, headers: _headers(token: token));
@@ -327,8 +366,10 @@ class AuthService {
   Future<List<Map<String, dynamic>>> getMessagesWithUser({
     required String token,
     required int otherUserId,
+    int? propertyId,
   }) async {
-    final url = Uri.parse('$_messagesBaseUrl/with/$otherUserId');
+    final queryParams = propertyId != null ? '?propertyId=$propertyId' : '';
+    final url = Uri.parse('$_messagesBaseUrl/with/$otherUserId$queryParams');
 
     try {
       final response = await http.get(url, headers: _headers(token: token));
@@ -352,6 +393,7 @@ class AuthService {
     required String token,
     required int receiverId,
     required String content,
+    int? propertyId,
   }) async {
     final url = Uri.parse('$_messagesBaseUrl/send');
 
@@ -362,6 +404,7 @@ class AuthService {
         body: jsonEncode({
           'receiverId': receiverId,
           'content': content,
+          if (propertyId != null) 'propertyId': propertyId,
         }),
       );
       return _handleResponse(response, 'send message');

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +27,8 @@ class EditProfileController extends GetxController {
     emailCtrl.text = profile.email.value;
     phoneCtrl.text = profile.phone.value;
     photoUrl.value = profile.photoUrl.value;
+    
+    print('EditProfileController onInit - photoUrl from ProfileController: ${profile.photoUrl.value}');
   }
 
   void back() => Get.back();
@@ -99,11 +102,27 @@ class EditProfileController extends GetxController {
       );
       if (picked != null) {
         localPhotoPath.value = picked.path;
-        // For now store the local path; in production you'd upload to a storage service
-        // and get back a URL
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to pick image: $e');
+    }
+  }
+
+  Future<String?> _uploadAvatarIfNeeded(int userId) async {
+    if (localPhotoPath.value.isEmpty) {
+      return photoUrl.value.isNotEmpty ? photoUrl.value : null;
+    }
+
+    try {
+      final file = File(localPhotoPath.value);
+      final result = await _authService.uploadAvatar(
+        userId: userId,
+        imageFile: file,
+      );
+      return result['avatar'] as String?;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to upload avatar: $e');
+      return null;
     }
   }
 
@@ -120,6 +139,9 @@ class EditProfileController extends GetxController {
 
     isLoading.value = true;
     try {
+      // Upload avatar if a new image was selected
+      final avatarUrl = await _uploadAvatarIfNeeded(profile.userId);
+
       // Split name into first/last
       final nameParts = usernameCtrl.text.trim().split(' ');
       final fName = nameParts.first;
@@ -132,7 +154,7 @@ class EditProfileController extends GetxController {
         lastName: lName,
         email: emailCtrl.text.trim(),
         phoneNumber: phoneCtrl.text.trim(),
-        // avatar: would be a URL after uploading the image
+        avatar: avatarUrl,
       );
 
       // Update global ProfileController with response data
@@ -141,8 +163,14 @@ class EditProfileController extends GetxController {
         userEmail: result['email'] ?? emailCtrl.text.trim(),
         userPhone: result['phoneNumber'] ?? phoneCtrl.text.trim(),
         userFirstName: result['firstName'] ?? fName,
-        userPhotoUrl: result['avatar'] ?? '',
+        userPhotoUrl: result['avatar'] ?? avatarUrl ?? '',
       );
+
+      // Clear local path after successful upload
+      if (avatarUrl != null) {
+        localPhotoPath.value = '';
+        photoUrl.value = avatarUrl;
+      }
 
       Get.back();
       Get.snackbar('Success', 'Profile updated successfully');

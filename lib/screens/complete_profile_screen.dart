@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/auth/complete_profile_controller.dart';
@@ -44,20 +45,19 @@ class CompleteProfileScreen extends StatelessWidget {
                 children: [
                   Obx(() {
                     final url = controller.photoUrl.value;
+                    final localPath = controller.localPhotoPath.value;
+                    ImageProvider imageProvider;
+                    if (localPath.isNotEmpty) {
+                      imageProvider = FileImage(File(localPath));
+                    } else if (url.isNotEmpty) {
+                      imageProvider = NetworkImage(url);
+                    } else {
+                      imageProvider = const AssetImage('assets/avatar.png');
+                    }
                     return CircleAvatar(
                       radius: 62,
                       backgroundColor: const Color(0xFFD3D3D3),
-                      backgroundImage: url.isNotEmpty ? NetworkImage(url) : null,
-                      child: url.isEmpty
-                          ? ClipOval(
-                              child: Image.asset(
-                                'assets/avatar.png',
-                                width: 124,
-                                height: 124,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : null,
+                      backgroundImage: imageProvider,
                     );
                   }),
                   Positioned(
@@ -68,7 +68,7 @@ class CompleteProfileScreen extends StatelessWidget {
                       shape: const CircleBorder(),
                       child: InkWell(
                         customBorder: const CircleBorder(),
-                        onTap: () {},
+                        onTap: controller.changePicture,
                         child: const Padding(
                           padding: EdgeInsets.all(10),
                           child: Icon(

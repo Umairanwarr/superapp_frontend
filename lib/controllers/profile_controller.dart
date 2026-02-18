@@ -10,6 +10,7 @@ import 'package:superapp/screens/photo_detail_screen.dart';
 import 'package:superapp/screens/security_setting_screen.dart';
 import 'package:superapp/screens/auth/wellcome_screen.dart';
 import 'package:superapp/services/auth_service.dart';
+import 'package:superapp/services/listing_service.dart';
 
 class ProfileController extends GetxController {
   final bookings = 12.obs;
@@ -21,6 +22,7 @@ class ProfileController extends GetxController {
   final phone = ''.obs;
   final photoUrl = ''.obs;
   final firstName = ''.obs;
+  final userCurrency = 'USD'.obs;
 
   // Auth data
   int userId = 0;
@@ -34,6 +36,7 @@ class ProfileController extends GetxController {
   static const _firstNameKey = 'user_first_name';
   static const _userIdKey = 'user_id';
   static const _tokenKey = 'user_token';
+  static const _currencyKey = 'user_currency';
 
   final isDark = true.obs;
 
@@ -44,15 +47,27 @@ class ProfileController extends GetxController {
     _loadUserData();
   }
 
+  String _normalizeAvatarUrl(String rawUrl) {
+    if (rawUrl.trim().isEmpty) return '';
+    // If bucket is private, public GCS URLs will 403. Use backend proxy instead.
+    if (rawUrl.startsWith('https://storage.googleapis.com/')) {
+      return ListingService.avatarImageUrl(rawUrl);
+    }
+    return rawUrl;
+  }
+
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     username.value = prefs.getString(_usernameKey) ?? '';
     email.value = prefs.getString(_emailKey) ?? '';
     phone.value = prefs.getString(_phoneKey) ?? '';
-    photoUrl.value = prefs.getString(_photoUrlKey) ?? '';
     firstName.value = prefs.getString(_firstNameKey) ?? '';
+    userCurrency.value = prefs.getString(_currencyKey) ?? 'USD';
     userId = prefs.getInt(_userIdKey) ?? 0;
     token = prefs.getString(_tokenKey) ?? '';
+
+    final savedPhoto = prefs.getString(_photoUrlKey) ?? '';
+    photoUrl.value = _normalizeAvatarUrl(savedPhoto);
 
     await _syncFcmToken();
   }
@@ -78,6 +93,7 @@ class ProfileController extends GetxController {
     String? userPhone,
     String? userPhotoUrl,
     String? userFirstName,
+    String? currency,
     int? id,
     String? userToken,
   }) async {
@@ -95,12 +111,17 @@ class ProfileController extends GetxController {
       await prefs.setString(_phoneKey, userPhone);
     }
     if (userPhotoUrl != null && userPhotoUrl.isNotEmpty) {
-      photoUrl.value = userPhotoUrl;
-      await prefs.setString(_photoUrlKey, userPhotoUrl);
+      final normalized = _normalizeAvatarUrl(userPhotoUrl);
+      photoUrl.value = normalized;
+      await prefs.setString(_photoUrlKey, normalized);
     }
     if (userFirstName != null && userFirstName.isNotEmpty) {
       firstName.value = userFirstName;
       await prefs.setString(_firstNameKey, userFirstName);
+    }
+    if (currency != null && currency.isNotEmpty) {
+      userCurrency.value = currency;
+      await prefs.setString(_currencyKey, currency);
     }
     if (id != null && id > 0) {
       userId = id;
@@ -163,6 +184,7 @@ class ProfileController extends GetxController {
     await prefs.remove(_phoneKey);
     await prefs.remove(_photoUrlKey);
     await prefs.remove(_firstNameKey);
+    await prefs.remove(_currencyKey);
     await prefs.remove(_userIdKey);
     await prefs.remove(_tokenKey);
 
@@ -171,6 +193,7 @@ class ProfileController extends GetxController {
     phone.value = '';
     photoUrl.value = '';
     firstName.value = '';
+    userCurrency.value = 'USD';
     userId = 0;
     token = '';
 

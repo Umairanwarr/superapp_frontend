@@ -4,7 +4,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:superapp/controllers/ai_assistant_controller.dart';
+import 'package:superapp/controllers/profile_controller.dart';
 import 'package:superapp/modal/ai_chat_message.dart';
+import 'package:superapp/services/listing_service.dart';
+import 'package:superapp/screens/hotel_detail_screen.dart';
+import 'package:superapp/screens/property_detail_screen.dart';
 
 class AiAssistantScreen extends StatelessWidget {
   AiAssistantScreen({super.key});
@@ -164,6 +168,30 @@ class AiAssistantScreen extends StatelessWidget {
                   onSubmitted: (_) => controller.sendMessage(),
                 ),
               ),
+              const SizedBox(width: 10),
+              Obx(
+                () => GestureDetector(
+                  onTap: controller.toggleRecording,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: controller.isRecording.value
+                          ? const Color(0xFFEF4444)
+                          : const Color(0xFF2FC1BE),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      controller.isRecording.value
+                          ? Icons.stop_rounded
+                          : Icons.mic_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
               GestureDetector(
                 onTap: controller.sendMessage,
                 child: Container(
@@ -312,6 +340,8 @@ class _UserMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profileController = Get.find<ProfileController>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -330,22 +360,41 @@ class _UserMessage extends StatelessWidget {
         children: [
           Row(
             children: [
-              SvgPicture.asset(
-                'assets/Ai.svg',
-                width: 24,
-                height: 24,
-                // ignore: deprecated_member_use
-                color: const Color(0xFF1CB5B3),
-              ),
+              Obx(() {
+                final photo = profileController.photoUrl.value;
+                return ClipOval(
+                  child: photo.isNotEmpty
+                      ? Image.network(
+                          photo,
+                          width: 24,
+                          height: 24,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => SvgPicture.asset(
+                            'assets/Ai.svg',
+                            width: 24,
+                            height: 24,
+                            // ignore: deprecated_member_use
+                            color: const Color(0xFF1CB5B3),
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          'assets/Ai.svg',
+                          width: 24,
+                          height: 24,
+                          // ignore: deprecated_member_use
+                          color: const Color(0xFF1CB5B3),
+                        ),
+                );
+              }),
               const SizedBox(width: 8),
-              Text(
-                'Alex Hales',
-                style: GoogleFonts.outfit(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1CB5B3),
-                ),
-              ),
+              Obx(() => Text(
+                    profileController.displayName,
+                    style: GoogleFonts.outfit(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1CB5B3),
+                    ),
+                  )),
             ],
           ),
           const SizedBox(height: 8),
@@ -372,6 +421,8 @@ class _HotelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (hotels.isEmpty) return const SizedBox.shrink();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -395,34 +446,75 @@ class _HotelRecommendationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      width: 300,
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1CB5B3), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15),
-              bottomLeft: Radius.circular(15),
+    final isProperty = hotel.type == 'Property';
+
+    return GestureDetector(
+      onTap: () {
+        // Debug: Print what data we have
+        print('AI Item ID: ${hotel.id}');
+        print('AI Item Name: ${hotel.name}');
+        print('AI Item Type: ${hotel.type}');
+        print('AI Item Data: ${hotel.hotelData}');
+
+        // Navigate with hotelData if available, otherwise create minimal data with ID
+        final data = hotel.hotelData ?? {
+          'id': hotel.id,
+          'title': hotel.name,
+          'address': hotel.location,
+          'images': ['placeholder'],
+        };
+
+        print('Navigating with data: $data');
+
+        // Navigate to appropriate detail screen based on type
+        if (isProperty) {
+          Get.to(() => PropertyDetailScreen(propertyData: data));
+        } else {
+          Get.to(() => HotelDetailScreen(hotelData: data));
+        }
+      },
+      child: Container(
+        width: 300,
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFF1CB5B3), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            child: Image.network(
-              hotel.image,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
+          ],
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+              ),
+              child: Image.network(
+                hotel.id > 0
+                    ? (isProperty
+                        ? ListingService.propertyImageUrl(hotel.id, 0)
+                        : ListingService.hotelImageUrl(hotel.id, 0))
+                    : hotel.image,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 100,
+                  height: 100,
+                  color: const Color(0xFFF3F4F6),
+                  child: Icon(
+                    isProperty ? Icons.home_outlined : Icons.hotel_outlined,
+                    color: const Color(0xFF9CA3AF),
+                    size: 40,
+                  ),
+                ),
+              ),
             ),
-          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -430,7 +522,6 @@ class _HotelRecommendationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: Text(
@@ -445,6 +536,7 @@ class _HotelRecommendationCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -498,14 +590,15 @@ class _HotelRecommendationCard extends StatelessWidget {
                             color: const Color(0xFF1CB5B3),
                           ),
                         ),
-                        TextSpan(
-                          text: '/night',
-                          style: GoogleFonts.outfit(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF9CA3AF),
+                        if (!isProperty)
+                          TextSpan(
+                            text: '/night',
+                            style: GoogleFonts.outfit(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF9CA3AF),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -514,6 +607,7 @@ class _HotelRecommendationCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

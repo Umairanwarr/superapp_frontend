@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/explore_hotel_card.dart';
 import '../../controllers/main_screen_controller.dart';
+import '../../services/listing_service.dart';
 import '../property_detail_screen.dart';
 import 'booking_screen.dart';
 import 'directions_screen.dart';
@@ -45,70 +46,96 @@ class ExploreScreen extends StatelessWidget {
             // Header Tabs
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(() => _CategoryToggle(
-                selectedIndex: controller.categoryIndex.value,
-                onChanged: controller.onCategoryTap,
-              )),
+              child: Obx(
+                () => _CategoryToggle(
+                  selectedIndex: controller.categoryIndex.value,
+                  onChanged: controller.onCategoryTap,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             // View Toggles
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(() => Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => isMapView.value = false,
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: !isMapView.value ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFF1F2F3)),
-                        borderRadius: BorderRadius.circular(12),
-                        border: isMapView.value
-                            ? Border.all(color: const Color(0xFFE8E8E8), width: 1)
-                            : null,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/card.svg',
-                          width: 20,
-                          height: 20,
-                          colorFilter: ColorFilter.mode(
-                            !isMapView.value ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
-                            BlendMode.srcIn,
+              child: Obx(
+                () => Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => isMapView.value = false,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: !isMapView.value
+                              ? const Color(0xFF2FC1BE)
+                              : (theme.brightness == Brightness.dark
+                                    ? theme.cardColor
+                                    : const Color(0xFFF1F2F3)),
+                          borderRadius: BorderRadius.circular(12),
+                          border: isMapView.value
+                              ? Border.all(
+                                  color: const Color(0xFFE8E8E8),
+                                  width: 1,
+                                )
+                              : null,
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/card.svg',
+                            width: 20,
+                            height: 20,
+                            colorFilter: ColorFilter.mode(
+                              !isMapView.value
+                                  ? Colors.white
+                                  : (theme.brightness == Brightness.dark
+                                        ? Colors.white
+                                        : const Color(0xFF1D2330)),
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () => isMapView.value = true,
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: isMapView.value ? const Color(0xFF2FC1BE) : (theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFF1F2F3)),
-                        borderRadius: BorderRadius.circular(12),
-                        border: !isMapView.value
-                            ? Border.all(color: const Color(0xFFE8E8E8), width: 1)
-                            : null,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/map.svg',
-                          width: 20,
-                          height: 20,
-                          colorFilter: ColorFilter.mode(
-                            isMapView.value ? Colors.white : (theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330)),
-                            BlendMode.srcIn,
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => isMapView.value = true,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: isMapView.value
+                              ? const Color(0xFF2FC1BE)
+                              : (theme.brightness == Brightness.dark
+                                    ? theme.cardColor
+                                    : const Color(0xFFF1F2F3)),
+                          borderRadius: BorderRadius.circular(12),
+                          border: !isMapView.value
+                              ? Border.all(
+                                  color: const Color(0xFFE8E8E8),
+                                  width: 1,
+                                )
+                              : null,
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/map.svg',
+                            width: 20,
+                            height: 20,
+                            colorFilter: ColorFilter.mode(
+                              isMapView.value
+                                  ? Colors.white
+                                  : (theme.brightness == Brightness.dark
+                                        ? Colors.white
+                                        : const Color(0xFF1D2330)),
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             // Search Bar
@@ -121,7 +148,11 @@ class ExploreScreen extends StatelessWidget {
             Obx(() {
               if (controller.categoryIndex.value == 1) {
                 return Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 20,
+                  ),
                   child: _PropertyTypeToggle(
                     selectedIndex: propertyTypeIndex.value,
                     onChanged: (index) => propertyTypeIndex.value = index,
@@ -180,21 +211,32 @@ class ExploreScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                                        color:
+                                            theme.brightness == Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Row(
                                       children: [
-                                        const Icon(Icons.star, color: Color(0xFFFFA500), size: 16),
+                                        const Icon(
+                                          Icons.star,
+                                          color: Color(0xFFFFA500),
+                                          size: 16,
+                                        ),
                                         const SizedBox(width: 4),
                                         Text(
                                           '3.9',
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
-                                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
+                                            color:
+                                                theme.brightness ==
+                                                    Brightness.dark
+                                                ? Colors.grey[400]
+                                                : const Color(0xFF878787),
                                             decoration: TextDecoration.none,
                                           ),
                                         ),
@@ -203,7 +245,11 @@ class ExploreScreen extends StatelessWidget {
                                           'Reviews (200)',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
+                                            color:
+                                                theme.brightness ==
+                                                    Brightness.dark
+                                                ? Colors.grey[400]
+                                                : const Color(0xFF878787),
                                             decoration: TextDecoration.none,
                                           ),
                                         ),
@@ -216,17 +262,22 @@ class ExploreScreen extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 13,
-                                        color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF878787),
+                                        color:
+                                            theme.brightness == Brightness.dark
+                                            ? Colors.grey[400]
+                                            : const Color(0xFF878787),
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Expanded(
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               const Text(
                                                 '25% OFF',
@@ -234,7 +285,8 @@ class ExploreScreen extends StatelessWidget {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xFFFFA500),
-                                                  decoration: TextDecoration.none,
+                                                  decoration:
+                                                      TextDecoration.none,
                                                 ),
                                               ),
                                               const SizedBox(width: 12),
@@ -243,8 +295,13 @@ class ExploreScreen extends StatelessWidget {
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
-                                                  decoration: TextDecoration.none,
+                                                  color:
+                                                      theme.brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  decoration:
+                                                      TextDecoration.none,
                                                 ),
                                               ),
                                             ],
@@ -253,34 +310,42 @@ class ExploreScreen extends StatelessWidget {
                                         Column(
                                           children: [
                                             GestureDetector(
-                                              onTap: () => Get.to(() => const DirectionsScreen()),
+                                              onTap: () => Get.to(
+                                                () => const DirectionsScreen(),
+                                              ),
                                               child: Container(
                                                 width: 36,
                                                 height: 36,
-                                                padding: const EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(
+                                                  8,
+                                                ),
                                                 decoration: const BoxDecoration(
                                                   color: Color(0xFF2FC1BE),
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: SvgPicture.asset(
                                                   'assets/direction.svg',
-                                                  colorFilter: const ColorFilter.mode(
-                                                    Colors.white,
-                                                    BlendMode.srcIn,
-                                                  ),
+                                                  colorFilter:
+                                                      const ColorFilter.mode(
+                                                        Colors.white,
+                                                        BlendMode.srcIn,
+                                                      ),
                                                 ),
                                               ),
                                             ),
                                             const SizedBox(height: 2),
                                             GestureDetector(
-                                              onTap: () => Get.to(() => const DirectionsScreen()),
+                                              onTap: () => Get.to(
+                                                () => const DirectionsScreen(),
+                                              ),
                                               child: const Text(
                                                 'Directions',
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: Color(0xFF2FC1BE),
                                                   fontWeight: FontWeight.w500,
-                                                  decoration: TextDecoration.none,
+                                                  decoration:
+                                                      TextDecoration.none,
                                                 ),
                                               ),
                                             ),
@@ -300,63 +365,86 @@ class ExploreScreen extends StatelessWidget {
                 }
                 return Obx(() {
                   final isProperty = controller.categoryIndex.value == 1;
-                  return ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    children: isProperty
-                        ? [
-                            ExploreHotelCard(
-                              title: 'Luxury Villa',
-                              location: 'Dubai Marina · Waterfront',
-                              imagePath: 'assets/hotel1.png',
-                              rating: 4.9,
-                              price: 850,
-                              onTap: () => Get.to(() => const PropertyDetailScreen()),
-                            ),
-                            const SizedBox(height: 16),
-                            ExploreHotelCard(
-                              title: 'City Loft',
-                              location: 'New York · Manhattan',
-                              imagePath: 'assets/hotel2.png',
-                              rating: 4.7,
-                              price: 450,
-                              onTap: () => Get.to(() => const PropertyDetailScreen()),
-                            ),
-                          ]
-                        : const [
-                            ExploreHotelCard(
-                              title: 'Grand Plaza Hotel',
-                              location: 'Paris, France · 2.5 km away from centre',
-                              imagePath: 'assets/hotel1.png',
-                              rating: 4.8,
-                              price: 180,
-                            ),
-                            SizedBox(height: 16),
-                            ExploreHotelCard(
-                              title: 'Ocean View Resort',
-                              location: 'Maldives · Beach-front',
-                              imagePath: 'assets/hotel2.png',
-                              rating: 4.9,
-                              price: 220,
-                            ),
-                            SizedBox(height: 16),
-                            ExploreHotelCard(
-                              title: 'Alpine Lodge',
-                              location: 'Switzerland · Mountain View',
-                              imagePath: 'assets/hotel1.png',
-                              rating: 4.7,
-                              price: 250,
-                            ),
-                            SizedBox(height: 16),
-                            ExploreHotelCard(
-                              title: 'Urban Boutique',
-                              location: 'New York · City Center',
-                              imagePath: 'assets/hotel2.png',
-                              rating: 4.6,
-                              price: 300,
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                  );
+                  final theme = Theme.of(context);
+
+                  if (isProperty) {
+                    // Real property data
+                    final properties = controller.allPropertiesData;
+                    if (properties.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No properties found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF9AA0AF),
+                          ),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: properties.length,
+                      itemBuilder: (context, index) {
+                        final property = properties[index];
+                        final title = property['title'] ?? 'Property';
+                        final address = property['address'] ?? '';
+                        final rating = controller.getRating(property);
+                        final price = controller.getPropertyPrice(property);
+                        final propertyId = property['id'] as int;
+                        final images = property['images'] as List<dynamic>?;
+                        final imageUrl = (images != null && images.isNotEmpty)
+                            ? ListingService.propertyImageUrl(propertyId, 0)
+                            : null;
+                        return ExploreHotelCard(
+                          title: title,
+                          location: address,
+                          imagePath: 'assets/hotel1.png',
+                          imageUrl: imageUrl,
+                          rating: rating,
+                          price: price.isNotEmpty ? price : '\$0',
+                          onTap: () => Get.to(
+                            () => PropertyDetailScreen(propertyData: property),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    // Real hotel data
+                    final hotels = controller.allHotelsData;
+                    if (hotels.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No hotels found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF9AA0AF),
+                          ),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: hotels.length,
+                      itemBuilder: (context, index) {
+                        final hotel = hotels[index];
+                        final title = hotel['title'] ?? 'Hotel';
+                        final address = hotel['address'] ?? '';
+                        final rating = controller.getRating(hotel);
+                        final price = controller.getMinPrice(hotel);
+                        return ExploreHotelCard(
+                          title: title,
+                          location: address,
+                          imagePath: 'assets/hotel1.png',
+                          rating: rating,
+                          price: price.isNotEmpty ? price : '\$0/night',
+                        );
+                      },
+                    );
+                  }
                 });
               }),
             ),
@@ -442,7 +530,9 @@ class _CategoryChip extends StatelessWidget {
                 width: 22,
                 height: 22,
                 colorFilter: ColorFilter.mode(
-                  selected ? theme.colorScheme.primary : const Color(0xFF2FC1BE),
+                  selected
+                      ? theme.colorScheme.primary
+                      : const Color(0xFF2FC1BE),
                   BlendMode.srcIn,
                 ),
               )
@@ -451,7 +541,9 @@ class _CategoryChip extends StatelessWidget {
                 iconAssetPath,
                 width: 22,
                 height: 22,
-                color: selected ? theme.colorScheme.primary : const Color(0xFF2FC1BE),
+                color: selected
+                    ? theme.colorScheme.primary
+                    : const Color(0xFF2FC1BE),
               ),
             const SizedBox(width: 8),
             Text(
@@ -485,35 +577,45 @@ class _SearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(
-          color: const Color(0x9CBAB1B1),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0x9CBAB1B1), width: 1),
       ),
       child: Row(
         children: [
-          Icon(Icons.search_rounded, color: theme.brightness == Brightness.dark ? Colors.grey[400] : const Color(0xFF9E9E9F), size: 24),
+          Icon(
+            Icons.search_rounded,
+            color: theme.brightness == Brightness.dark
+                ? Colors.grey[400]
+                : const Color(0xFF9E9E9F),
+            size: 24,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Material(
               color: Colors.transparent,
-              child: Obx(() => TextField(
-                cursorColor: theme.colorScheme.primary,
-                selectionControls: materialTextSelectionControls,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  hintText: Get.find<MainScreenController>().categoryIndex.value == 1 
-                      ? 'Search properties...' 
-                      : 'Search hotels...',
-                  hintStyle: const TextStyle(color: Color(0xFF9AA0AF), fontSize: 18),
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  isDense: true,
+              child: Obx(
+                () => TextField(
+                  cursorColor: theme.colorScheme.primary,
+                  selectionControls: materialTextSelectionControls,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    hintText:
+                        Get.find<MainScreenController>().categoryIndex.value ==
+                            1
+                        ? 'Search properties...'
+                        : 'Search hotels...',
+                    hintStyle: const TextStyle(
+                      color: Color(0xFF9AA0AF),
+                      fontSize: 18,
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                  ),
+                  style: theme.textTheme.bodyMedium,
                 ),
-                style: theme.textTheme.bodyMedium,
-              )),
+              ),
             ),
           ),
           Container(
@@ -555,10 +657,7 @@ class _PropertyTypeToggle extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(23),
-        border: Border.all(
-          color: const Color(0xFFE8E8E8),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFFE8E8E8), width: 1),
       ),
       child: Row(
         children: [
@@ -567,7 +666,9 @@ class _PropertyTypeToggle extends StatelessWidget {
               onTap: () => onChanged(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedIndex == 0 ? const Color(0xFF2FC1BE) : Colors.transparent,
+                  color: selectedIndex == 0
+                      ? const Color(0xFF2FC1BE)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(23),
                 ),
                 alignment: Alignment.center,
@@ -576,7 +677,9 @@ class _PropertyTypeToggle extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: selectedIndex == 0 ? Colors.white : const Color(0xFF878787),
+                    color: selectedIndex == 0
+                        ? Colors.white
+                        : const Color(0xFF878787),
                     decoration: TextDecoration.none,
                   ),
                 ),
@@ -588,7 +691,9 @@ class _PropertyTypeToggle extends StatelessWidget {
               onTap: () => onChanged(1),
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedIndex == 1 ? const Color(0xFF2FC1BE) : Colors.transparent,
+                  color: selectedIndex == 1
+                      ? const Color(0xFF2FC1BE)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(23),
                 ),
                 alignment: Alignment.center,
@@ -597,7 +702,9 @@ class _PropertyTypeToggle extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: selectedIndex == 1 ? Colors.white : const Color(0xFF878787),
+                    color: selectedIndex == 1
+                        ? Colors.white
+                        : const Color(0xFF878787),
                     decoration: TextDecoration.none,
                   ),
                 ),

@@ -6,6 +6,7 @@ import '../widgets/property_filter_bottom_sheet.dart';
 import '../widgets/property_card.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../controllers/main_screen_controller.dart';
+import '../services/listing_service.dart';
 import 'property_detail_screen.dart';
 import 'main_screen.dart';
 
@@ -62,7 +63,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                   'Discover exclusive properties',
                   style: TextStyle(
                     fontSize: 16,
-                    color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1D2330),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white70
+                        : const Color(0xFF1D2330),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -78,7 +81,12 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                 decoration: BoxDecoration(
                   color: theme.cardColor,
                   borderRadius: BorderRadius.circular(26),
-                  border: Border.all(color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0x9CBAB1B1), width: 1),
+                  border: Border.all(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white24
+                        : const Color(0x9CBAB1B1),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -148,7 +156,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: theme.brightness == Brightness.dark ? const Color(0xFF2C2C2E) : const Color(0xFFE0E0E0),
+                  color: theme.brightness == Brightness.dark
+                      ? const Color(0xFF2C2C2E)
+                      : const Color(0xFFE0E0E0),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -181,7 +191,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                               fontWeight: FontWeight.w600,
                               color: _selectedType == 0
                                   ? const Color(0xFF2FC1BE)
-                                  : (theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9E9E9F)),
+                                  : (theme.brightness == Brightness.dark
+                                        ? Colors.white54
+                                        : const Color(0xFF9E9E9F)),
                             ),
                           ),
                         ),
@@ -215,7 +227,9 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
                               fontWeight: FontWeight.w600,
                               color: _selectedType == 1
                                   ? const Color(0xFF2FC1BE)
-                                  : (theme.brightness == Brightness.dark ? Colors.white54 : const Color(0xFF9E9E9F)),
+                                  : (theme.brightness == Brightness.dark
+                                        ? Colors.white54
+                                        : const Color(0xFF9E9E9F)),
                             ),
                           ),
                         ),
@@ -228,81 +242,109 @@ class _PropertySearchScreenState extends State<PropertySearchScreen> {
 
             const SizedBox(height: 20),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '42 Properties Found',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.brightness == Brightness.dark ? theme.cardColor : const Color(0xFFE8F1F1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFF2FC1BE),
-                        width: 0.5,
+            Obx(() {
+              final properties = controller.allPropertiesData;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${properties.length} Properties Found',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'sort by : Recommended',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.brightness == Brightness.dark
+                            ? theme.cardColor
+                            : const Color(0xFFE8F1F1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xFF2FC1BE),
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'sort by : Recommended',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 18,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 18,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            }),
             const SizedBox(height: 20),
 
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  PropertyCard(
-                    title: 'Luxury Villa',
-                    location: 'Dubai Marina',
-                    imagePath: 'assets/hotel1.png',
-                    rating: 4.8,
-                    price: '\$1.306 M',
-                    tag: '+8.5%',
-                    isLiked: true,
-                    onTap: () => Get.to(() => const PropertyDetailScreen()),
-                  ),
-                  PropertyCard(
-                    title: 'City Loft Villa',
-                    location: 'Maldives · Beach-front',
-                    imagePath: 'assets/hotel2.png',
-                    rating: 4.9,
-                    price: '\$850 K',
-                    tag: '+5.5%',
-                    onTap: () => Get.to(() => const PropertyDetailScreen()),
-                  ),
-                ],
-              ),
+              child: Obx(() {
+                final properties = controller.allPropertiesData;
+                if (properties.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No properties found',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white70
+                            : const Color(0xFF9AA0AF),
+                      ),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: properties.length,
+                  itemBuilder: (context, index) {
+                    final property = properties[index];
+                    final title = property['title'] ?? 'Property';
+                    final address = property['address'] ?? '';
+                    final rating = controller.getRating(property);
+                    final price = controller.getPropertyPrice(property);
+                    final tag = controller.getPropertyTag(property);
+                    final propertyId = property['id'] as int;
+                    final images = property['images'] as List<dynamic>?;
+                    final imageUrl = (images != null && images.isNotEmpty)
+                        ? ListingService.propertyImageUrl(propertyId, 0)
+                        : null;
+                    return PropertyCard(
+                      title: title,
+                      location: address,
+                      imagePath: 'assets/hotel1.png',
+                      imageUrl: imageUrl,
+                      rating: rating,
+                      price: price.isNotEmpty ? price : '\$0',
+                      tag: tag.isNotEmpty ? tag : null,
+                      onTap: () => Get.to(
+                        () => PropertyDetailScreen(propertyData: property),
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

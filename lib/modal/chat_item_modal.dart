@@ -10,6 +10,8 @@ class ChatItem {
   final int unreadCount;
   final bool isPhoto;
   final bool isVoice;
+  final Map<String, dynamic>? propertyData;
+  final int? propertyId;
 
   const ChatItem({
     required this.peerUserId,
@@ -21,5 +23,7 @@ class ChatItem {
     required this.unreadCount,
     this.isPhoto = false,
     this.isVoice = false,
+    this.propertyData,
+    this.propertyId,
   });
 }

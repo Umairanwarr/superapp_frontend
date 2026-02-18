@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:superapp/controllers/chat_detail_controller.dart';
 import 'package:superapp/modal/chat_item_modal.dart';
+import 'package:superapp/services/listing_service.dart';
 
 class ChatDetailScreen extends StatelessWidget {
   ChatDetailScreen({super.key});
@@ -57,18 +58,15 @@ class ChatDetailScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 12),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _PropertyCard(
-                onTap: controller.goTOReview,
-                accent: theme.colorScheme.primary,
-                imageAsset: 'assets/hotel1.png',
-                title: 'Family Room',
-                location: 'San Francisco',
-                price: '\$2.1M',
-                rating: '4.4',
+            if (chat.propertyData != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _PropertyCard(
+                  onTap: controller.goTOReview,
+                  accent: theme.colorScheme.primary,
+                  propertyData: chat.propertyData!,
+                ),
               ),
-            ),
 
             const SizedBox(height: 10),
 
@@ -109,25 +107,46 @@ class ChatDetailScreen extends StatelessWidget {
 class _PropertyCard extends StatelessWidget {
   const _PropertyCard({
     required this.accent,
-    required this.imageAsset,
-    required this.title,
-    required this.location,
-    required this.price,
-    required this.rating,
+    required this.propertyData,
     required this.onTap,
   });
 
   final Color accent;
-  final String imageAsset;
-  final String title;
-  final String location;
-  final String price;
-  final String rating;
+  final Map<String, dynamic> propertyData;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final title = propertyData['title'] ?? 'Property';
+    final address = propertyData['address'] ?? '';
+    final price = propertyData['price'];
+    final propertyId = propertyData['id'] as int?;
+
+    String priceStr = '\$0';
+    if (price != null) {
+      double priceValue = 0;
+      if (price is num) {
+        priceValue = price.toDouble();
+      } else if (price is String) {
+        priceValue = double.tryParse(price) ?? 0;
+      }
+
+      if (priceValue > 0) {
+        if (priceValue >= 1000000) {
+          priceStr = '\$${(priceValue / 1000000).toStringAsFixed(1)}M';
+        } else if (priceValue >= 1000) {
+          priceStr = '\$${(priceValue / 1000).toStringAsFixed(0)}K';
+        } else {
+          priceStr = '\$${priceValue.toStringAsFixed(0)}';
+        }
+      }
+    }
+
+    final imageUrl = propertyId != null
+        ? ListingService.propertyImageUrl(propertyId, 0)
+        : null;
 
     return GestureDetector(
       onTap: onTap,
@@ -141,16 +160,31 @@ class _PropertyCard extends StatelessWidget {
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 topLeft: Radius.circular(10),
               ),
-              child: Image.asset(
-                imageAsset,
-                width: 80,
-                height: 85,
-                fit: BoxFit.cover,
-              ),
+              child: imageUrl != null
+                  ? Image.network(
+                      imageUrl,
+                      width: 80,
+                      height: 85,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 80,
+                          height: 85,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.image, color: Colors.grey),
+                        );
+                      },
+                    )
+                  : Container(
+                      width: 80,
+                      height: 85,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.image, color: Colors.grey),
+                    ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -163,7 +197,6 @@ class _PropertyCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-
                       fontSize: 14,
                     ),
                   ),
@@ -178,7 +211,7 @@ class _PropertyCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          location,
+                          address,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -194,27 +227,25 @@ class _PropertyCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        price,
+                        priceStr,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: accent,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-
-                      Padding(
-                        padding: EdgeInsetsGeometry.only(right: 20),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 20),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.star_rounded,
                               size: 18,
                               color: Color(0xFFFFC107),
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4),
                             Text(
-                              rating,
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                // color: const Color(0xFF1D2330),
+                              '4.8',
+                              style: TextStyle(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
