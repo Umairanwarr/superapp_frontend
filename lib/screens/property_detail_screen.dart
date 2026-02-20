@@ -10,6 +10,7 @@ import '../widgets/hotel_image_carousel.dart';
 import '../widgets/hotel_reviews_section.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../modal/chat_item_modal.dart';
+import 'booking_summary_screen.dart';
 import 'chat_detail_screen.dart';
 import 'main_screen.dart';
 
@@ -993,7 +994,8 @@ class _ListedBySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ownerName = owner['fullName'] ?? owner['firstName'] ?? 'Property Owner';
+    final ownerName =
+        owner['fullName'] ?? owner['firstName'] ?? 'Property Owner';
     final ownerAvatar = owner['avatar'] as String?;
     final avatarUrl = (ownerAvatar != null && ownerAvatar.isNotEmpty)
         ? ListingService.avatarImageUrl(ownerAvatar)
@@ -1004,7 +1006,8 @@ class _ListedBySection extends StatelessWidget {
       final parts = name.trim().split(' ');
       if (parts.isEmpty) return 'PO';
       if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
-      return '${parts[0].substring(0, 1)}${parts[1].substring(0, 1)}'.toUpperCase();
+      return '${parts[0].substring(0, 1)}${parts[1].substring(0, 1)}'
+          .toUpperCase();
     }
 
     return Column(
@@ -1015,7 +1018,9 @@ class _ListedBySection extends StatelessWidget {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white
+                : const Color(0xFF1D2330),
           ),
         ),
         const SizedBox(height: 16),
@@ -1039,7 +1044,9 @@ class _ListedBySection extends StatelessWidget {
                       width: 56,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE).withOpacity(0.2) : const Color(0xFFE8F7F7),
+                        color: theme.brightness == Brightness.dark
+                            ? const Color(0xFF2FC1BE).withOpacity(0.2)
+                            : const Color(0xFFE8F7F7),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -1047,7 +1054,9 @@ class _ListedBySection extends StatelessWidget {
                           getInitials(ownerName),
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
-                            color: theme.brightness == Brightness.dark ? const Color(0xFF2FC1BE) : const Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark
+                                ? const Color(0xFF2FC1BE)
+                                : const Color(0xFF1D2330),
                             fontSize: 18,
                           ),
                         ),
@@ -1064,20 +1073,28 @@ class _ListedBySection extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF1D2330),
                       ),
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Color(0xFFFFB300), size: 16),
+                        const Icon(
+                          Icons.star,
+                          color: Color(0xFFFFB300),
+                          size: 16,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '4.9',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFF1D2330),
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -1086,7 +1103,9 @@ class _ListedBySection extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: theme.brightness == Brightness.dark ? Colors.white70 : const Color(0xFF9AA0AF),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : const Color(0xFF9AA0AF),
                           ),
                         ),
                       ],
@@ -1133,9 +1152,13 @@ class _ListedBySection extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       final ownerId = owner['id'] as int?;
-                      final ownerName = owner['fullName'] ?? owner['firstName'] ?? 'Property Owner';
+                      final ownerName =
+                          owner['fullName'] ??
+                          owner['firstName'] ??
+                          'Property Owner';
                       final ownerAvatar = owner['avatar'] as String?;
-                      final avatarUrl = (ownerAvatar != null && ownerAvatar.isNotEmpty)
+                      final avatarUrl =
+                          (ownerAvatar != null && ownerAvatar.isNotEmpty)
                           ? ListingService.avatarImageUrl(ownerAvatar)
                           : '';
 
@@ -1163,7 +1186,9 @@ class _ListedBySection extends StatelessWidget {
                         color: theme.cardColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: theme.brightness == Brightness.dark ? Colors.white24 : const Color(0xFFE0E0E0),
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white24
+                              : const Color(0xFFE0E0E0),
                           width: 1.5,
                         ),
                       ),
@@ -1173,13 +1198,17 @@ class _ListedBySection extends StatelessWidget {
                           Icon(
                             Icons.chat_bubble_outline,
                             size: 16,
-                            color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFF1D2330),
                           ),
                           const SizedBox(width: 6),
                           Text(
                             'Contact',
                             style: TextStyle(
-                              color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : const Color(0xFF1D2330),
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
                             ),
@@ -1227,14 +1256,33 @@ class _BottomBar extends StatelessWidget {
         final userCurrency = profileController.userCurrency.value;
 
         // Convert from USD to user's currency
-        final convertedPrice = CurrencyService.convertFromUSD(priceValue, userCurrency);
+        final convertedPrice = CurrencyService.convertFromUSD(
+          priceValue,
+          userCurrency,
+        );
 
         if (convertedPrice >= 1000000) {
-          priceStr = CurrencyService.formatAmount(convertedPrice / 1000000, userCurrency, decimals: 1) + ' M';
+          priceStr =
+              CurrencyService.formatAmount(
+                convertedPrice / 1000000,
+                userCurrency,
+                decimals: 1,
+              ) +
+              ' M';
         } else if (convertedPrice >= 1000) {
-          priceStr = CurrencyService.formatAmount(convertedPrice / 1000, userCurrency, decimals: 0) + 'K';
+          priceStr =
+              CurrencyService.formatAmount(
+                convertedPrice / 1000,
+                userCurrency,
+                decimals: 0,
+              ) +
+              'K';
         } else {
-          priceStr = CurrencyService.formatAmount(convertedPrice, userCurrency, decimals: 0);
+          priceStr = CurrencyService.formatAmount(
+            convertedPrice,
+            userCurrency,
+            decimals: 0,
+          );
         }
       }
     }
@@ -1268,7 +1316,9 @@ class _BottomBar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: theme.brightness == Brightness.dark ? Colors.white : const Color(0xFF1D2330),
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF1D2330),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -1291,7 +1341,12 @@ class _BottomBar extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.snackbar('Schedule Visit', 'Booking feature coming soon');
+                  Get.to(
+                    () => BookingSummaryScreen(
+                      bookingType: 'property',
+                      propertyData: propertyData,
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2FC1BE),

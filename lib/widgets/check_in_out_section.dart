@@ -4,14 +4,25 @@ import 'package:intl/intl.dart';
 import 'package:superapp/screens/select_dates_screen.dart';
 
 class CheckInOutSection extends StatelessWidget {
-  const CheckInOutSection({super.key});
+  final DateTime? checkInDate;
+  final DateTime? checkOutDate;
+  final VoidCallback? onCheckInTap;
+  final VoidCallback? onCheckOutTap;
+
+  const CheckInOutSection({
+    super.key,
+    this.checkInDate,
+    this.checkOutDate,
+    this.onCheckInTap,
+    this.onCheckOutTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final now = DateTime.now();
-    final checkIn = now;
-    final checkOut = now.add(const Duration(days: 2));
+    final checkIn = checkInDate ?? now;
+    final checkOut = checkOutDate ?? now.add(const Duration(days: 2));
     final dateFormat = DateFormat('EEE, dd MMM');
 
     return Row(
@@ -21,8 +32,8 @@ class CheckInOutSection extends StatelessWidget {
             title: dateFormat.format(checkIn),
             subtitle: 'Check-in',
             icon: Icons.calendar_today_outlined,
-            onTap: () =>
-                Get.to(() => const SelectDatesScreen(initialTabIndex: 0)),
+            onTap: onCheckInTap ??
+                () => Get.to(() => const SelectDatesScreen(initialTabIndex: 0)),
             theme: theme,
           ),
         ),
@@ -32,8 +43,8 @@ class CheckInOutSection extends StatelessWidget {
             title: dateFormat.format(checkOut),
             subtitle: 'Check-out',
             icon: Icons.calendar_today_outlined,
-            onTap: () =>
-                Get.to(() => const SelectDatesScreen(initialTabIndex: 1)),
+            onTap: onCheckOutTap ??
+                () => Get.to(() => const SelectDatesScreen(initialTabIndex: 1)),
             theme: theme,
           ),
         ),

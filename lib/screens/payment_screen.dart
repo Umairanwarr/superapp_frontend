@@ -5,8 +5,13 @@ import 'package:superapp/screens/booking_confirmation_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String bookingType;
+  final double? totalAmount;
 
-  const PaymentScreen({super.key, this.bookingType = 'hotel'});
+  const PaymentScreen({
+    super.key,
+    this.bookingType = 'hotel',
+    this.totalAmount,
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -15,11 +20,23 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String _selectedMethod = 'Card';
 
+  String _formatAmount(double amount) {
+    final whole = amount.toStringAsFixed(0);
+    final withCommas = whole.replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (match) => ',',
+    );
+    return '\$$withCommas';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bool isProperty = widget.bookingType == 'property';
-    final String totalAmount = isProperty ? '\$1,774,000' : '\$1774';
+    final fallbackAmount = isProperty ? 1774000.0 : 1774.0;
+    final String totalAmount = _formatAmount(
+      widget.totalAmount ?? fallbackAmount,
+    );
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -539,7 +556,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             },
 
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.brightness == Brightness.dark
+                              backgroundColor:
+                                  theme.brightness == Brightness.dark
                                   ? Colors.white
                                   : Colors.black,
                               shape: RoundedRectangleBorder(
@@ -774,15 +792,12 @@ class _LabelInfo extends StatelessWidget {
   const _LabelInfo(this.text);
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Text(
       text,
       style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.bold,
-        color: Get.isDarkMode
-            ? Colors.white
-            : const Color(0xFF1D2330),
+        color: Get.isDarkMode ? Colors.white : const Color(0xFF1D2330),
       ),
     );
   }
@@ -800,9 +815,7 @@ class _PaymentTextField extends StatelessWidget {
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Get.isDarkMode
-              ? Colors.white24
-              : const Color(0xFFE0E0E0),
+          color: Get.isDarkMode ? Colors.white24 : const Color(0xFFE0E0E0),
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -817,9 +830,7 @@ class _PaymentTextField extends StatelessWidget {
           focusedErrorBorder: InputBorder.none,
           hintText: hint,
           hintStyle: TextStyle(
-            color: Get.isDarkMode
-                ? Colors.white38
-                : const Color(0xFFBDBDBD),
+            color: Get.isDarkMode ? Colors.white38 : const Color(0xFFBDBDBD),
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),

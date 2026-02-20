@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart' show TextEditingController, ScrollController, Curves;
+import 'package:permission_handler/permission_handler.dart';
+import '../services/api_service.dart';
 import 'package:superapp/modal/ai_chat_message.dart';
 
 class AiAssistantController extends GetxController {
@@ -122,9 +123,7 @@ class AiAssistantController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('user_token');
 
-    final baseUrl = Platform.isAndroid
-        ? 'http://10.0.2.2:3000'
-        : 'http://localhost:3000';
+    final baseUrl = ApiService.baseUrl;
 
     final uri = Uri.parse('$baseUrl/ai-assistant/transcribe');
     final request = http.MultipartRequest('POST', uri);
@@ -179,10 +178,7 @@ class AiAssistantController extends GetxController {
       // I'll try to find where token is stored. If I can't find it, I will add a TODO or try to get it from ProfileController if accessible.
       // For now, let's assume 'token'.
 
-      // Use 10.0.2.2 for Android Emulator, localhost for iOS Simulator
-      final baseUrl = Platform.isAndroid
-          ? 'http://10.0.2.2:3000'
-          : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
 
       final response = await http.post(
         Uri.parse('$baseUrl/ai-assistant/chat'),

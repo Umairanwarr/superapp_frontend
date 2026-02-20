@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/main_screen_controller.dart';
+import '../controllers/profile_controller.dart';
 import '../screens/main_screen.dart';
+import '../screens/select_dates_screen.dart';
+import '../services/currency_service.dart';
 import '../services/listing_service.dart';
 import '../widgets/main_bottom_bar.dart';
 import '../widgets/hotel_image_carousel.dart';
@@ -13,10 +16,121 @@ import '../widgets/hotel_about_section.dart';
 import '../widgets/select_room_section.dart';
 import '../widgets/hotel_reviews_section.dart';
 
-class HotelDetailScreen extends StatelessWidget {
+class HotelDetailScreen extends StatefulWidget {
   final Map<String, dynamic>? hotelData;
 
   const HotelDetailScreen({super.key, this.hotelData});
+
+  @override
+  State<HotelDetailScreen> createState() => _HotelDetailScreenState();
+}
+
+class _HotelDetailScreenState extends State<HotelDetailScreen> {
+  final Map<int, int> _selectedRoomQuantities = <int, int>{};
+  DateTime? _checkInDate;
+  DateTime? _checkOutDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _checkInDate = now;
+    _checkOutDate = now.add(const Duration(days: 2));
+  }
+
+  int? _toInt(dynamic value) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '');
+  }
+
+  double _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  void _onQuantityChanged(int roomId, bool increment) {
+    setState(() {
+      final current = _selectedRoomQuantities[roomId] ?? 0;
+      final next = increment ? current + 1 : current - 1;
+
+      if (next <= 0) {
+        _selectedRoomQuantities.remove(roomId);
+      } else {
+        _selectedRoomQuantities[roomId] = next;
+      }
+    });
+  }
+
+  int _selectedRoomsCount() {
+    return _selectedRoomQuantities.values.fold(0, (sum, qty) => sum + qty);
+  }
+
+  double _selectedNightlyTotal(List<dynamic> rooms) {
+    final roomById = <int, Map<String, dynamic>>{};
+    for (final room in rooms) {
+      if (room is! Map<String, dynamic>) continue;
+      final id = _toInt(room['id']);
+      if (id != null) {
+        roomById[id] = room;
+      }
+    }
+
+    double total = 0;
+    _selectedRoomQuantities.forEach((roomId, qty) {
+      final room = roomById[roomId];
+      if (room == null) return;
+      total += _toDouble(room['price']) * qty;
+    });
+
+    return total;
+  }
+
+  String _formatNightlyPrice(double priceUsd) {
+    if (priceUsd <= 0) return '\$0/night';
+
+    final profileController = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(ProfileController());
+    final userCurrency = profileController.userCurrency.value;
+    final convertedPrice = CurrencyService.convertFromUSD(priceUsd, userCurrency);
+    return '${CurrencyService.formatAmount(convertedPrice, userCurrency, decimals: 0)}/night';
+  }
+
+  Future<void> _openDatesSelection({
+    required int initialTabIndex,
+    required bool createBookingOnContinue,
+    required int? hotelId,
+    required String hotelTitle,
+    required List<dynamic> rooms,
+  }) async {
+    final result = await Get.to<Map<String, dynamic>>(
+      () => SelectDatesScreen(
+        initialTabIndex: initialTabIndex,
+        initialCheckIn: _checkInDate,
+        initialCheckOut: _checkOutDate,
+        hotelId: hotelId,
+        hotelTitle: hotelTitle,
+        rooms: rooms,
+        selectedRoomQuantities: _selectedRoomQuantities,
+        createBookingOnContinue: createBookingOnContinue,
+      ),
+    );
+
+    if (result == null) return;
+
+    final checkInRaw = result['checkIn'];
+    final checkOutRaw = result['checkOut'];
+    final nextCheckIn = checkInRaw is String ? DateTime.tryParse(checkInRaw) : null;
+    final nextCheckOut =
+        checkOutRaw is String ? DateTime.tryParse(checkOutRaw) : null;
+
+    if (nextCheckIn == null || nextCheckOut == null) return;
+
+    setState(() {
+      _checkInDate = nextCheckIn;
+      _checkOutDate = nextCheckOut;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +140,17 @@ class HotelDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     // Extract data
-    final title = hotelData?['title'] ?? 'Grand Plaza Hotel';
-    final address = hotelData?['address'] ?? 'London';
-    final description = hotelData?['description'] ?? '';
+    final title = widget.hotelData?['title'] ?? 'Grand Plaza Hotel';
+    final address = widget.hotelData?['address'] ?? 'London';
+    final description = widget.hotelData?['description'] ?? '';
     final amenities =
-        (hotelData?['amenities'] as List<dynamic>?)?.cast<String>() ?? [];
-    final rooms = (hotelData?['rooms'] as List<dynamic>?) ?? [];
-    final reviews = (hotelData?['reviews'] as List<dynamic>?) ?? [];
-    final images = (hotelData?['images'] as List<dynamic>?) ?? [];
-    final hotelId = hotelData?['id'] as int?;
+        (widget.hotelData?['amenities'] as List<dynamic>?)?.cast<String>() ?? [];
+    final rooms = (widget.hotelData?['rooms'] as List<dynamic>?) ?? [];
+    final reviews = (widget.hotelData?['reviews'] as List<dynamic>?) ?? [];
+    final images = (widget.hotelData?['images'] as List<dynamic>?) ?? [];
+    final hotelId = _toInt(widget.hotelData?['id']);
+    final selectedRoomsCount = _selectedRoomsCount();
+    final selectedNightlyTotal = _selectedNightlyTotal(rooms);
 
     // Calculate rating
     double rating = 0.0;
@@ -89,7 +205,24 @@ class HotelDetailScreen extends StatelessWidget {
                     location: address,
                   ),
                   const SizedBox(height: 24),
-                  const CheckInOutSection(),
+                  CheckInOutSection(
+                    checkInDate: _checkInDate,
+                    checkOutDate: _checkOutDate,
+                    onCheckInTap: () => _openDatesSelection(
+                      initialTabIndex: 0,
+                      createBookingOnContinue: false,
+                      hotelId: hotelId,
+                      hotelTitle: title,
+                      rooms: rooms,
+                    ),
+                    onCheckOutTap: () => _openDatesSelection(
+                      initialTabIndex: 1,
+                      createBookingOnContinue: false,
+                      hotelId: hotelId,
+                      hotelTitle: title,
+                      rooms: rooms,
+                    ),
+                  ),
                   const SizedBox(height: 24),
                   const ARExperienceSection(),
                   const SizedBox(height: 24),
@@ -97,7 +230,11 @@ class HotelDetailScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   HotelAboutSection(description: description),
                   const SizedBox(height: 24),
-                  SelectRoomSection(rooms: rooms),
+                  SelectRoomSection(
+                    rooms: rooms,
+                    selectedQuantities: _selectedRoomQuantities,
+                    onQuantityChanged: _onQuantityChanged,
+                  ),
                   const SizedBox(height: 24),
                   const HotelReviewsSection(),
                   const SizedBox(height: 100),
@@ -107,16 +244,131 @@ class HotelDetailScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Obx(
-        () => MainBottomBar(
-          currentIndex: controller.bottomIndex.value,
-          isPropertySelected: controller.categoryIndex.value == 1,
-          onTap: (index) {
-            controller.categoryIndex.value = 0;
-            controller.bottomIndex.value = index;
-            Get.offAll(() => const MainScreen());
-          },
+      bottomNavigationBar: selectedRoomsCount > 0
+          ? _HotelBookingBottomBar(
+              theme: theme,
+              roomCount: selectedRoomsCount,
+              priceText: _formatNightlyPrice(selectedNightlyTotal),
+              onCheckInTap: () => _openDatesSelection(
+                initialTabIndex: 0,
+                createBookingOnContinue: true,
+                hotelId: hotelId,
+                hotelTitle: title,
+                rooms: rooms,
+              ),
+            )
+          : Obx(
+              () => MainBottomBar(
+                currentIndex: controller.bottomIndex.value,
+                isPropertySelected: controller.categoryIndex.value == 1,
+                onTap: (index) {
+                  controller.categoryIndex.value = 0;
+                  controller.bottomIndex.value = index;
+                  Get.offAll(() => const MainScreen());
+                },
+              ),
+            ),
+    );
+  }
+}
+
+class _HotelBookingBottomBar extends StatelessWidget {
+  final ThemeData theme;
+  final int roomCount;
+  final String priceText;
+  final VoidCallback onCheckInTap;
+
+  const _HotelBookingBottomBar({
+    required this.theme,
+    required this.roomCount,
+    required this.priceText,
+    required this.onCheckInTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 34),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
+        border: const Border(
+          top: BorderSide(color: Color(0xFF2FC1BE), width: 1.5),
         ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$roomCount Room${roomCount > 1 ? 's' : ''}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF1D2330),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  priceText,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF2FC1BE),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 3,
+            child: SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: onCheckInTap,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2FC1BE),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.login,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Check In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

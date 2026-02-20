@@ -1,14 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'api_service.dart';
 
 class WishlistService {
-  static String get baseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/wishlist';
-    }
-    return 'http://localhost:3000/wishlist';
-  }
+  static String get baseUrl => '${ApiService.baseUrl}/wishlist';
 
   Map<String, String> _headers({String? token}) {
     final headers = <String, String>{

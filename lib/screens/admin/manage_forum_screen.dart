@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:superapp/modal/community_post_modal.dart';
 import 'package:superapp/controllers/community_controller.dart';
 import 'package:superapp/controllers/profile_controller.dart';
+import '../../services/api_service.dart';
 
 class ManageForumScreen extends StatefulWidget {
   const ManageForumScreen({super.key});
@@ -31,7 +31,7 @@ class _ManageForumScreenState extends State<ManageForumScreen> {
       final token = profileController.token;
       final userId = profileController.userId;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.get(
         Uri.parse('$baseUrl/forums/my-forums/$userId'),
         headers: {
@@ -77,7 +77,7 @@ class _ManageForumScreenState extends State<ManageForumScreen> {
       final profileController = Get.find<ProfileController>();
       final token = profileController.token;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.delete(
         Uri.parse('$baseUrl/forums/$forumId'),
         headers: {
@@ -139,7 +139,7 @@ class _ManageForumScreenState extends State<ManageForumScreen> {
       final profileController = Get.find<ProfileController>();
       final token = profileController.token;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.patch(
         Uri.parse('$baseUrl/forums/$forumId'),
         headers: {

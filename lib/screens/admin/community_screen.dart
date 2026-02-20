@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:superapp/modal/community_post_modal.dart';
 import 'package:superapp/controllers/community_controller.dart';
 import 'package:superapp/controllers/profile_controller.dart';
+import 'package:superapp/modal/community_post_modal.dart';
 import 'package:superapp/screens/admin/create_forum_screen.dart';
 import 'package:superapp/screens/admin/manage_forum_screen.dart';
+import '../../services/api_service.dart';
 
 class CommunityScreen extends StatelessWidget {
   const CommunityScreen({super.key});
@@ -358,7 +358,7 @@ class CommunityScreen extends StatelessWidget {
     try {
       final profileController = Get.find<ProfileController>();
       final token = profileController.token;
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.get(
         Uri.parse('$baseUrl/forums/$forumId'),
         headers: {
@@ -401,7 +401,7 @@ class CommunityScreen extends StatelessWidget {
       final token = profileController.token;
       final userId = profileController.userId;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.delete(
         Uri.parse('$baseUrl/forums/comments/$commentId'),
         headers: {
@@ -450,7 +450,7 @@ class CommunityScreen extends StatelessWidget {
   }
 
   Widget _buildAvatar(String? avatarUrl, String initial, dynamic userId) {
-    final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+    final baseUrl = ApiService.baseUrl;
     
     String? proxyUrl;
     if (avatarUrl != null && avatarUrl.isNotEmpty) {
@@ -708,7 +708,7 @@ class _CommunityPostCard extends StatelessWidget {
   }
 
   Widget _buildPostAvatar(CommunityPost post) {
-    final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+    final baseUrl = ApiService.baseUrl;
     final avatarUrl = post.userAvatarUrl;
     
     String? proxyUrl;

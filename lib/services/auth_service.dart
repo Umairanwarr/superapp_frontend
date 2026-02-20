@@ -2,15 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'api_service.dart';
 
 class AuthService {
-  // Use 10.0.2.2 for Android Emulator, localhost for iOS simulator
-  static String get baseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/auth'; // Ensure this matches user's local setup if different
-    }
-    return 'http://localhost:3000/auth';
-  }
+  static String get baseUrl => '${ApiService.baseUrl}/auth';
 
   // Helper to get headers with token
   Map<String, String> _headers({String? token}) {
@@ -226,12 +221,7 @@ class AuthService {
   }
 
   /// Base URL for /users endpoints
-  static String get _usersBaseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/users';
-    }
-    return 'http://localhost:3000/users';
-  }
+  static String get _usersBaseUrl => '${ApiService.baseUrl}/users';
 
   /// Edit user profile (name, email, phone, avatar)
   Future<Map<String, dynamic>> editUserProfile({
@@ -335,12 +325,7 @@ class AuthService {
     }
   }
 
-  static String get _messagesBaseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/messages';
-    }
-    return 'http://localhost:3000/messages';
-  }
+  static String get _messagesBaseUrl => '${ApiService.baseUrl}/messages';
 
   Future<List<Map<String, dynamic>>> getThreads({required String token}) async {
     final url = Uri.parse('$_messagesBaseUrl/threads');

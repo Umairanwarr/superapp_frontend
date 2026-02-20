@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:superapp/modal/community_post_modal.dart';
 import 'package:superapp/controllers/profile_controller.dart';
+import '../services/api_service.dart';
 
 class CommunityController extends GetxController {
   final tabs = const ['Forums', 'Reviews', 'Tips'];
@@ -41,7 +42,7 @@ class CommunityController extends GetxController {
       final token = profileController.token;
       final userId = profileController.userId;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final uri = userId > 0 
           ? Uri.parse('$baseUrl/forums?userId=$userId')
           : Uri.parse('$baseUrl/forums');
@@ -90,7 +91,7 @@ class CommunityController extends GetxController {
       final token = profileController.token;
       final userId = profileController.userId;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.post(
         Uri.parse('$baseUrl/forums/$forumId/like'),
         headers: {
@@ -140,7 +141,7 @@ class CommunityController extends GetxController {
       final token = profileController.token;
       final userId = profileController.userId;
 
-      final baseUrl = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      final baseUrl = ApiService.baseUrl;
       final response = await http.post(
         Uri.parse('$baseUrl/forums/$forumId/comments'),
         headers: {

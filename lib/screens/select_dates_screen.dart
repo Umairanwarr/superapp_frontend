@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'select_room_screen.dart';
+import '../controllers/profile_controller.dart';
+import '../services/api_service.dart';
+import '../services/listing_service.dart';
+import 'booking_summary_screen.dart';
 
 class SelectDatesScreen extends StatefulWidget {
-  const SelectDatesScreen({super.key, this.initialTabIndex = 0});
+  const SelectDatesScreen({
+    super.key,
+    this.initialTabIndex = 0,
+    this.initialCheckIn,
+    this.initialCheckOut,
+    this.hotelId,
+    this.hotelTitle = '',
+    this.rooms = const [],
+    this.selectedRoomQuantities = const {},
+    this.createBookingOnContinue = false,
+  });
 
   final int initialTabIndex; // 0 = check-in, 1 = check-out
+  final DateTime? initialCheckIn;
+  final DateTime? initialCheckOut;
+  final int? hotelId;
+  final String hotelTitle;
+  final List<dynamic> rooms;
+  final Map<int, int> selectedRoomQuantities;
+  final bool createBookingOnContinue;
 
   @override
   State<SelectDatesScreen> createState() => _SelectDatesScreenState();
@@ -16,19 +36,25 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
   DateTime? _checkIn;
   DateTime? _checkOut;
   late DateTime _visibleMonth;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
+    final now = DateTime.now();
+    final defaultCheckIn = DateTime(now.year, now.month, now.day);
     _tabIndex = widget.initialTabIndex;
-    _checkIn = DateTime(2025, 12, 13);
-    _checkOut = DateTime(2025, 12, 16);
-    _visibleMonth = DateTime(2025, 12, 1);
+    _checkIn = widget.initialCheckIn ?? defaultCheckIn;
+    _checkOut =
+        widget.initialCheckOut ??
+        (widget.initialCheckIn ?? defaultCheckIn).add(const Duration(days: 2));
+    _visibleMonth = DateTime(_checkIn!.year, _checkIn!.month, 1);
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isContinueEnabled = _checkOut != null;
+    final bool isContinueEnabled =
+        !_isSubmitting && _checkIn != null && _checkOut != null;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -149,9 +175,7 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
                   width: 280,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: isContinueEnabled
-                        ? () => Get.to(() => const SelectRoomScreen())
-                        : null,
+                    onPressed: isContinueEnabled ? _onContinuePressed : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2FC1BE),
                       disabledBackgroundColor: const Color(
@@ -162,9 +186,13 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Continue Booking',
-                      style: TextStyle(
+                    child: Text(
+                      _isSubmitting
+                          ? 'Please wait...'
+                          : widget.createBookingOnContinue
+                          ? 'Continue Booking'
+                          : 'Save Dates',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -427,6 +455,122 @@ class _SelectDatesScreenState extends State<SelectDatesScreen> {
         : newMonthIndex + 1;
     final int newYear = date.year + yearDelta + (newMonthIndex < 0 ? -1 : 0);
     return DateTime(newYear, newMonth, 1);
+  }
+
+  Future<void> _onContinuePressed() async {
+    final checkIn = _checkIn;
+    final checkOut = _checkOut;
+    if (checkIn == null || checkOut == null) return;
+
+    if (!widget.createBookingOnContinue) {
+      Get.back(
+        result: {
+          'checkIn': checkIn.toIso8601String(),
+          'checkOut': checkOut.toIso8601String(),
+        },
+      );
+      return;
+    }
+
+    if (widget.hotelId == null) {
+      Get.snackbar('Booking', 'Hotel details are missing');
+      return;
+    }
+
+    final selectedPayload = widget.selectedRoomQuantities.entries
+        .where((entry) => entry.value > 0)
+        .map((entry) => {'roomId': entry.key, 'quantity': entry.value})
+        .toList();
+
+    if (selectedPayload.isEmpty) {
+      Get.snackbar('Booking', 'Please select at least one room');
+      return;
+    }
+
+    final profileController = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(ProfileController());
+    final token = profileController.token;
+    if (token.trim().isEmpty) {
+      Get.snackbar('Login required', 'Please login to continue your booking');
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    try {
+      final response = await ApiService.createHotelBooking(
+        token: token,
+        hotelId: widget.hotelId!,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        rooms: selectedPayload,
+      );
+
+      final nights = checkOut.difference(checkIn).inDays;
+      final summaryRooms = _buildSummaryRooms();
+
+      final bookingGroup = response['bookingGroup'] as Map<String, dynamic>?;
+      final backendTotal = _toDouble(bookingGroup?['totalPrice']);
+
+      Get.off(
+        () => BookingSummaryScreen(
+          bookingType: 'hotel',
+          hotelTitle: widget.hotelTitle,
+          checkIn: checkIn,
+          checkOut: checkOut,
+          nights: nights > 0 ? nights : 1,
+          selectedRooms: summaryRooms,
+          bookingTotal: backendTotal,
+          bookingResponse: response,
+        ),
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Booking failed',
+        e.toString().replaceFirst('Exception: ', ''),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
+  }
+
+  List<Map<String, dynamic>> _buildSummaryRooms() {
+    final roomById = <int, Map<String, dynamic>>{};
+    for (final item in widget.rooms) {
+      if (item is! Map<String, dynamic>) continue;
+      final id = _toInt(item['id']);
+      if (id != null) {
+        roomById[id] = item;
+      }
+    }
+
+    final selected = <Map<String, dynamic>>[];
+    widget.selectedRoomQuantities.forEach((roomId, qty) {
+      if (qty <= 0) return;
+      final room = roomById[roomId];
+      if (room == null) return;
+      selected.add({
+        'roomId': roomId,
+        'title': room['title']?.toString() ?? 'Room $roomId',
+        'price': _toDouble(room['price']),
+        'quantity': qty,
+        'imageUrl': ListingService.roomImageUrl(roomId),
+      });
+    });
+
+    return selected;
+  }
+
+  int? _toInt(dynamic value) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '');
+  }
+
+  double _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '') ?? 0;
   }
 }
 

@@ -3,14 +3,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'api_service.dart';
 
 class ListingService {
-  static String get baseUrl {
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000';
-    }
-    return 'http://localhost:3000';
-  }
+  static String get baseUrl => ApiService.baseUrl;
 
   /// Returns a proxied image URL for a hotel image stored in private GCS bucket.
   static String hotelImageUrl(int hotelId, int imageIndex) {

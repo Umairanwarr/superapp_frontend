@@ -1,17 +1,219 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:superapp/services/listing_service.dart';
 import 'package:superapp/screens/payment_screen.dart';
 
-class BookingSummaryScreen extends StatelessWidget {
+class BookingSummaryScreen extends StatefulWidget {
   final String bookingType; // 'hotel' or 'property'
+  final String hotelTitle;
+  final Map<String, dynamic>? propertyData;
+  final DateTime? checkIn;
+  final DateTime? checkOut;
+  final int? nights;
+  final List<Map<String, dynamic>> selectedRooms;
+  final double? bookingTotal;
+  final Map<String, dynamic>? bookingResponse;
 
-  const BookingSummaryScreen({super.key, this.bookingType = 'hotel'});
+  const BookingSummaryScreen({
+    super.key,
+    this.bookingType = 'hotel',
+    this.hotelTitle = '',
+    this.propertyData,
+    this.checkIn,
+    this.checkOut,
+    this.nights,
+    this.selectedRooms = const [],
+    this.bookingTotal,
+    this.bookingResponse,
+  });
+
+  @override
+  State<BookingSummaryScreen> createState() => _BookingSummaryScreenState();
+}
+
+class _BookingSummaryScreenState extends State<BookingSummaryScreen> {
+  int _adults = 2;
+  int _children = 0;
+
+  int _toInt(dynamic value, {int fallback = 0}) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '') ?? fallback;
+  }
+
+  double _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '--';
+    const week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${week[date.weekday - 1]}, ${date.day} ${months[date.month - 1]}';
+  }
+
+  String _formatMoney(double amount) {
+    return amount.toStringAsFixed(0);
+  }
+
+  String _formatCurrency(double amount, {int decimals = 0}) {
+    final fixed = amount.toStringAsFixed(decimals);
+    final parts = fixed.split('.');
+    final whole = parts[0].replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (match) => ',',
+    );
+    if (decimals > 0 && parts.length > 1) {
+      return '\$$whole.${parts[1]}';
+    }
+    return '\$$whole';
+  }
+
+  String _formatCompactCurrency(double amount) {
+    if (amount >= 1000000) {
+      return '\$${(amount / 1000000).toStringAsFixed(1)}M';
+    }
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(0)}K';
+    }
+    return _formatCurrency(amount);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final selectedRoomCount = widget.selectedRooms.fold<int>(
+      0,
+      (sum, room) => sum + _toInt(room['quantity'], fallback: 1),
+    );
+    _adults = selectedRoomCount > 0 ? selectedRoomCount * 2 : 2;
+    _children = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bool isProperty = bookingType == 'property';
+    final bool isProperty = widget.bookingType == 'property';
     final theme = Theme.of(context);
+
+    final fallbackRooms = [
+      {
+        'title': 'Standard Room',
+        'price': 180.0,
+        'quantity': 1,
+        'specs': '1 King Bed • 25 m²',
+        'imagePath': 'assets/room1.png',
+      },
+      {
+        'title': 'Deluxe Suite',
+        'price': 350.0,
+        'quantity': 1,
+        'specs': '1 King Bed + Sofa • 25 m²',
+        'imagePath': 'assets/room2.png',
+      },
+    ];
+
+    final hotelRooms = !isProperty && widget.selectedRooms.isNotEmpty
+        ? widget.selectedRooms
+        : fallbackRooms;
+    final computedNights =
+        widget.nights ??
+        ((widget.checkIn != null && widget.checkOut != null)
+            ? widget.checkOut!.difference(widget.checkIn!).inDays
+            : 3);
+    final stayNights = computedNights > 0 ? computedNights : 1;
+    final selectedRoomCount = hotelRooms.fold<int>(
+      0,
+      (sum, room) => sum + _toInt(room['quantity'], fallback: 1),
+    );
+    final roomSubtotal = hotelRooms.fold<double>(
+      0,
+      (sum, room) =>
+          sum +
+          (_toDouble(room['price']) *
+              _toInt(room['quantity'], fallback: 1) *
+              stayNights),
+    );
+    final effectiveRoomSubtotal =
+        (!isProperty && (widget.bookingTotal ?? 0) > 0)
+        ? widget.bookingTotal!
+        : roomSubtotal;
+
+    final includedAdults = isProperty
+        ? 2
+        : (selectedRoomCount > 0 ? selectedRoomCount * 2 : 2);
+    final extraAdults = _adults > includedAdults ? _adults - includedAdults : 0;
+    final guestSurcharge = isProperty
+        ? 0.0
+        : ((extraAdults * 20) + (_children * 10)) * stayNights.toDouble();
+
+    final subtotalBeforeTax = effectiveRoomSubtotal + guestSurcharge;
+    final taxes = subtotalBeforeTax * 0.10;
+    final serviceCharge = subtotalBeforeTax > 0 ? 25.0 : 0.0;
+    final totalPrice = subtotalBeforeTax + taxes + serviceCharge;
+    final checkInLabel = isProperty
+        ? 'Tue, 13 Dec'
+        : _formatDate(widget.checkIn);
+    final checkOutLabel = isProperty
+        ? 'Fri, 16 Dec'
+        : _formatDate(widget.checkOut);
+
+    final propertyTitle =
+        widget.propertyData?['title']?.toString() ?? 'Luxury Villa';
+    final rawAddress = widget.propertyData?['address']?.toString() ?? '';
+    final propertyAddress = rawAddress.trim().isNotEmpty
+        ? rawAddress
+        : 'Dubai Marina';
+    final rawPropertyId = widget.propertyData?['id'];
+    final propertyId = rawPropertyId is int
+        ? rawPropertyId
+        : int.tryParse(rawPropertyId?.toString() ?? '');
+    final propertyImages = widget.propertyData?['images'] as List<dynamic>?;
+    final propertyImageUrl =
+        (propertyId != null && (propertyImages?.isNotEmpty ?? false))
+        ? ListingService.propertyImageUrl(propertyId, 0)
+        : null;
+
+    final reviews =
+        widget.propertyData?['reviews'] as List<dynamic>? ?? const [];
+    double propertyRating = 4.8;
+    if (reviews.isNotEmpty) {
+      double sum = 0;
+      int count = 0;
+      for (final review in reviews) {
+        if (review is! Map<String, dynamic>) continue;
+        sum += _toDouble(review['rating']);
+        count++;
+      }
+      if (count > 0) {
+        propertyRating = sum / count;
+      }
+    }
+
+    final rawPropertyPrice = _toDouble(widget.propertyData?['price']);
+    final purchasePrice = rawPropertyPrice > 0 ? rawPropertyPrice : 1250000.0;
+    final closingCosts = purchasePrice * 0.0148;
+    final agentFees = purchasePrice * 0.03;
+    final propertyTotal = purchasePrice + closingCosts + agentFees;
+
+    final propertyCardPriceLabel = _formatCompactCurrency(purchasePrice);
+    final purchasePriceLabel = _formatCurrency(purchasePrice, decimals: 2);
+    final closingCostsLabel = _formatCurrency(closingCosts, decimals: 2);
+    final agentFeesLabel = _formatCurrency(agentFees, decimals: 2);
+    final propertyTotalLabel = _formatCurrency(propertyTotal, decimals: 0);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -52,31 +254,68 @@ class BookingSummaryScreen extends StatelessWidget {
                   children: [
                     // Property card for property bookings
                     if (isProperty) ...[
-                      const _PropertySummaryCard(),
+                      _PropertySummaryCard(
+                        title: propertyTitle,
+                        address: propertyAddress,
+                        priceLabel: propertyCardPriceLabel,
+                        rating: propertyRating,
+                        imageUrl: propertyImageUrl,
+                      ),
                       const SizedBox(height: 24),
                     ],
                     // Room cards for hotel bookings
                     if (!isProperty) ...[
-                      const _SummaryRoomCard(
-                        title: 'Standard Room (1)',
-                        specs: '1 King Bed • 25 m²',
-                        price: '180',
-                        imagePath: 'assets/room1.png',
-                      ),
-                      const SizedBox(height: 16),
-                      const _SummaryRoomCard(
-                        title: 'Deluxe Suite (1)',
-                        specs: '1 King Bed + Sofa • 25 m²',
-                        price: '350',
-                        imagePath: 'assets/room2.png',
-                      ),
+                      if (widget.hotelTitle.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.hotelTitle,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.white
+                                        : const Color(0xFF1D2330),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ...hotelRooms.asMap().entries.map((entry) {
+                        final room = entry.value;
+                        final qty = _toInt(room['quantity'], fallback: 1);
+                        final title = room['title']?.toString() ?? 'Room';
+                        final specs =
+                            room['specs']?.toString() ??
+                            '$qty Room${qty > 1 ? 's' : ''} selected';
+                        final imagePath =
+                            room['imagePath']?.toString() ?? 'assets/room1.png';
+                        final imageUrl = room['imageUrl']?.toString();
+
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: entry.key == hotelRooms.length - 1 ? 0 : 16,
+                          ),
+                          child: _SummaryRoomCard(
+                            title: '$title ($qty)',
+                            specs: specs,
+                            price: _formatMoney(_toDouble(room['price'])),
+                            imagePath: imagePath,
+                            imageUrl: imageUrl,
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 24),
                       Row(
                         children: [
                           Expanded(
                             child: _DateCard(
                               label: 'CHECK-IN',
-                              date: 'Tue, 13 Dec',
+                              date: checkInLabel,
                               icon: Icons.login,
                             ),
                           ),
@@ -84,29 +323,49 @@ class BookingSummaryScreen extends StatelessWidget {
                           Expanded(
                             child: _DateCard(
                               label: 'CHECK-OUT',
-                              date: 'Fri, 16 Dec',
+                              date: checkOutLabel,
                               icon: Icons.logout,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      const _GuestDetailsCard(),
+                      _GuestDetailsCard(
+                        adults: _adults,
+                        children: _children,
+                        onAdultsChanged: (value) {
+                          setState(() => _adults = value);
+                        },
+                        onChildrenChanged: (value) {
+                          setState(() => _children = value);
+                        },
+                      ),
                       const SizedBox(height: 24),
                     ],
                     const _PromoCodeSection(),
                     const SizedBox(height: 24),
                     // Different price details for property vs hotel
                     if (isProperty)
-                      const _PropertyPriceDetailsSection()
+                      _PropertyPriceDetailsSection(
+                        purchasePrice: purchasePriceLabel,
+                        closingCosts: closingCostsLabel,
+                        agentFees: agentFeesLabel,
+                      )
                     else
-                      const _PriceDetailsSection(),
+                      _PriceDetailsSection(
+                        roomNightsLabel:
+                            '$selectedRoomCount Room${selectedRoomCount > 1 ? 's' : ''} x $stayNights Night${stayNights > 1 ? 's' : ''}',
+                        roomSubtotal: effectiveRoomSubtotal,
+                        guestCharge: guestSurcharge,
+                        taxes: taxes,
+                        serviceCharge: serviceCharge,
+                      ),
                     const SizedBox(height: 24),
                     // Different total section for property
                     if (isProperty)
-                      const _PropertyTotalSection()
+                      _PropertyTotalSection(totalLabel: propertyTotalLabel)
                     else
-                      const _TotalSection(),
+                      _TotalSection(total: totalPrice),
                     const SizedBox(height: 24),
                     if (!isProperty)
                       Container(
@@ -189,8 +448,12 @@ class BookingSummaryScreen extends StatelessWidget {
                 child: SizedBox(
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Get.to(() => PaymentScreen(bookingType: bookingType)),
+                    onPressed: () => Get.to(
+                      () => PaymentScreen(
+                        bookingType: widget.bookingType,
+                        totalAmount: isProperty ? propertyTotal : totalPrice,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2FC1BE),
                       shape: RoundedRectangleBorder(
@@ -227,12 +490,14 @@ class _SummaryRoomCard extends StatelessWidget {
   final String specs;
   final String price;
   final String imagePath;
+  final String? imageUrl;
 
   const _SummaryRoomCard({
     required this.title,
     required this.specs,
     required this.price,
     required this.imagePath,
+    this.imageUrl,
   });
 
   @override
@@ -255,12 +520,25 @@ class _SummaryRoomCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imagePath,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-            ),
+            child: imageUrl != null && imageUrl!.isNotEmpty
+                ? Image.network(
+                    imageUrl!,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      imagePath,
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Image.asset(
+                    imagePath,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                  ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -388,7 +666,17 @@ class _DateCard extends StatelessWidget {
 }
 
 class _GuestDetailsCard extends StatelessWidget {
-  const _GuestDetailsCard();
+  final int adults;
+  final int children;
+  final ValueChanged<int> onAdultsChanged;
+  final ValueChanged<int> onChildrenChanged;
+
+  const _GuestDetailsCard({
+    required this.adults,
+    required this.children,
+    required this.onAdultsChanged,
+    required this.onChildrenChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -413,27 +701,38 @@ class _GuestDetailsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildCounterRow('Number of Adults', 'Ages 12+', 2, theme),
+          _buildCounterRow(
+            label: 'Number of Adults',
+            subLabel: 'Ages 12+',
+            count: adults,
+            theme: theme,
+            onDecrement: adults > 1 ? () => onAdultsChanged(adults - 1) : null,
+            onIncrement: () => onAdultsChanged(adults + 1),
+          ),
           const SizedBox(height: 20),
           _buildCounterRow(
-            'Number of Adults',
-            'Ages 0-11',
-            1,
-            theme,
-          ), // Using 'Adults' to match image typo? Or fix? Image says "Number of Adults" twice. I'll match text but it's weird.
-          // Wait, actually user says "divide it into widgets like ... adults".
-          // I'll stick to image text for "pixel perfect".
+            label: 'Number of Children',
+            subLabel: 'Ages 0-11',
+            count: children,
+            theme: theme,
+            onDecrement: children > 0
+                ? () => onChildrenChanged(children - 1)
+                : null,
+            onIncrement: () => onChildrenChanged(children + 1),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCounterRow(
-    String label,
-    String subLabel,
-    int count,
-    ThemeData theme,
-  ) {
+  Widget _buildCounterRow({
+    required String label,
+    required String subLabel,
+    required int count,
+    required ThemeData theme,
+    required VoidCallback? onDecrement,
+    required VoidCallback onIncrement,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -469,6 +768,7 @@ class _GuestDetailsCard extends StatelessWidget {
               color: theme.brightness == Brightness.dark
                   ? const Color(0xFF2FC1BE).withOpacity(0.2)
                   : const Color(0xFFBEEBEA),
+              onTap: onDecrement,
             ),
             const SizedBox(width: 14),
             Text(
@@ -487,6 +787,7 @@ class _GuestDetailsCard extends StatelessWidget {
               color: theme.brightness == Brightness.dark
                   ? const Color(0xFF2FC1BE).withOpacity(0.2)
                   : const Color(0xFFBEEBEA),
+              onTap: onIncrement,
             ),
           ],
         ),
@@ -498,16 +799,23 @@ class _GuestDetailsCard extends StatelessWidget {
 class _CounterButton extends StatelessWidget {
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
-  const _CounterButton({required this.icon, required this.color});
+  const _CounterButton({required this.icon, required this.color, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 28,
-      height: 28,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      child: Icon(icon, size: 16, color: const Color(0xFF2FC1BE)),
+    return GestureDetector(
+      onTap: onTap,
+      child: Opacity(
+        opacity: onTap == null ? 0.5 : 1,
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          child: Icon(icon, size: 16, color: const Color(0xFF2FC1BE)),
+        ),
+      ),
     );
   }
 }
@@ -585,7 +893,19 @@ class _PromoCodeSection extends StatelessWidget {
 }
 
 class _PriceDetailsSection extends StatelessWidget {
-  const _PriceDetailsSection();
+  final String roomNightsLabel;
+  final double roomSubtotal;
+  final double guestCharge;
+  final double taxes;
+  final double serviceCharge;
+
+  const _PriceDetailsSection({
+    required this.roomNightsLabel,
+    required this.roomSubtotal,
+    required this.guestCharge,
+    required this.taxes,
+    required this.serviceCharge,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -604,11 +924,31 @@ class _PriceDetailsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        _buildPriceRow('2 Room x 3 Nights', '\$1590', theme),
+        _buildPriceRow(
+          roomNightsLabel,
+          '\$${roomSubtotal.toStringAsFixed(0)}',
+          theme,
+        ),
+        if (guestCharge > 0) ...[
+          const SizedBox(height: 8),
+          _buildPriceRow(
+            'Extra Guest Charges',
+            '\$${guestCharge.toStringAsFixed(0)}',
+            theme,
+          ),
+        ],
         const SizedBox(height: 8),
-        _buildPriceRow('Taxes & Fees (10%)', '\$159', theme),
+        _buildPriceRow(
+          'Taxes & Fees (10%)',
+          '\$${taxes.toStringAsFixed(0)}',
+          theme,
+        ),
         const SizedBox(height: 8),
-        _buildPriceRow('Service Charge', '\$25', theme),
+        _buildPriceRow(
+          'Service Charge',
+          '\$${serviceCharge.toStringAsFixed(0)}',
+          theme,
+        ),
         const SizedBox(height: 16),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -669,7 +1009,9 @@ class _PriceDetailsSection extends StatelessWidget {
 }
 
 class _TotalSection extends StatelessWidget {
-  const _TotalSection();
+  final double total;
+
+  const _TotalSection({required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -692,7 +1034,7 @@ class _TotalSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$1774',
+              '\$${total.toStringAsFixed(0)}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -720,7 +1062,19 @@ class _TotalSection extends StatelessWidget {
 
 // Property-specific widgets
 class _PropertySummaryCard extends StatelessWidget {
-  const _PropertySummaryCard();
+  final String title;
+  final String address;
+  final String priceLabel;
+  final double rating;
+  final String? imageUrl;
+
+  const _PropertySummaryCard({
+    required this.title,
+    required this.address,
+    required this.priceLabel,
+    required this.rating,
+    this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -742,12 +1096,25 @@ class _PropertySummaryCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              'assets/room1.png',
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+            child: imageUrl != null && imageUrl!.isNotEmpty
+                ? Image.network(
+                    imageUrl!,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      'assets/room1.png',
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Image.asset(
+                    'assets/room1.png',
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -756,7 +1123,7 @@ class _PropertySummaryCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Luxury Villa',
+                  title,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -777,7 +1144,7 @@ class _PropertySummaryCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Dubai Marina',
+                      address,
                       style: TextStyle(
                         fontSize: 13,
                         color: theme.brightness == Brightness.dark
@@ -788,9 +1155,9 @@ class _PropertySummaryCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  '\$1.8M',
-                  style: TextStyle(
+                Text(
+                  priceLabel,
+                  style: const TextStyle(
                     color: Color(0xFF2FC1BE),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -802,7 +1169,7 @@ class _PropertySummaryCard extends StatelessWidget {
                     const Icon(Icons.star, color: Color(0xFFFFB300), size: 18),
                     const SizedBox(width: 4),
                     Text(
-                      '4.8',
+                      rating.toStringAsFixed(1),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -823,7 +1190,15 @@ class _PropertySummaryCard extends StatelessWidget {
 }
 
 class _PropertyPriceDetailsSection extends StatelessWidget {
-  const _PropertyPriceDetailsSection();
+  final String purchasePrice;
+  final String closingCosts;
+  final String agentFees;
+
+  const _PropertyPriceDetailsSection({
+    required this.purchasePrice,
+    required this.closingCosts,
+    required this.agentFees,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -842,11 +1217,11 @@ class _PropertyPriceDetailsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        _buildPriceRow('Purchase Price', '\$1,250,000.00', theme),
+        _buildPriceRow('Purchase Price', purchasePrice, theme),
         const SizedBox(height: 10),
-        _buildPriceRow('Closing Costs Estimate', '\$18,500.00', theme),
+        _buildPriceRow('Closing Costs Estimate', closingCosts, theme),
         const SizedBox(height: 10),
-        _buildPriceRow('Agent Fees', '\$37,500.00', theme),
+        _buildPriceRow('Agent Fees', agentFees, theme),
         const SizedBox(height: 18),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -907,7 +1282,9 @@ class _PropertyPriceDetailsSection extends StatelessWidget {
 }
 
 class _PropertyTotalSection extends StatelessWidget {
-  const _PropertyTotalSection();
+  final String totalLabel;
+
+  const _PropertyTotalSection({required this.totalLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -952,7 +1329,7 @@ class _PropertyTotalSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$1,306,000',
+              totalLabel,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

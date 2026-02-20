@@ -6,8 +6,15 @@ import '../controllers/profile_controller.dart';
 
 class SelectRoomSection extends StatelessWidget {
   final List<dynamic> rooms;
+  final Map<int, int> selectedQuantities;
+  final void Function(int roomId, bool increment)? onQuantityChanged;
 
-  const SelectRoomSection({super.key, this.rooms = const []});
+  const SelectRoomSection({
+    super.key,
+    this.rooms = const [],
+    this.selectedQuantities = const {},
+    this.onQuantityChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +25,13 @@ class SelectRoomSection extends StatelessWidget {
     if (rooms.isNotEmpty) {
       displayRooms = rooms.asMap().entries.map((entry) {
         final room = entry.value as Map<String, dynamic>;
-        final roomId = room['id'] as int?;
+        final roomId = _toInt(room['id']);
         final rawImage = room['image']?.toString() ?? '';
         final hasImage = rawImage.isNotEmpty;
         final isAsset = rawImage.startsWith('assets/');
 
         return {
+          'id': roomId,
           'title': room['title'] ?? 'Room ${entry.key + 1}',
           'price': (room['price'] ?? 0).toString(),
           'image': rawImage,
@@ -38,6 +46,7 @@ class SelectRoomSection extends StatelessWidget {
     } else {
       displayRooms = [
         {
+          'id': 1,
           'title': 'Standard Room',
           'image': 'assets/room1.png',
           'details': '25 m² • 1 King Bed',
@@ -45,6 +54,7 @@ class SelectRoomSection extends StatelessWidget {
           'match': '99% Match',
         },
         {
+          'id': 2,
           'title': 'Deluxe Suite',
           'image': 'assets/room2.png',
           'details': '40 m² • 1 King Bed + Sofa',
@@ -52,6 +62,7 @@ class SelectRoomSection extends StatelessWidget {
           'match': null,
         },
         {
+          'id': 3,
           'title': 'Family Room',
           'image': 'assets/room3.png',
           'details': '35 m² • 2 Queens Bed',
@@ -87,6 +98,8 @@ class SelectRoomSection extends StatelessWidget {
     final networkUrl = room['networkImageUrl'] as String?;
     final imagePath = room['image'] as String?;
     final hasImage = imagePath != null && imagePath.isNotEmpty;
+    final roomId = room['id'] as int?;
+    final qty = roomId == null ? 0 : (selectedQuantities[roomId] ?? 0);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -224,6 +237,36 @@ class SelectRoomSection extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (roomId != null && onQuantityChanged != null) ...[
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _quantityButton(
+                        icon: Icons.remove,
+                        onTap: qty > 0
+                            ? () => onQuantityChanged!(roomId, false)
+                            : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        '$qty',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.white
+                              : const Color(0xFF1D2330),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _quantityButton(
+                        icon: Icons.add,
+                        onTap: () => onQuantityChanged!(roomId, true),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -244,6 +287,31 @@ class SelectRoomSection extends StatelessWidget {
     final convertedPrice = CurrencyService.convertFromUSD(priceValue, userCurrency);
 
     return CurrencyService.formatAmount(convertedPrice, userCurrency, decimals: 0);
+  }
+
+  int? _toInt(dynamic value) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '');
+  }
+
+  Widget _quantityButton({
+    required IconData icon,
+    required VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: onTap == null
+              ? const Color(0xFFDDF4F4)
+              : const Color(0xFF2FC1BE).withOpacity(0.15),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, size: 16, color: const Color(0xFF2FC1BE)),
+      ),
+    );
   }
 
   Widget _buildPlaceholder(ThemeData theme) {
